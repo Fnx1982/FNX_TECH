@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script src="config.js"></script>
+  <script src="auth-worker.js?v=6"></script>
+<script src="auth-guard.js"></script>
+<meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Consulta de Pontos</title>
+  <link rel="stylesheet" href="pontos.css?v=5" />
+  <script src="confirm-modal.js?v=4"></script>
+  <script src="validacao.js?v=4"></script>
+  <script src="permissoes-setor.js?v=7"></script>
+  <script src="pontos-core.js?v=5"></script>
+  <link rel="stylesheet" href="mobile.css?v=3" />
+  <link rel="stylesheet" href="fnx-tema.css?v=1" />
+</head>
+<body>
+  <main class="container">
+    <div class="topo-pagina">
+      <div>
+        <h1>Consulta de Pontos</h1>
+        <p>Visualize e gerencie os registros de todos os funcionários.</p>
+      </div>
+      <a href="home.html" class="btn-voltar">Voltar</a>
+    </div>
+
+    <div class="abas">
+      <button type="button" class="aba active" data-aba="funcionarios">Funcionários</button>
+      <button type="button" class="aba" data-aba="lancamentos">Lançamentos</button>
+      <button type="button" class="aba" data-aba="jornadas">Jornadas</button>
+      <button type="button" class="aba" data-aba="feriados">Feriados</button>
+    </div>
+
+    <!-- ABA: FUNCIONÁRIOS -->
+    <div id="abaFuncionarios">
+      <div class="card-filtros">
+        <h2>Filtros</h2>
+        <div class="filtros">
+          <div class="filtro-busca">
+            <label class="filtro-label" for="buscaFuncionario">Buscar</label>
+            <input type="text" id="buscaFuncionario" placeholder="Nome ou registro..." />
+          </div>
+          <div class="select-simples">
+            <label for="filtroMesConsulta">Mês</label>
+            <select id="filtroMesConsulta"></select>
+          </div>
+          <div class="select-simples">
+            <label for="filtroAnoConsulta">Ano</label>
+            <select id="filtroAnoConsulta"></select>
+          </div>
+          <button type="button" class="btn-limpar-filtros" id="btnLimparFiltros">Limpar</button>
+        </div>
+      </div>
+
+      <table class="tabela-funcionarios" id="tabelaFuncionarios">
+        <thead>
+          <tr>
+            <th>Funcionário</th>
+            <th>Registro</th>
+            <th>Jornada</th>
+            <th>Horas Trabalhadas</th>
+            <th>Saldo Banco</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyFuncionarios"></tbody>
+      </table>
+      <div class="sem-resultados" id="semFuncionarios" style="display:none;">
+        Nenhum funcionário encontrado.
+      </div>
+    </div>
+
+    <!-- ABA: LANÇAMENTOS -->
+    <div id="abaLancamentos" style="display:none;">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:16px;">
+        <button type="button" class="btn-laranja" id="btnNovoLancamento">+ Novo Lançamento</button>
+      </div>
+      <div class="lista-lancamentos" id="listaLancamentosGestor"></div>
+    </div>
+
+    <!-- ABA: JORNADAS -->
+    <div id="abaJornadas" style="display:none;">
+      <p style="font-size:13px;color:#666;margin-bottom:16px;">Configure o horário de trabalho de cada funcionário. A jornada diária é calculada automaticamente.</p>
+
+      <div class="card-filtros" style="margin-bottom:16px;">
+        <div class="filtros">
+          <div class="filtro-busca">
+            <label class="filtro-label" for="buscaJornada">Buscar</label>
+            <input type="text" id="buscaJornada" placeholder="Nome ou registro..." />
+          </div>
+          <button type="button" class="btn-limpar-filtros" id="btnLimparBuscaJornada">Limpar</button>
+        </div>
+      </div>
+
+      <table class="tabela-funcionarios" id="tabelaJornadas">
+        <thead>
+          <tr>
+            <th>Funcionário</th>
+            <th>Registro</th>
+            <th>Entrada</th>
+            <th>Saída</th>
+            <th>Início Almoço</th>
+            <th>Fim Almoço</th>
+            <th>Jornada</th>
+            <th>Salvar</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyJornadas"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- Modal: detalhe do funcionário (batidas + lançamentos) -->
+  <div class="modal-overlay" id="modalDetalhe">
+    <div class="modal-caixa" style="max-width:720px;">
+      <div class="modal-cabecalho">
+        <h2 id="tituloModalDetalhe">Detalhes</h2>
+        <button type="button" class="modal-fechar" id="fecharModalDetalhe">&times;</button>
+      </div>
+
+      <div class="cards-banco" id="bancoModalCards" style="margin-bottom:20px;"></div>
+
+      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:flex-end;">
+        <div class="select-simples" style="min-width:160px;">
+          <label for="modalFiltroMes">Mês</label>
+          <select id="modalFiltroMes"></select>
+        </div>
+        <div class="select-simples" style="min-width:120px;">
+          <label for="modalFiltroAno">Ano</label>
+          <select id="modalFiltroAno"></select>
+        </div>
+        <button type="button" class="btn-laranja" id="btnAdicionarBatida" style="padding:10px 16px;font-size:13px;">+ Batida</button>
+        <button type="button" class="btn-laranja" id="btnAdicionarLancamentoDetalhe" style="padding:10px 16px;font-size:13px;">+ Lançamento</button>
+        <button type="button" class="btn-secundario" id="btnExportarPdfPontos" style="padding:10px 16px;font-size:13px;">📄 Exportar PDF</button>
+        <button type="button" class="btn-secundario" id="btnExtratoPonto" style="padding:10px 16px;font-size:13px;">📄 Extrato do Mês</button>
+        <button type="button" class="btn-secundario" id="btnApuracaoPonto" style="padding:10px 16px;font-size:13px;">📄 Apuração do Mês</button>
+        <button type="button" class="btn-secundario btn-zerar-banco" id="btnZerarBanco" style="padding:10px 16px;font-size:13px;display:none;">⟲ Zerar banco de horas</button>
+      </div>
+
+      <div class="secao-titulo">Batidas do Mês</div>
+      <div id="batidasModalContainer" style="margin-bottom:20px;"></div>
+
+      <div class="secao-titulo">Lançamentos</div>
+      <div id="lancamentosModalContainer"></div>
+    </div>
+  </div>
+
+  <!-- Modal: adicionar/editar batida -->
+  <div class="modal-overlay" id="modalBatida">
+    <div class="modal-caixa">
+      <div class="modal-cabecalho">
+        <h2 id="tituloModalBatida">Adicionar Batida</h2>
+        <button type="button" class="modal-fechar" id="fecharModalBatida">&times;</button>
+      </div>
+      <div class="form-modal">
+        <label>Data e Hora
+          <input type="datetime-local" id="campoDataHoraBatida" />
+        </label>
+        <label>Tipo
+          <select id="campoTipoBatida">
+            <option value="entrada">Entrada</option>
+            <option value="saida">Saída</option>
+          </select>
+        </label>
+        <label>Observação <span class="texto-opcional">(opcional)</span>
+          <input type="text" id="campoObsBatida" placeholder="Ex: Ajuste manual — horário incorreto" />
+        </label>
+      </div>
+      <div class="modal-rodape">
+        <button type="button" class="btn-secundario" id="cancelarModalBatida">Cancelar</button>
+        <button type="button" class="btn-laranja" id="salvarModalBatida">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: adicionar/editar lançamento -->
+  <div class="modal-overlay" id="modalLancamento">
+    <div class="modal-caixa">
+      <div class="modal-cabecalho">
+        <h2 id="tituloModalLancamento">Novo Lançamento</h2>
+        <button type="button" class="modal-fechar" id="fecharModalLancamento">&times;</button>
+      </div>
+      <div class="form-modal">
+        <label>Funcionário
+          <select id="campoFuncLancamento"></select>
+        </label>
+        <label>Tipo
+          <select id="campoTipoLancamento">
+            <option value="hora_extra">Hora Extra (crédito)</option>
+            <option value="falta">Falta (débito)</option>
+            <option value="abono">Abono</option>
+            <option value="atestado">Atestado</option>
+            <option value="declaracao">Declaração</option>
+            <option value="feriado_manual">Feriado (lançamento manual)</option>
+            <option value="ferias">Férias</option>
+            <option value="ajuste">Ajuste Manual</option>
+          </select>
+        </label>
+        <label>Data
+          <input type="date" id="campoDataLancamento" />
+        </label>
+        <label>Duração <span class="texto-opcional">(horas e minutos)</span>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input type="number" id="campoHorasLancamento" min="0" max="23" placeholder="Horas" style="flex:1;" />
+            <span style="font-weight:normal;color:#555;">h</span>
+            <input type="number" id="campoMinutosLancamento" min="0" max="59" placeholder="Min" style="flex:1;" />
+            <span style="font-weight:normal;color:#555;">min</span>
+          </div>
+          <span style="font-size:11px;color:#888;margin-top:2px;">Para Ajuste Manual negativo, use valores negativos nas horas.</span>
+        </label>
+
+        <!-- Período: mostrado só para abono/atestado/declaração -->
+        <div id="campoPeriodoLancamento" style="display:none;">
+          <label>Período de ausência <span class="texto-opcional">(opcional — preencha no lugar das horas)</span>
+            <div style="display:flex;gap:8px;align-items:center;margin-top:4px;">
+              <input type="time" id="campoHoraInicio" style="flex:1;" />
+              <span style="color:#555;">até</span>
+              <input type="time" id="campoHoraFim" style="flex:1;" />
+            </div>
+            <span style="font-size:11px;color:#888;margin-top:2px;">Ao preencher o período, as horas são calculadas automaticamente.</span>
+          </label>
+        </div>
+
+        <!-- Período de férias -->
+        <div id="campoPeriodoFerias" style="display:none;">
+          <label>Período de férias
+            <div style="display:flex;gap:8px;align-items:center;margin-top:4px;">
+              <input type="date" id="campoFeriasInicio" style="flex:1;" />
+              <span style="color:#555;">até</span>
+              <input type="date" id="campoFeriasFim" style="flex:1;" />
+            </div>
+          </label>
+          <div id="feriasDiasCalc" style="font-size:12px;color:rgb(196, 78, 0);font-weight:600;margin-top:4px;"></div>
+          <span style="font-size:11px;color:#888;">Os dias úteis do período são calculados automaticamente (já descontando fins de semana e feriados do funcionário).</span>
+        </div>
+        <label>Descrição / Justificativa <span class="texto-opcional">(opcional)</span>
+          <textarea id="campoDescLancamento" rows="2" placeholder="Ex: Atestado médico apresentado em 10/06"></textarea>
+        </label>
+        <label>Documento <span class="texto-opcional">(opcional — PDF, imagem)</span>
+          <input type="file" id="campoArquivoLancamento" accept="application/pdf,image/*" />
+        </label>
+        <div id="docAtualLancamento" style="display:none;font-size:12px;color:#2b6cb0;margin-top:-8px;">
+          Documento atual: <span id="docAtualNome"></span>
+          <button type="button" id="btnRemoverDocLancamento" style="background:none;border:none;color:crimson;cursor:pointer;font-size:12px;margin-left:8px;">Remover</button>
+        </div>
+      </div>
+      <div class="modal-rodape">
+        <button type="button" class="btn-secundario" id="cancelarModalLancamento">Cancelar</button>
+        <button type="button" class="btn-laranja" id="salvarModalLancamento">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+    <!-- ABA: FERIADOS -->
+    <div id="abaFeriados" style="display:none;">
+      <div id="avisoSemPermissaoFeriados" style="display:none;background:#FBE8EC;border-left:3px solid var(--vermelho);border-radius:var(--radius-sm);padding:12px 16px;font-size:13px;color:var(--vermelho);margin-bottom:16px;">
+        Você não tem permissão para editar feriados. Solicite ao administrador que libere a permissão "Pontos — pode editar feriados" no seu setor.
+      </div>
+
+      <div class="feriados-grid">
+
+        <!-- Feriados nacionais -->
+        <div class="card">
+          <div class="feriados-card-topo">
+            <div>
+              <div class="feriados-card-titulo">Feriados Nacionais</div>
+              <div class="feriados-card-sub">Valem para todos e já repetem todo ano (fixos) — formato MM-DD</div>
+            </div>
+          </div>
+
+          <div id="listaFeriadosNacionais" class="feriados-lista"></div>
+
+          <div class="feriados-add-row">
+            <input type="text" id="novoFeriadoNacional" placeholder="MM-DD" class="feriados-input-pequeno" />
+            <input type="text" id="novoFeriadoNacionalNome" placeholder="Nome do feriado" class="feriados-input-grande" />
+            <button type="button" class="btn-laranja" id="btnAdicionarFeriadoNacional">Adicionar</button>
+          </div>
+        </div>
+
+        <!-- Feriados por funcionário -->
+        <div class="card">
+          <div class="feriados-card-topo">
+            <div>
+              <div class="feriados-card-titulo">Feriados por Funcionário</div>
+              <div class="feriados-card-sub">Municipais e estaduais — específicos por pessoa</div>
+            </div>
+          </div>
+
+          <div class="feriados-select-grupo">
+            <label class="feriados-label" for="selectFuncFeriado">Funcionário</label>
+            <select id="selectFuncFeriado" class="feriados-select"></select>
+          </div>
+
+          <div id="listaFeriadosFuncionario" class="feriados-lista"></div>
+
+          <div class="feriados-add-row feriados-add-row-func">
+            <input type="date" id="novoFeriadoFunc" class="feriados-input-data" />
+            <button type="button" class="btn-laranja" id="btnAdicionarFeriadoFunc">Adicionar</button>
+            <div class="feriados-opcoes">
+              <label class="feriados-check"><input type="checkbox" id="feriadoFuncFixo" /> 🔁 Fixo — repetir todo ano</label>
+              <label class="feriados-check"><input type="checkbox" id="feriadoFuncTodos" /> Para todos os funcionários</label>
+              <span class="feriados-dica">Use "fixo" só para feriado de data certa (ex.: 08/09 Curitiba, 19/12 Paraná). Carnaval, Sexta-feira Santa e Corpus Christi mudam de data todo ano — cadastre sem "fixo".</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  <!-- Modal: seleção de seções do PDF (fora dos outros modais para evitar propagação) -->
+  <div class="modal-overlay" id="modalExportarPdf" style="z-index:2000;">
+    <div class="modal-caixa" style="max-width:400px;">
+      <div class="modal-cabecalho">
+        <h2>Exportar PDF</h2>
+        <button type="button" class="modal-fechar" id="fecharModalExportarPdf">&times;</button>
+      </div>
+      <p style="font-size:13px;color:var(--texto-2);margin-bottom:18px;">Selecione o que deseja incluir no relatório:</p>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px;">
+        <label style="display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500;cursor:pointer;padding:10px 12px;background:var(--card-alt);border-radius:8px;">
+          <input type="checkbox" id="pdfSecDadosFuncionario" checked style="width:16px;height:16px;accent-color:var(--laranja);" />
+          Dados do funcionário e jornada
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500;cursor:pointer;padding:10px 12px;background:var(--card-alt);border-radius:8px;">
+          <input type="checkbox" id="pdfSecResumo" checked style="width:16px;height:16px;accent-color:var(--laranja);" />
+          Resumo do mês e banco de horas
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500;cursor:pointer;padding:10px 12px;background:var(--card-alt);border-radius:8px;">
+          <input type="checkbox" id="pdfSecEspelho" checked style="width:16px;height:16px;accent-color:var(--laranja);" />
+          Espelho de ponto dia a dia
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500;cursor:pointer;padding:10px 12px;background:var(--card-alt);border-radius:8px;">
+          <input type="checkbox" id="pdfSecLancamentos" checked style="width:16px;height:16px;accent-color:var(--laranja);" />
+          Lançamentos especiais
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500;cursor:pointer;padding:10px 12px;background:var(--card-alt);border-radius:8px;">
+          <input type="checkbox" id="pdfSecLocalizacao" checked style="width:16px;height:16px;accent-color:var(--laranja);" />
+          Registro de localização (GPS)
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500;cursor:pointer;padding:10px 12px;background:var(--card-alt);border-radius:8px;">
+          <input type="checkbox" id="pdfSecAssinatura" checked style="width:16px;height:16px;accent-color:var(--laranja);" />
+          Campo de assinatura
+        </label>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:16px;">
+        <button type="button" id="btnMarcarTodasSecoes" style="background:none;border:none;font-size:12px;color:var(--azul);cursor:pointer;font-family:inherit;font-weight:600;">Marcar todas</button>
+        <button type="button" id="btnDesmarcarTodasSecoes" style="background:none;border:none;font-size:12px;color:var(--texto-3);cursor:pointer;font-family:inherit;font-weight:600;">Desmarcar todas</button>
+      </div>
+      <div class="modal-rodape">
+        <button type="button" class="btn-secundario" id="cancelarModalExportarPdf">Cancelar</button>
+        <button type="button" class="btn-laranja" id="confirmarExportarPdf">Gerar PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: zerar banco de horas -->
+  <div class="modal-overlay" id="modalZerarBanco" style="z-index:2000;">
+    <div class="modal-caixa" style="max-width:460px;">
+      <div class="modal-cabecalho">
+        <h2>Zerar banco de horas</h2>
+        <button type="button" class="modal-fechar" id="fecharModalZerarBanco">&times;</button>
+      </div>
+      <p id="textoZerarBanco" style="font-size:14px;margin:0 0 12px;"></p>
+      <label style="display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600;margin-bottom:12px;">Zerar até o fim do dia
+        <input type="date" id="dataZerarBanco" style="padding:9px;border:1px solid #ccc;border-radius:6px;font-family:inherit;" />
+      </label>
+      <label style="display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600;margin-bottom:12px;">Motivo
+        <textarea id="motivoZerarBanco" rows="3" placeholder="Ex.: horas pagas na folha de outubro / compensadas em folga" style="padding:9px;border:1px solid #ccc;border-radius:6px;font-family:inherit;"></textarea>
+      </label>
+      <p style="font-size:12px;color:#777;margin:0 0 14px;">Nenhuma batida é apagada — o histórico e os PDFs continuam iguais. Só o saldo recomeça do zero a partir do dia seguinte. Para desfazer, exclua o lançamento "Banco zerado".</p>
+      <div style="display:flex;gap:10px;justify-content:flex-end;">
+        <button type="button" class="btn-secundario" id="cancelarZerarBanco">Cancelar</button>
+        <button type="button" class="btn-laranja" id="confirmarZerarBanco">Zerar banco</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: editar feriado nacional -->
+  <div class="modal-overlay" id="modalEditarFeriado" style="z-index:2000;">
+    <div class="modal-caixa" style="max-width:380px;">
+      <div class="modal-cabecalho">
+        <h2>Editar Feriado</h2>
+        <button type="button" class="modal-fechar" id="fecharModalEditarFeriado">&times;</button>
+      </div>
+      <div class="form-modal">
+        <label>Data (MM-DD)
+          <input type="text" id="editFeriadoMmdd" placeholder="Ex: 04-21" maxlength="5" />
+        </label>
+        <label>Nome do feriado
+          <input type="text" id="editFeriadoNome" placeholder="Ex: Tiradentes" />
+        </label>
+      </div>
+      <div class="modal-rodape">
+        <button type="button" class="btn-secundario" id="cancelarEditarFeriado">Cancelar</button>
+        <button type="button" class="btn-laranja" id="salvarEditarFeriado">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <script src="pontos-consulta.js?v=5"></script>
+  <script src="camera.js?v=1"></script>
+  <script src="modal-expandir.js?v=1"></script>
+  <footer class="fnx-rodape">Created by Yan Victor · <a href="https://www.instagram.com/yanszaida/" target="_blank" rel="noopener">@yanszaida</a></footer>
+</body>
+</html>

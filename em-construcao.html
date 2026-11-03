@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script src="config.js"></script>
+  <script src="auth-worker.js?v=6"></script>
+<script src="auth-guard.js"></script>
+<meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Em construção</title>
+  <link rel="stylesheet" href="em-construcao.css?v=2" />
+  <link rel="stylesheet" href="mobile.css?v=3" />
+  <link rel="stylesheet" href="fnx-tema.css?v=1" />
+</head>
+<body>
+  <main class="container">
+    <div class="topo-pagina">
+      <h1 id="tituloPagina">Página</h1>
+      <a href="home.html" class="btn-voltar" id="btnVoltarConstrucao">&larr; Voltar</a>
+    </div>
+
+    <div class="cena-obra">
+      <div class="texto-em-obra">Em obra<span class="pontos"><span>.</span><span>.</span><span>.</span></span></div>
+
+      <svg class="ilustracao-muro" viewBox="0 0 680 300" role="img" aria-label="Ilustração de um muro de tijolos sendo construído por um pedreiro">
+        <rect x="220" y="248" width="240" height="14" rx="2" class="base"/>
+
+        <g class="fileira fileira-1">
+          <rect x="230" y="220" width="52" height="26" rx="2"/>
+          <rect x="286" y="220" width="52" height="26" rx="2"/>
+          <rect x="342" y="220" width="52" height="26" rx="2"/>
+          <rect x="398" y="220" width="52" height="26" rx="2"/>
+        </g>
+        <g class="fileira fileira-2">
+          <rect x="230" y="192" width="24" height="26" rx="2"/>
+          <rect x="258" y="192" width="52" height="26" rx="2"/>
+          <rect x="314" y="192" width="52" height="26" rx="2"/>
+          <rect x="370" y="192" width="52" height="26" rx="2"/>
+          <rect x="426" y="192" width="24" height="26" rx="2"/>
+        </g>
+        <g class="fileira fileira-3">
+          <rect x="230" y="164" width="52" height="26" rx="2"/>
+          <rect x="286" y="164" width="52" height="26" rx="2"/>
+          <rect x="342" y="164" width="52" height="26" rx="2"/>
+          <rect x="398" y="164" width="52" height="26" rx="2"/>
+        </g>
+        <g class="fileira fileira-4">
+          <rect x="230" y="136" width="24" height="26" rx="2"/>
+          <rect x="258" y="136" width="52" height="26" rx="2"/>
+          <rect x="314" y="136" width="52" height="26" rx="2"/>
+          <rect x="370" y="136" width="52" height="26" rx="2"/>
+          <rect x="426" y="136" width="24" height="26" rx="2"/>
+        </g>
+
+        <g class="pedreiro">
+          <circle cx="500" cy="176" r="14" class="cabeca"/>
+          <rect x="488" y="190" width="24" height="34" rx="6" class="corpo"/>
+          <rect x="478" y="194" width="12" height="26" rx="5" class="braco"/>
+          <rect x="492" y="224" width="9" height="22" rx="4" class="perna"/>
+          <rect x="503" y="224" width="9" height="22" rx="4" class="perna"/>
+          <rect x="471" y="200" width="16" height="6" rx="2" class="colher"/>
+        </g>
+
+        <rect x="220" y="246" width="240" height="2" class="linha-chao"/>
+      </svg>
+
+      <div class="texto-em-baixo" id="textoEmBaixo">já fica pronto</div>
+      <p class="texto-explicacao" id="textoExplicacao" hidden></p>
+      <a href="home.html" class="btn-voltar-grande" id="btnVoltarGrande">&larr; Voltar</a>
+    </div>
+  </main>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const nomePagina = params.get("pagina");
+    if (nomePagina) {
+      document.getElementById("tituloPagina").textContent = nomePagina;
+      document.title = `${nomePagina} — Em construção`;
+    }
+
+    // Telas de nota fiscal travadas (nfe/nfse/consulta) chegam aqui com tipo=notas
+    if (params.get("tipo") === "notas") {
+      document.querySelector(".texto-em-obra").firstChild.textContent = "Em desenvolvimento";
+      document.getElementById("textoEmBaixo").textContent = "Emissão de notas fiscais";
+      const explicacao = document.getElementById("textoExplicacao");
+      explicacao.textContent = "Essa parte está sendo finalizada e será liberada em breve. Enquanto isso, as notas continuam sendo emitidas pelo sistema atual.";
+      explicacao.hidden = false;
+    }
+
+    // Voltar: volta pra tela de onde a pessoa veio (se veio do próprio
+    // site); se abriu direto pelo link, vai pra tela inicial.
+    function voltar(e) {
+      const veioDoSite = document.referrer && new URL(document.referrer).origin === location.origin;
+      if (veioDoSite && history.length > 1) { e.preventDefault(); history.back(); }
+    }
+    document.getElementById("btnVoltarConstrucao").addEventListener("click", voltar);
+    document.getElementById("btnVoltarGrande").addEventListener("click", voltar);
+  </script>
+  <script src="modal-expandir.js?v=1"></script>
+  <footer class="fnx-rodape">Created by Yan Victor · <a href="https://www.instagram.com/yanszaida/" target="_blank" rel="noopener">@yanszaida</a></footer>
+</body>
+</html>

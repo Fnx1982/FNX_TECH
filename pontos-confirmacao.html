@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script src="config.js"></script>
+  <script src="auth-worker.js?v=6"></script>
+<script src="auth-guard.js"></script>
+<meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ponto</title>
+  <link rel="stylesheet" href="pontos.css?v=5" />
+  <script src="confirm-modal.js"></script>
+  <script src="validacao.js"></script>
+  <script src="permissoes-setor.js?v=7"></script>
+  <script src="pontos-core.js?v=5"></script>
+  <link rel="stylesheet" href="mobile.css?v=3" />
+  <link rel="stylesheet" href="fnx-tema.css?v=1" />
+</head>
+<body>
+  <main class="container">
+
+    <div class="topo-pagina">
+      <div>
+        <h1>Registro de Ponto</h1>
+        <p id="nomeUsuarioLogado">Carregando...</p>
+      </div>
+      <a href="home.html" class="btn-voltar">← Voltar</a>
+    </div>
+
+    <div class="card-relogio">
+      <div class="relogio-display" id="relogioDisplay">00:00:00</div>
+      <div class="data-display" id="dataDisplay">—</div>
+      <button class="btn-bater-ponto" id="btnBaterPonto">Registrar Ponto</button>
+      <div class="proximo-registro" id="proximaBatidaTexto"></div>
+    </div>
+
+    <div class="cards-banco">
+      <div class="card-banco">
+        <div class="rotulo">Jornada</div>
+        <div class="valor neutro" id="cardJornada">—</div>
+      </div>
+      <div class="card-banco">
+        <div class="rotulo">Trabalhadas</div>
+        <div class="valor neutro" id="cardTrabalhadas">—</div>
+      </div>
+      <div class="card-banco">
+        <div class="rotulo">Saldo</div>
+        <div class="valor" id="cardSaldo">—</div>
+      </div>
+      <div class="card-banco">
+        <div class="rotulo">Dias</div>
+        <div class="valor neutro" id="cardDias">—</div>
+      </div>
+    </div>
+
+    <div class="divider-label">Batidas de hoje</div>
+    <div class="lista-batidas" id="listaBatidasHoje">
+      <p style="color:var(--texto-3);font-size:13px;padding:4px;">Nenhum registro hoje.</p>
+    </div>
+
+    <div class="divider-label">Histórico do mês</div>
+    <div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;">
+      <div class="select-simples" style="min-width:160px;">
+        <label for="filtroMesPonto">Mês</label>
+        <select id="filtroMesPonto"></select>
+      </div>
+      <div class="select-simples" style="min-width:110px;">
+        <label for="filtroAnoPonto">Ano</label>
+        <select id="filtroAnoPonto"></select>
+      </div>
+    </div>
+    <div id="historicoMes"></div>
+
+    <div class="divider-label">Lançamentos especiais</div>
+    <div class="lista-lancamentos" id="listaLancamentos">
+      <p style="color:var(--texto-3);font-size:13px;padding:4px;">Nenhum lançamento registrado.</p>
+    </div>
+
+  </main>
+  <script src="pontos-confirmacao.js"></script>
+  <script src="modal-expandir.js?v=1"></script>
+  <footer class="fnx-rodape">Created by Yan Victor · <a href="https://www.instagram.com/yanszaida/" target="_blank" rel="noopener">@yanszaida</a></footer>
+</body>
+</html>

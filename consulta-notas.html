@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script src="config.js"></script>
+  <script>
+  // TELA TRAVADA: emissão de notas ainda em desenvolvimento.
+  // Para liberar de novo, é só apagar este bloco <script> inteiro.
+  location.replace("em-construcao.html?pagina=" + encodeURIComponent("Consulta de Notas") + "&tipo=notas");
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <script src="auth-worker.js?v=6"></script>
+  <script src="auth-guard.js"></script>
+  <script src="confirm-modal.js"></script>
+  <script src="logo-empresa.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Consulta de Notas — FNX TECH</title>
+  <link rel="stylesheet" href="nota-fiscal.css" />
+  <link rel="stylesheet" href="contatos.css" />
+  <link rel="stylesheet" href="mobile.css?v=3" />
+  <link rel="stylesheet" href="fnx-tema.css?v=1" />
+</head>
+<body>
+
+  <main class="container">
+
+    <div class="topo-pagina">
+      <div>
+        <h1>Consulta de Notas</h1>
+        <p>Todas as NF-e e NFS-e num só lugar — visualizar, baixar ou excluir</p>
+      </div>
+
+      <a href="home.html" class="btn-voltar">← Voltar</a>
+    </div>
+    <div class="atalhos-fluxo">
+      <a href="nfe.html" class="atalho-fluxo">📦 Material</a>
+      <a href="nfse.html" class="atalho-fluxo">🔧 Mão de Obra</a>
+      <a href="consulta-notas.html" class="atalho-fluxo atalho-atual">🔍 Consulta</a>
+      <a href="recebidos.html" class="atalho-fluxo">📥 Recebidos</a>
+      <a href="contatos.html" class="atalho-fluxo">👤 Clientes/Fornecedores</a>
+    </div>
+
+
+    <!-- Abas: Todas / NF-e / NFS-e -->
+    <div class="abas-nivel-superior" style="display:inline-flex;background:#e2e2e2;border-radius:14px;padding:4px;gap:4px;margin-bottom:20px;">
+      <button type="button" class="aba active" id="btnFiltroTodas" style="border-radius:10px;padding:10px 20px;font-size:14px;font-weight:700;font-family:inherit;background:var(--laranja);color:#fff;border:none;cursor:pointer;">Todas</button>
+      <button type="button" class="aba" id="btnFiltroNfe" style="border-radius:10px;padding:10px 20px;font-size:14px;font-weight:700;font-family:inherit;background:transparent;color:#666;border:none;cursor:pointer;">NF-e</button>
+      <button type="button" class="aba" id="btnFiltroNfse" style="border-radius:10px;padding:10px 20px;font-size:14px;font-weight:700;font-family:inherit;background:transparent;color:#666;border:none;cursor:pointer;">NFS-e</button>
+    </div>
+
+    <div class="barra-busca">
+      <input type="text" id="buscaConsulta" placeholder="Buscar por cliente/tomador..." />
+    </div>
+
+    <div class="lista-notas" id="listaConsulta"></div>
+    <div class="vazio" id="vazioConsulta" style="display:none;">Nenhuma nota encontrada.</div>
+
+  </main>
+
+  <script src="consulta-notas.js"></script>
+  <script src="modal-expandir.js?v=1"></script>
+  <footer class="fnx-rodape">Created by Yan Victor · <a href="https://www.instagram.com/yanszaida/" target="_blank" rel="noopener">@yanszaida</a></footer>
+</body>
+</html>

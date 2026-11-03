@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script src="config.js"></script>
+  <script src="auth-worker.js?v=6"></script>
+  <script src="auth-guard.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clientes — Quadro — FNX TECH</title>
+  <link rel="stylesheet" href="clientes-crm.css" />
+  <script src="confirm-modal.js"></script>
+  <link rel="stylesheet" href="mobile.css?v=3" />
+  <link rel="stylesheet" href="fnx-tema.css?v=1" />
+</head>
+<body>
+  <main class="container-crm">
+    <div class="topo-crm">
+      <div>
+        <h1>Clientes</h1>
+        <p>Quadro de acompanhamento — arraste os cartões entre as colunas.</p>
+      </div>
+      <a href="home.html" class="btn-voltar">← Voltar</a>
+    </div>
+
+    <div class="barra-crm">
+      <input type="text" id="buscaCrm" class="busca-crm" placeholder="Buscar por nome ou telefone..." />
+      <button type="button" class="btn-laranja" id="btnNovaColuna">+ Nova coluna</button>
+    </div>
+
+    <div class="quadro-crm" id="quadroCrm"></div>
+  </main>
+
+  <!-- Modal: novo/editar cliente -->
+  <div class="modal-overlay" id="modalClienteCrm">
+    <div class="modal-caixa">
+      <div class="modal-cabecalho">
+        <h2 id="tituloModalClienteCrm">Novo Cliente</h2>
+        <button type="button" class="modal-fechar" id="fecharModalClienteCrm">&times;</button>
+      </div>
+      <form id="formClienteCrm" class="form-modal-grid">
+        <input type="hidden" id="crmClienteId" />
+        <label class="campo-largura-total">
+          Nome
+          <input type="text" id="crmCampoNome" placeholder="Nome do cliente" required />
+        </label>
+        <label class="campo-largura-total">
+          Telefone
+          <input type="text" id="crmCampoTelefone" placeholder="(41) 99999-9999" />
+        </label>
+        <label class="campo-largura-total">
+          Coluna
+          <select id="crmCampoColuna"></select>
+        </label>
+        <label class="campo-largura-total">
+          Observação <span class="texto-opcional-inline">(opcional)</span>
+          <textarea id="crmCampoObservacao" rows="3" placeholder="Alguma anotação sobre esse cliente..."></textarea>
+        </label>
+        <button type="submit" class="btn-laranja campo-largura-total">Salvar</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: nova coluna -->
+  <div class="modal-overlay" id="modalNovaColuna">
+    <div class="modal-caixa">
+      <div class="modal-cabecalho">
+        <h2>Nova Coluna</h2>
+        <button type="button" class="modal-fechar" id="fecharModalNovaColuna">&times;</button>
+      </div>
+      <form id="formNovaColuna" class="form-modal-grid">
+        <label class="campo-largura-total">
+          Nome da coluna
+          <input type="text" id="campoNomeNovaColuna" placeholder="Ex: Em negociação" required />
+        </label>
+        <button type="submit" class="btn-laranja campo-largura-total">Criar coluna</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="clientes-crm.js"></script>
+  <script src="modal-expandir.js?v=1"></script>
+  <footer class="fnx-rodape">Created by Yan Victor · <a href="https://www.instagram.com/yanszaida/" target="_blank" rel="noopener">@yanszaida</a></footer>
+</body>
+</html>

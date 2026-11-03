@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script src="config.js"></script>
+  <script src="auth-worker.js?v=6"></script>
+<script src="auth-guard.js"></script>
+<meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Obras</title>
+  <link rel="stylesheet" href="propostas.css?v=9" />
+  <link rel="stylesheet" href="obras.css" />
+  <script src="confirm-modal.js"></script>
+  <script src="validacao.js"></script>
+  <script src="logo-empresa.js"></script>
+  <script src="propostas-core.js?v=8"></script>
+  <link rel="stylesheet" href="mobile.css?v=3" />
+  <link rel="stylesheet" href="fnx-tema.css?v=1" />
+</head>
+<body>
+  <main class="container">
+    <div class="topo-pagina">
+      <div>
+        <h1>Obras</h1>
+        <p>Obras aprovadas, organizadas por mês.</p>
+      </div>
+      <a href="home.html" class="btn-voltar">Voltar</a>
+    </div>
+
+    <div class="atalhos-fluxo">
+      <a href="visita-tecnica.html" class="atalho-fluxo">🔍 Visita</a>
+      <a href="orcamento.html" class="atalho-fluxo">📝 Orçamento</a>
+      <a href="propostas.html" class="atalho-fluxo">📋 Análise</a>
+      <a href="andamento.html" class="atalho-fluxo">⚙ Em Andamento</a>
+      <a href="obras.html" class="atalho-fluxo atalho-atual">🏗 Obras</a>
+    </div>
+
+    <div class="abas" style="margin-bottom:16px;">
+      <button type="button" class="aba active" data-aba="andamento">Em Andamento</button>
+      <button type="button" class="aba" data-aba="finalizada">Finalizadas</button>
+      <button type="button" class="aba" data-aba="lixeira">🗑 Lixeira</button>
+    </div>
+
+    <div class="card-filtros">
+      <h2>Filtros</h2>
+      <div class="filtros">
+        <div class="filtro-busca">
+          <label class="filtro-label" for="buscaTexto">Buscar</label>
+          <input type="text" id="buscaTexto" placeholder="Cliente, local ou serviço..." />
+        </div>
+        <div class="select-simples">
+          <label class="filtro-label" for="filtroAno">Ano</label>
+          <select id="filtroAno"><option value="todos">Todos</option></select>
+        </div>
+        <button type="button" class="btn-limpar-filtros" id="btnLimparFiltros">Limpar filtros</button>
+      </div>
+    </div>
+
+    <div id="gruposMeses"></div>
+    <div class="sem-resultados" id="semResultados" style="display:none;">
+      Nenhuma obra encontrada. Obras aparecem aqui automaticamente quando uma proposta é aprovada.
+    </div>
+  </main>
+
+  <script src="mapas.js?v=1"></script>
+  <script src="obras.js?v=20261007"></script>
+  <script src="modal-expandir.js?v=1"></script>
+  <footer class="fnx-rodape">Created by Yan Victor · <a href="https://www.instagram.com/yanszaida/" target="_blank" rel="noopener">@yanszaida</a></footer>
+</body>
+</html>

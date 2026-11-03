@@ -1,0 +1,299 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap');
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --laranja:     #FF6A00;
+  --laranja-dark:#D45500;
+  --laranja-pale:#FFF1E6;
+  --fundo:       #DDDCDC;
+  --card:        #FFFFFF;
+  --card-alt:    #F7F7F7;
+  --texto:       #1A1A1A;
+  --texto-2:     #555555;
+  --texto-3:     #999999;
+  --borda:       #E8E8E8;
+  --verde:       #1C8A4B;
+  --verde-pale:  #E7F6EC;
+  --vermelho:    #E5141B;
+  --vermelho-pale: #FDECEA;
+  --sombra-sm:   0 1px 4px rgba(0,0,0,.07);
+  --radius:      12px;
+  --radius-sm:   8px;
+  --radius-pill: 100px;
+}
+
+body {
+  font-family: "Montserrat", sans-serif;
+  background: var(--fundo);
+  color: var(--texto);
+  min-height: 100vh;
+  padding: 32px 16px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container { width: 100%; max-width: 1000px; }
+
+.topo-pagina {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.topo-pagina h1 { font-size: 26px; font-weight: 800; }
+.topo-pagina p { color: var(--texto-2); font-size: 13px; margin-top: 2px; }
+
+.btn-voltar {
+  background: var(--card);
+  border: 1px solid var(--borda);
+  border-radius: var(--radius-pill);
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--texto);
+  text-decoration: none;
+  transition: background .15s;
+}
+.btn-voltar:hover { background: var(--card-alt); }
+
+.aviso-certificado {
+  background: var(--laranja-pale);
+  border: 1px solid #F3D98B;
+  color: #8A3300;
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.aviso-certificado b { color: #5C3E00; }
+
+.card-secao {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--sombra-sm);
+  padding: 22px;
+  margin-bottom: 20px;
+}
+.card-secao h2 {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.card-secao .sub-h2 { font-size: 11.5px; color: var(--texto-3); font-weight: 500; }
+.texto-opcional-inline { font-weight: normal; text-transform: none; letter-spacing: normal; color: var(--texto-3); font-size: 10.5px; }
+
+.grid-campos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+}
+.campo label {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  color: var(--texto-3);
+  margin-bottom: 6px;
+}
+.campo input, .campo select, .campo textarea {
+  width: 100%;
+  border: 1px solid var(--borda);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 13.5px;
+  background: var(--card-alt);
+  color: var(--texto);
+}
+.campo input:focus, .campo select:focus, .campo textarea:focus { outline: 2px solid var(--laranja); outline-offset: -1px; }
+.campo.full { grid-column: 1 / -1; }
+.campo textarea { resize: vertical; min-height: 50px; }
+
+/* ── Tabelas de itens / impostos ─────────────────────────────── */
+.tabela-itens { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+.tabela-itens th {
+  text-align: left;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  color: var(--texto-3);
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--borda);
+}
+.tabela-itens td { padding: 6px 8px; vertical-align: middle; }
+.tabela-itens input {
+  width: 100%;
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+  padding: 7px 9px;
+  font-family: inherit;
+  font-size: 13px;
+  background: var(--card-alt);
+}
+.tabela-itens .col-valor { text-align: right; white-space: nowrap; font-weight: 600; font-size: 13px; }
+.tabela-itens .col-remover { width: 34px; text-align: center; }
+.btn-remover-linha {
+  background: none;
+  border: none;
+  color: var(--vermelho);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  padding: 4px;
+}
+.btn-remover-linha:hover { opacity: .7; }
+
+.btn-add-linha {
+  background: var(--card-alt);
+  border: 1px dashed var(--borda);
+  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--texto-2);
+  cursor: pointer;
+  transition: background .15s;
+}
+.btn-add-linha:hover { background: var(--borda); }
+
+/* ── Resumo de valores ─────────────────────────────────────────── */
+.resumo-valores {
+  border-top: 1px solid var(--borda);
+  margin-top: 14px;
+  padding-top: 14px;
+}
+.linha-resumo {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13.5px;
+  padding: 4px 0;
+  color: var(--texto-2);
+}
+.linha-resumo.total {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--texto);
+  border-top: 1px solid var(--borda);
+  margin-top: 8px;
+  padding-top: 10px;
+}
+
+/* ── Botões de ação ─────────────────────────────────────────────── */
+.barra-acoes {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+.btn-salvar-rascunho, .btn-emitir {
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 12px 24px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .15s;
+}
+.btn-salvar-rascunho { background: var(--card-alt); border: 1px solid var(--borda); color: var(--texto); }
+.btn-salvar-rascunho:hover { background: var(--borda); }
+.btn-emitir { background: var(--laranja); color: #fff; }
+.btn-emitir:hover { background: var(--laranja-dark); }
+.btn-emitir:disabled, .btn-salvar-rascunho:disabled { opacity: .6; cursor: not-allowed; }
+
+/* ── Lista de rascunhos salvos ────────────────────────────────── */
+.lista-notas { display: flex; flex-direction: column; gap: 10px; }
+.item-nota-fiscal {
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--sombra-sm);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  cursor: pointer;
+  transition: background .15s;
+}
+.item-nota-fiscal:hover { background: var(--card-alt); }
+.item-nota-fiscal .nome-tomador { font-weight: 700; font-size: 14px; }
+.item-nota-fiscal .meta { font-size: 12px; color: var(--texto-3); margin-top: 2px; }
+.item-nota-fiscal .valor { font-weight: 700; font-size: 14px; }
+.badge-status {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+}
+.badge-status.rascunho { background: var(--card-alt); color: var(--texto-3); border: 1px solid var(--borda); }
+.badge-status.conferida { background: var(--laranja-pale); color: var(--laranja-dark); }
+.badge-status.emitida { background: var(--verde-pale); color: var(--verde); }
+.badge-status.erro { background: var(--vermelho-pale); color: var(--vermelho); }
+.item-nota-fiscal .acoes { display: flex; gap: 8px; }
+.item-nota-fiscal .acoes button {
+  border: 1px solid var(--borda);
+  background: var(--card-alt);
+  border-radius: var(--radius-pill);
+  padding: 6px 13px;
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.item-nota-fiscal .btn-excluir-nota { color: var(--vermelho); border-color: #F5C2C0; }
+
+.vazio { text-align: center; padding: 30px; color: var(--texto-3); font-size: 13.5px; }
+
+/* ── Atalhos rápidos entre as telas de Notas ── */
+.atalhos-fluxo {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+.atalhos-fluxo a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 100px;
+    padding: 8px 16px;
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #666;
+    text-decoration: none;
+    transition: 0.15s;
+}
+.atalhos-fluxo a:hover { background: #f7f7f7; border-color: #ccc; }
+.atalhos-fluxo a.atalho-atual {
+    background: rgb(255, 106, 0);
+    border-color: rgb(255, 106, 0);
+    color: #fff;
+    cursor: default;
+    pointer-events: none;
+}
+
+/* Alinha os campos de um grid-campos pela BASE (onde fica o input),
+   não pelo topo — evita que um rótulo de 2 linhas (ex: "Cliente /
+   Tomador do Serviço") desalinhe o campo vizinho que tem rótulo de
+   1 linha só (ex: "CPF / CNPJ"). */
+.campo-alinha-base {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}

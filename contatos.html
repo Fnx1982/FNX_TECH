@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script src="config.js"></script>
+  <script src="auth-worker.js?v=6"></script>
+  <script src="auth-guard.js"></script>
+  <script src="confirm-modal.js"></script>
+  <script src="validacao-fiscal.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clientes e Fornecedores — FNX TECH</title>
+  <link rel="stylesheet" href="contatos.css" />
+  <link rel="stylesheet" href="mobile.css?v=3" />
+  <link rel="stylesheet" href="fnx-tema.css?v=1" />
+</head>
+<body>
+
+  <main class="container">
+
+    <div class="topo-pagina">
+      <div>
+        <h1>Clientes e Fornecedores</h1>
+        <p>Cadastro usado na emissão de notas e no controle de recebidos</p>
+      </div>
+
+      <a href="home.html" class="btn-voltar">← Voltar</a>
+    </div>
+    <div class="atalhos-fluxo">
+      <a href="nfe.html" class="atalho-fluxo">📦 Material</a>
+      <a href="nfse.html" class="atalho-fluxo">🔧 Mão de Obra</a>
+      <a href="consulta-notas.html" class="atalho-fluxo">🔍 Consulta</a>
+      <a href="recebidos.html" class="atalho-fluxo">📥 Recebidos</a>
+      <a href="contatos.html" class="atalho-fluxo atalho-atual">👤 Clientes/Fornecedores</a>
+    </div>
+
+
+    <div class="card-secao">
+      <h2 id="tituloFormulario">Novo cadastro</h2>
+      <input type="hidden" id="campoId" />
+
+      <div class="tipo-pessoa-toggle">
+        <button type="button" id="btnTipoPJ" class="ativo">Pessoa Jurídica (CNPJ)</button>
+        <button type="button" id="btnTipoPF">Pessoa Física (CPF)</button>
+      </div>
+
+      <div class="campo-com-botao" style="margin-bottom:14px;">
+        <div class="campo">
+          <label id="labelDocumento" for="campoDocumento">CNPJ</label>
+          <input type="text" id="campoDocumento" placeholder="00.000.000/0000-00" />
+          <div class="erro-campo" id="erroDocumento">Documento inválido — confira os números.</div>
+        </div>
+        <button type="button" class="btn-buscar-cnpj" id="btnBuscarCnpj">🔍 Buscar dados</button>
+      </div>
+
+      <div class="grid-campos">
+        <div class="campo full">
+          <label for="campoNome" id="labelNome">Razão Social</label>
+          <input type="text" id="campoNome" placeholder="Nome ou razão social" />
+        </div>
+        <div class="campo" id="blocoNomeFantasia">
+          <label for="campoNomeFantasia">Nome Fantasia</label>
+          <input type="text" id="campoNomeFantasia" />
+        </div>
+        <div class="campo" id="blocoIE">
+          <label for="campoInscricaoEstadual">Inscrição Estadual</label>
+          <input type="text" id="campoInscricaoEstadual" placeholder="ou 'Isento'" />
+        </div>
+        <div class="campo" id="blocoIM">
+          <label for="campoInscricaoMunicipal">Inscrição Municipal</label>
+          <input type="text" id="campoInscricaoMunicipal" />
+        </div>
+        <div class="campo">
+          <label for="campoTelefone">Telefone</label>
+          <input type="text" id="campoTelefone" placeholder="(00) 00000-0000" />
+        </div>
+        <div class="campo">
+          <label for="campoEmail">E-mail</label>
+          <input type="email" id="campoEmail" />
+        </div>
+        <div class="campo">
+          <label for="campoCep">CEP</label>
+          <input type="text" id="campoCep" placeholder="00000-000" />
+        </div>
+        <div class="campo">
+          <label for="campoLogradouro">Logradouro</label>
+          <input type="text" id="campoLogradouro" placeholder="Rua, avenida..." />
+        </div>
+        <div class="campo">
+          <label for="campoNumero">Número</label>
+          <input type="text" id="campoNumero" />
+        </div>
+        <div class="campo">
+          <label for="campoComplemento">Complemento</label>
+          <input type="text" id="campoComplemento" />
+        </div>
+        <div class="campo">
+          <label for="campoBairro">Bairro</label>
+          <input type="text" id="campoBairro" />
+        </div>
+        <div class="campo">
+          <label for="campoCidade">Cidade</label>
+          <input type="text" id="campoCidade" />
+        </div>
+        <div class="campo">
+          <label for="campoUf">UF</label>
+          <input type="text" id="campoUf" maxlength="2" placeholder="PR" />
+        </div>
+        <div class="campo full">
+          <label for="campoObservacoes">Observações</label>
+          <textarea id="campoObservacoes"></textarea>
+        </div>
+      </div>
+
+      <div class="barra-acoes">
+        <button type="button" class="btn-salvar" id="btnSalvarContato">Salvar</button>
+        <button type="button" class="btn-cancelar-edicao" id="btnCancelarEdicao" style="display:none;">Cancelar edição</button>
+      </div>
+    </div>
+
+    <div class="barra-busca">
+      <input type="text" id="buscaContatos" placeholder="Buscar por nome, CNPJ/CPF ou cidade..." />
+    </div>
+
+    <div class="card-secao" id="blocoPendentes" style="display:none;">
+      <h2>Pendentes <span style="font-weight:normal; font-size:12px; color:#888;">(rascunhos salvos automaticamente, ainda não finalizados)</span></h2>
+      <div class="lista-contatos" id="listaPendentes"></div>
+    </div>
+
+    <div class="lista-contatos" id="listaContatos"></div>
+    <div class="vazio" id="vazioContatos" style="display:none;">Nenhum contato cadastrado ainda.</div>
+
+  </main>
+
+  <script src="mapas.js?v=1"></script>
+  <script src="contatos.js?v=2"></script>
+  <script src="modal-expandir.js?v=1"></script>
+  <footer class="fnx-rodape">Created by Yan Victor · <a href="https://www.instagram.com/yanszaida/" target="_blank" rel="noopener">@yanszaida</a></footer>
+</body>
+</html>

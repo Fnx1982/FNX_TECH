@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script src="config.js"></script>
+  <script src="auth-worker.js?v=6"></script>
+<script src="auth-guard.js"></script>
+<meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Armazenamento — FNX TECH</title>
+  <link rel="stylesheet" href="armazenamento.css" />
+  <script src="confirm-modal.js"></script>
+  <script src="validacao.js"></script>
+  <link rel="stylesheet" href="mobile.css?v=3" />
+  <link rel="stylesheet" href="fnx-tema.css?v=1" />
+</head>
+<body>
+
+  <!-- Widget de status no canto -->
+  <div class="storage-widget" id="storageWidget">
+    <div class="widget-icone">☁</div>
+    <div class="widget-info">
+      <div class="widget-label">Armazenamento</div>
+      <div class="widget-barra">
+        <div class="widget-progresso" id="widgetProgresso"></div>
+      </div>
+      <div class="widget-texto" id="widgetTexto">Carregando...</div>
+    </div>
+  </div>
+
+  <main class="container">
+
+    <!-- Topo -->
+    <div class="topo-pagina">
+      <div>
+        <h1>Armazenamento</h1>
+        <p id="subtituloAtual">Todos os arquivos</p>
+      </div>
+      <a href="home.html" class="btn-voltar">← Voltar</a>
+    </div>
+
+    <!-- Barra de uso -->
+    <div class="card-uso" id="cardUso">
+      <div class="uso-info">
+        <span class="uso-label">Espaço utilizado</span>
+        <span class="uso-valores" id="usoValores">— / 10 GB</span>
+      </div>
+      <div class="uso-barra-container">
+        <div class="uso-barra-fill" id="usoBarra"></div>
+      </div>
+      <div class="uso-porcentagem" id="usoPorcentagem">—%</div>
+    </div>
+
+    <!-- Abas -->
+    <div class="abas-storage">
+      <button class="aba-storage active" data-aba="arquivos">Arquivos</button>
+      <button class="aba-storage" data-aba="lixeira">🗑 Lixeira</button>
+    </div>
+
+    <!-- Barra de ações -->
+    <div class="barra-acoes">
+      <!-- Breadcrumb de pastas -->
+      <div class="breadcrumb" id="breadcrumb">
+        <span class="bc-item bc-raiz" data-pasta="">☁ Início</span>
+      </div>
+
+      <div class="acoes-direita">
+        <!-- Busca -->
+        <div class="busca-storage">
+          <input type="text" id="buscaArquivos" placeholder="Buscar arquivos..." />
+        </div>
+        <!-- Botões -->
+        <button class="btn-acao" id="btnNovasPasta" title="Nova pasta">📁 Nova pasta</button>
+        <label class="btn-acao btn-upload" title="Enviar arquivo">
+          ⬆ Enviar
+          <input type="file" id="inputUpload" multiple style="display:none;" />
+        </label>
+      </div>
+    </div>
+
+    <!-- Barra de seleção em massa — só aparece na aba Lixeira -->
+    <div class="barra-selecao-lixeira" id="barraSelecaoLixeira" style="display:none;">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+        <input type="checkbox" id="checkSelecionarTudo" />
+        <span id="textoSelecionados">Selecionar tudo</span>
+      </label>
+      <button type="button" class="btn-excluir-selecionados" id="btnExcluirSelecionados" style="display:none;">
+        🗑 Excluir selecionados definitivamente
+      </button>
+    </div>
+
+    <!-- Área principal -->
+    <div class="area-arquivos" id="areaArquivos">
+
+      <!-- Drop zone -->
+      <div class="drop-zone" id="dropZone">
+        <div class="drop-icone">☁</div>
+        <div class="drop-texto">Arraste arquivos aqui para enviar</div>
+        <div class="drop-subtexto">ou use o botão "Enviar" acima</div>
+      </div>
+
+      <!-- Grid de pastas e arquivos -->
+      <div class="grid-storage" id="gridStorage"></div>
+
+      <!-- Sem itens -->
+      <div class="sem-itens" id="semItens" style="display:none;">
+        <div class="sem-icone">📂</div>
+        <div class="sem-texto">Pasta vazia</div>
+        <div class="sem-sub">Envie arquivos ou crie uma pasta para começar.</div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Modal: nova pasta -->
+  <div class="modal-overlay" id="modalPasta">
+    <div class="modal-caixa" style="max-width:380px;">
+      <div class="modal-cabecalho">
+        <h2>Nova Pasta</h2>
+        <button class="modal-fechar" id="fecharModalPasta">&times;</button>
+      </div>
+      <div class="form-modal">
+        <label>Nome da pasta
+          <input type="text" id="campoNomePasta" placeholder="Ex: Contratos 2026" maxlength="60" />
+        </label>
+      </div>
+      <div class="modal-rodape">
+        <button class="btn-secundario" id="cancelarPasta">Cancelar</button>
+        <button class="btn-laranja" id="confirmarPasta">Criar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: renomear -->
+  <div class="modal-overlay" id="modalRenomear">
+    <div class="modal-caixa" style="max-width:380px;">
+      <div class="modal-cabecalho">
+        <h2>Renomear</h2>
+        <button class="modal-fechar" id="fecharModalRenomear">&times;</button>
+      </div>
+      <div class="form-modal">
+        <label>Novo nome
+          <input type="text" id="campoNovoNome" placeholder="Nome do arquivo ou pasta" maxlength="120" />
+        </label>
+      </div>
+      <div class="modal-rodape">
+        <button class="btn-secundario" id="cancelarRenomear">Cancelar</button>
+        <button class="btn-laranja" id="confirmarRenomear">Renomear</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: preview -->
+  <div class="modal-overlay" id="modalPreview" style="z-index:2000;">
+    <div class="modal-preview-caixa">
+      <div class="preview-topo">
+        <span id="previewNome"></span>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <a id="previewDownload" class="btn-acao" download>⬇ Baixar</a>
+          <button class="modal-fechar" id="fecharPreview">&times;</button>
+        </div>
+      </div>
+      <div class="preview-corpo" id="previewCorpo"></div>
+    </div>
+  </div>
+
+  <!-- Barra de progresso de upload -->
+  <div class="upload-toast" id="uploadToast" style="display:none;">
+    <div class="upload-toast-info">
+      <span id="uploadToastNome">Enviando...</span>
+      <span id="uploadToastPct">0%</span>
+    </div>
+    <div class="upload-toast-barra">
+      <div class="upload-toast-fill" id="uploadToastFill"></div>
+    </div>
+  </div>
+
+  <script src="armazenamento.js"></script>
+  <script src="modal-expandir.js?v=1"></script>
+  <footer class="fnx-rodape">Created by Yan Victor · <a href="https://www.instagram.com/yanszaida/" target="_blank" rel="noopener">@yanszaida</a></footer>
+</body>
+</html>

@@ -1,0 +1,343 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Montserrat", sans-serif;
+    }
+    body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        background: rgb(208, 207, 207);
+        padding: 40px 0;
+    }
+
+    .container {
+        width: 900px;
+        background-color: transparent;
+        border: 2px solid rgba(255, 255, 255, .2);
+        border-radius: 10px;
+        color: #000000;
+        padding: 30px 40px;
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+        backdrop-filter: blur(50px);
+        margin-bottom: 40px;
+    }
+
+    .container h1, .container h2 {
+        font-size: 32px;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px 30px;
+        margin-bottom: 30px;
+        background: rgba(255, 255, 255, 0.85);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    form label {
+        display: flex;
+        flex-direction: column;
+        font-weight: 600;
+        font-size: 14px;
+        color: #333;
+    }
+
+    form input, form select {
+        margin-top: 5px;
+        padding: 8px 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+    }
+
+    .linha-setor {
+        grid-column: span 2;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    button {
+        width: 180px;
+        height: 45px;
+        background-color: #fff;
+        border: none;
+        border-radius: 40px;
+        cursor: pointer;
+        font-size: 16px;
+        color: #333;
+        font-weight: 600;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin: 10px auto;
+        transition: 0.3s;
+        display: block;
+    }
+
+    button:hover {
+        background-color: transparent;
+        border: 2px solid rgba(0, 0, 0, 0.3);
+        color: #000;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    thead {
+        background-color: rgba(255, 106, 0, 0.8);
+        color: #fff;
+    }
+
+    th, td {
+        padding: 12px 10px;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+        font-size: 14px;
+    }
+
+    tbody tr:hover {
+        background-color: rgba(255, 106, 0, 0.2);
+    }
+
+    .btn-editar, .btn-excluir-setor, .btn-toggle-tipo {
+        padding: 5px 15px;
+        border: none;
+        border-radius: 20px;
+        background-color: #FF6A00;
+        color: white;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+        transition: background-color 0.3s;
+        margin: 0 2px;
+    }
+
+    .btn-editar:hover, .btn-excluir-setor:hover, .btn-toggle-tipo:hover {
+        background-color: #D45500;
+    }
+
+    .select-tipo-usuario {
+        padding: 6px 10px;
+        border-radius: 20px;
+        border: 1px solid rgb(255, 106, 0);
+        background-color: white;
+        color: rgb(196, 78, 0);
+        font-weight: 600;
+        font-size: 13px;
+        cursor: pointer;
+        font-family: inherit;
+    }
+
+    .select-tipo-usuario:hover {
+        border-color: #D45500;
+    }
+
+    .btn-permissoes-setor {
+        padding: 6px 14px;
+        border-radius: 20px;
+        border: 1px solid rgb(196, 78, 0);
+        background-color: rgba(255, 106, 0, 0.12);
+        color: rgb(196, 78, 0);
+        font-weight: 600;
+        font-size: 13px;
+        cursor: pointer;
+        font-family: inherit;
+        transition: 0.2s;
+    }
+
+    .btn-permissoes-setor:hover {
+        background-color: rgba(255, 106, 0, 0.25);
+    }
+
+    .modal-overlay-permissao {
+        display: none;
+        position: fixed;
+        z-index: 1500;
+        inset: 0;
+        background: rgba(0,0,0,0.5);
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+
+    .modal-overlay-permissao.active {
+        display: flex;
+    }
+
+    .modal-caixa-permissao {
+        background-color: rgb(245, 245, 245);
+        border-radius: 10px;
+        width: 100%;
+        max-width: 820px;
+        max-height: 90vh;
+        overflow-y: auto;
+        padding: 28px;
+        box-shadow: 0 10px 36px rgba(0,0,0,0.3);
+        font-family: "Montserrat", sans-serif;
+    }
+
+    .modal-cabecalho-permissao {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 6px;
+    }
+
+    .modal-cabecalho-permissao h2 {
+        font-size: 18px;
+        color: #222;
+    }
+
+    .modal-fechar-permissao {
+        background: none;
+        border: none;
+        font-size: 24px;
+        color: #555;
+        cursor: pointer;
+        line-height: 1;
+        padding: 0;
+    }
+
+    .modal-fechar-permissao:hover {
+        color: #000;
+    }
+
+    .texto-ajuda-permissao {
+        font-size: 12px;
+        color: #777;
+        margin-bottom: 14px;
+    }
+
+    .lista-checkbox-permissao {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+        gap: 6px 16px;
+        margin-bottom: 16px;
+        max-height: 65vh;
+        overflow-y: auto;
+    }
+
+    @media (max-width: 560px) {
+        .lista-checkbox-permissao {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .linha-checkbox-permissao {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 15px;
+        line-height: 1.3;
+        color: #333;
+    }
+
+    .linha-checkbox-permissao:hover {
+        background-color: rgba(255, 106, 0, 0.1);
+    }
+
+    .linha-checkbox-permissao input {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+        cursor: pointer;
+        accent-color: rgb(255, 106, 0);
+    }
+
+    .lista-chips-setor {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .chip-setor {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 14px;
+        border: 1px solid #ddd;
+        border-radius: 100px;
+        background: #fff;
+        cursor: pointer;
+        font-size: 13px;
+        color: #333;
+        user-select: none;
+        transition: background .15s, border-color .15s;
+        white-space: nowrap;
+    }
+
+    .chip-setor:hover {
+        background-color: rgba(255, 106, 0, 0.08);
+    }
+
+    .chip-setor.marcado {
+        background-color: rgba(255, 106, 0, 0.14);
+        border-color: rgb(255, 106, 0);
+        font-weight: 600;
+    }
+
+    .chip-setor input {
+        width: 14px;
+        height: 14px;
+        cursor: pointer;
+        accent-color: rgb(255, 106, 0);
+    }
+
+    .modal-rodape-permissao {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 8px;
+    }
+
+    .btn-secundario-permissao {
+        padding: 8px 16px;
+        border-radius: 20px;
+        border: 1px solid #ccc;
+        background-color: white;
+        color: #555;
+        font-weight: 600;
+        font-size: 13px;
+        cursor: pointer;
+        font-family: inherit;
+    }
+
+    .btn-secundario-permissao:hover {
+        border-color: #999;
+    }
+
+    .btn-salvar-permissao {
+        padding: 8px 18px;
+        border-radius: 20px;
+        border: none;
+        background-color: rgb(255, 106, 0);
+        color: white;
+        font-weight: 600;
+        font-size: 13px;
+        cursor: pointer;
+        font-family: inherit;
+        transition: 0.2s;
+    }
+
+    .btn-salvar-permissao:hover {
+        background-color: #D45500;
+    }

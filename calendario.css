@@ -1,0 +1,241 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Montserrat", sans-serif;
+}
+
+body {
+  background: rgb(208, 207, 207);
+  padding: 20px;
+}
+
+.dashboard {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.card-calendario {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 1000px;
+  width: 100%;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.card-calendario h2 {
+  font-size: 20px;
+  margin-bottom: 15px;
+  color: #333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-voltar {
+  background: #131313;
+  color: white;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+.btn-voltar:hover {
+  background: #FF6A00;
+}
+
+#btnLogin {
+  margin-bottom: 15px;
+  padding: 8px 14px;
+  background: rgb(255, 106, 0);
+  border: none;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+#btnLogin:hover {
+  background: #D45500;
+}
+
+#calendar {
+  max-width: 900px;
+  margin: 20px auto;
+  background: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  min-height: 600px; 
+}
+
+
+/* FullCalendar */
+.fc-toolbar-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+.fc-button {
+  background: #FF6A00 !important;
+  border: none !important;
+  color: white !important;
+  border-radius: 6px !important;
+  padding: 5px 10px !important;
+}
+.fc-button:hover {
+  background: #D45500 !important;
+}
+.fc-daygrid-day:hover {
+  background: #faf3e6;
+}
+.fc-event {
+  background: #FF6A00 !important;
+  border: none !important;
+  border-radius: 6px !important;
+  padding: 2px 4px !important;
+  font-size: 12px;
+  color: white !important;
+}
+
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  justify-content: center;
+  align-items: center;
+}
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 420px;
+  max-width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+.modal-content h3 {
+  margin-bottom: 10px;
+}
+.modal-content label {
+  display: block;
+  margin-top: 10px;
+  font-weight: 600;
+}
+.modal-content input, .modal-content textarea {
+  width: 100%;
+  padding: 6px;
+  margin-top: 4px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 13px;
+}
+.modal-content textarea {
+  resize: vertical;
+}
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 15px;
+  gap: 10px;
+}
+.modal-actions button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+#btnSalvar, #btnEditar {
+  background: #FF6A00;
+  color: white;
+}
+#btnSalvar:hover, #btnEditar:hover {
+  background: #D45500;
+}
+#btnExcluir {
+  background: #E5141B;
+  color: white;
+}
+#btnExcluir:hover {
+  background: #b30f30;
+}
+
+/* ===== Conexão com o Google + botão Novo evento ===== */
+.barra-google {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: #fff;
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.status-google { font-size: 13px; color: #555; }
+.status-google small { color: #b04a00; }
+.botoes-google { display: flex; gap: 8px; flex-wrap: wrap; }
+.botoes-google button, .btn-novo-evento {
+  font-family: inherit;
+  font-weight: 600;
+  border-radius: 20px;
+  padding: 8px 16px;
+  cursor: pointer;
+  border: none;
+}
+#btnLogin { background: #FF6A00; color: #fff; }
+.btn-secundario-cal { background: #f2f2f2; color: #333; border: 1px solid #ddd !important; }
+.btn-novo-evento {
+  background: #FF6A00;
+  color: #fff;
+  font-size: 15px;
+  padding: 11px 22px;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 768px) {
+  .dashboard { padding: 10px !important; margin-left: 0 !important; }
+  .card-calendario { width: 100% !important; max-width: 100% !important; padding: 14px !important; }
+  .card-calendario h2 { display: flex; justify-content: space-between; align-items: center; font-size: 20px; }
+  .btn-novo-evento { width: 100%; }
+  .fc .fc-toolbar { flex-wrap: wrap; gap: 6px; }
+  .fc .fc-toolbar-title { font-size: 17px !important; }
+  .fc .fc-button { padding: 6px 10px !important; font-size: 13px !important; }
+  .fc .fc-daygrid-day-frame { min-height: 52px; }
+  .fc .fc-daygrid-event { font-size: 10.5px; }
+  /* Janela de criar/editar evento: ocupa o celular e rola por dentro */
+  #eventModal { align-items: flex-start !important; padding: 12px 0; overflow-y: auto; }
+  #eventModal .modal-content { width: 94vw !important; max-width: 94vw !important; margin: 0 auto; }
+  #eventModal .modal-actions { flex-wrap: wrap; }
+  #eventModal .modal-actions button { flex: 1 1 100%; }
+}
+
+/* Tipo do evento (Visita / Pagamento / Outro) */
+.tipos-evento { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 4px 0 6px; }
+.tipo-evento { position: relative; margin: 0 !important; cursor: pointer; }
+.tipo-evento input { position: absolute; opacity: 0; pointer-events: none; }
+.tipo-evento span { display: block; text-align: center; border: 1.5px solid #ddd; border-radius: 10px; padding: 9px 4px; font-size: 13px;
+  font-weight: 600; color: #555; background: #fafafa; transition: .15s; }
+.tipo-evento input:checked + span { border-color: #FF6A00; background: #FFF1E6; color: #8a5200; }
+.dica-tipo-evento { font-size: 12px; color: #888; margin: 0 0 8px; }
+.so-tipo { display: contents; }
+.so-tipo.escondido { display: none; }
+@media (max-width: 480px) { .tipos-evento { grid-template-columns: 1fr; } }

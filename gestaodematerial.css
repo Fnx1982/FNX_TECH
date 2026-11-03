@@ -1,0 +1,832 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Montserrat", sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    background: rgb(208, 207, 207);
+    padding: 40px 0 130px;
+}
+
+.container {
+    width: 1000px;
+    max-width: 95vw;
+    background-color: transparent;
+    border: 2px solid rgba(255, 255, 255, .2);
+    border-radius: 10px;
+    color: #000000;
+    padding: 30px 40px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+    backdrop-filter: blur(50px);
+    margin-bottom: 40px;
+}
+
+/* ===== Topo da página ===== */
+.topo-pagina {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.topo-pagina h1 {
+    font-size: 26px;
+}
+
+.btn-voltar {
+    background-color: #fff;
+    border: none;
+    border-radius: 40px;
+    padding: 10px 22px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    text-decoration: none;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    transition: 0.3s;
+}
+
+.btn-voltar:hover {
+    background-color: transparent;
+    border: 2px solid rgba(0, 0, 0, 0.3);
+}
+
+/* ===== Barra de ações (abas + botões de cadastro) ===== */
+.barra-acoes {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.abas {
+    display: flex;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 40px;
+    padding: 5px;
+}
+
+.aba {
+    border: none;
+    background: none;
+    padding: 9px 20px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #555;
+    cursor: pointer;
+    transition: 0.3s;
+    font-family: inherit;
+}
+
+.aba:hover {
+    color: #000;
+}
+
+.aba.active {
+    background-color: rgb(255, 106, 0);
+    color: white;
+}
+
+.botoes-cadastro {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-laranja,
+.btn-secundario {
+    border: none;
+    border-radius: 40px;
+    padding: 10px 22px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    font-family: inherit;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.btn-laranja {
+    background-color: rgb(255, 106, 0);
+    color: white;
+}
+
+.btn-laranja:hover {
+    background-color: #D45500;
+}
+
+.btn-secundario {
+    background-color: #fff;
+    color: #333;
+}
+
+.btn-secundario:hover {
+    background-color: transparent;
+    border: 2px solid rgba(0, 0, 0, 0.3);
+}
+
+/* ===== Card de Filtros ===== */
+.card-filtros {
+    background: rgba(255, 255, 255, 0.85);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.card-filtros h2 {
+    font-size: 18px;
+    margin-bottom: 12px;
+}
+
+.filtros {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.filtro-label {
+    font-weight: 600;
+    font-size: 12px;
+    color: #555;
+    display: block;
+    margin-bottom: 4px;
+    line-height: 1.2;
+}
+
+.filtro-busca {
+    flex: 2 1 0;
+    min-width: 220px;
+    position: relative;
+    height: 42px;
+}
+
+.filtro-busca .filtro-label {
+    position: absolute;
+    top: 6px;
+    left: 11px;
+    margin-bottom: 0;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.filtro-busca input {
+    width: 100%;
+    height: 42px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    padding: 18px 12px 4px;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.select-simples {
+    flex: 1 1 0;
+    min-width: 170px;
+    position: relative;
+    height: 42px;
+}
+
+.select-simples .filtro-label {
+    position: absolute;
+    top: 6px;
+    left: 11px;
+    margin-bottom: 0;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.select-simples select {
+    width: 100%;
+    height: 42px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    padding: 18px 10px 4px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: rgb(196, 78, 0);
+    background: white;
+    background-image: linear-gradient(45deg, transparent 50%, #888 50%), linear-gradient(135deg, #888 50%, transparent 50%);
+    background-position: calc(100% - 14px) center, calc(100% - 9px) center;
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+}
+
+/* Multi-select (Setor) */
+.multi-select {
+    position: relative;
+    flex: 1 1 0;
+    min-width: 170px;
+}
+
+.multi-select-toggle {
+    width: 100%;
+    height: 42px;
+    text-align: left;
+    padding: 6px 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background: white;
+    cursor: pointer;
+    font-family: inherit;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.multi-select-toggle:hover {
+    border-color: rgb(255, 106, 0);
+}
+
+.multi-select-toggle .filtro-valor {
+    font-size: 14px;
+    font-weight: 600;
+    color: rgb(196, 78, 0);
+}
+
+.multi-select-painel {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    width: 100%;
+    min-width: 220px;
+    max-height: 260px;
+    overflow-y: auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    z-index: 50;
+    padding: 8px;
+}
+
+.multi-select.open .multi-select-painel {
+    display: block;
+}
+
+.multi-select-opcao {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 6px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: normal;
+}
+
+.multi-select-opcao:hover {
+    background: rgba(255, 106, 0, 0.15);
+}
+
+.multi-select-opcao input {
+    width: auto;
+    margin: 0;
+    cursor: pointer;
+    accent-color: rgb(255, 106, 0);
+}
+
+.multi-select-acoes {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 6px 0;
+    margin-top: 4px;
+    border-top: 1px solid #eee;
+}
+
+.multi-select-acoes button {
+    background: none;
+    border: none;
+    color: rgb(255, 106, 0);
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 6px;
+    font-family: inherit;
+}
+
+.multi-select-acoes button:hover {
+    text-decoration: underline;
+}
+
+.multi-select-vazio {
+    padding: 10px 6px;
+    color: #999;
+    font-size: 13px;
+    text-align: center;
+}
+
+.btn-limpar-filtros {
+    flex: 0 0 auto;
+    align-self: flex-end;
+    height: 42px;
+    background: none;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 0 16px;
+    font-weight: 600;
+    font-size: 13px;
+    color: #555;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.btn-limpar-filtros:hover {
+    border-color: crimson;
+    color: crimson;
+}
+
+/* ===== Grupos (por setor ou por material) ===== */
+.grupo {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+
+.grupo-cabecalho {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px;
+    cursor: pointer;
+    background-color: rgba(255, 106, 0, 0.15);
+    transition: 0.2s;
+}
+
+.grupo-cabecalho:hover {
+    background-color: rgba(255, 106, 0, 0.28);
+}
+
+.grupo-titulo {
+    font-weight: 600;
+    font-size: 15px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.grupo-subtotal {
+    font-weight: 700;
+    font-size: 14px;
+    color: rgb(196, 78, 0);
+}
+
+.grupo-seta {
+    color: #888;
+    font-size: 12px;
+    transition: transform 0.2s;
+    display: inline-block;
+}
+
+.grupo.fechado .grupo-seta {
+    transform: rotate(-90deg);
+}
+
+.grupo.fechado .grupo-corpo {
+    display: none;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.grupo-corpo th {
+    background-color: rgba(255, 106, 0, 0.8);
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+    font-size: 13px;
+}
+
+.grupo-corpo td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+}
+
+.grupo-corpo tbody tr:hover {
+    background-color: rgba(255, 106, 0, 0.1);
+}
+
+.grupo-corpo tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.coluna-obs {
+    max-width: 200px;
+    text-align: left !important;
+    color: #555;
+    font-size: 13px;
+}
+
+.btn-editar, .btn-excluir-item {
+    padding: 5px 15px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+    transition: background-color 0.3s;
+    margin: 2px;
+    font-family: inherit;
+}
+
+.btn-editar {
+    background-color: #FF6A00;
+    color: white;
+}
+
+.btn-editar:hover {
+    background-color: #D45500;
+}
+
+.btn-excluir-item {
+    background-color: crimson;
+    color: white;
+}
+
+.btn-excluir-item:hover {
+    background-color: #a30000;
+}
+
+.sem-resultados {
+    text-align: center;
+    color: #555;
+    padding: 40px 20px;
+    background-color: rgba(255, 255, 255, 0.85);
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    font-weight: 600;
+}
+
+/* ===== Total fixo no rodapé ===== */
+/* ===== Total — caixa compacta, perto do conteúdo (não mais rodapé fixo) ===== */
+/* ===== Abas de nível superior (Materiais / Serviços) ===== */
+/* Desenhado como "segmented control": um único contêiner arredondado
+   com fundo e respiro interno (padding), e o botão ativo é só um
+   indicador arredondado POR DENTRO desse respiro — nunca encosta na
+   borda do contêiner. Isso evita qualquer costura entre dois cantos
+   arredondados de elementos diferentes tocando um no outro. */
+.abas-nivel-superior {
+    display: inline-flex;
+    background: #e2e2e2;
+    border-radius: 14px;
+    padding: 4px;
+    gap: 4px;
+    margin-bottom: 20px;
+}
+.abas-nivel-superior .aba {
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 15px;
+    font-weight: 700;
+    background: transparent;
+    color: #666;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.abas-nivel-superior .aba.active {
+    background: rgb(255, 106, 0);
+    color: #fff;
+}
+
+/* ===== Painel de Serviços ===== */
+.card-secao-servico {
+    background: #fff;
+    border-radius: 10px;
+    padding: 22px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.08);
+}
+.card-secao-servico h2 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 14px;
+}
+.grid-servico {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px 18px;
+}
+.grid-servico label {
+    display: flex;
+    flex-direction: column;
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    gap: 6px;
+}
+.grid-servico label.campo-largura-total { grid-column: span 2; }
+.grid-servico input, .grid-servico select, .grid-servico textarea {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 400;
+    color: #333;
+}
+.rotulo-codigos-extras {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #999;
+}
+.texto-opcional-inline {
+    font-weight: 400;
+    text-transform: none;
+    color: #aaa;
+}
+
+/* ===== Lista de serviços (reaproveita o mesmo espírito visual de item-contato) ===== */
+.lista-servicos { display: flex; flex-direction: column; gap: 10px; }
+.item-contato {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.08);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+.item-contato .nome { font-weight: 700; font-size: 14px; color: #222; }
+.item-contato .meta { font-size: 12px; color: #999; margin-top: 2px; }
+.item-contato .acoes { display: flex; gap: 8px; }
+.item-contato .acoes button {
+    border: 1px solid #ddd;
+    background: #f7f7f7;
+    border-radius: 100px;
+    padding: 6px 13px;
+    font-family: inherit;
+    font-size: 11.5px;
+    font-weight: 600;
+    cursor: pointer;
+    color: #333;
+}
+.item-contato .btn-excluir-servico { color: #E5141B; border-color: #f5c2c0; }
+
+.sem-resultados.vazio-padrao,
+#vazioServicos { text-align: center; padding: 30px; color: #999; font-size: 13.5px; }
+
+.total-fixo {
+    width: fit-content;
+    max-width: 100%;
+    margin: 16px auto 24px;
+    background-color: #fff;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    gap: 28px;
+    padding: 12px 24px;
+    border-radius: 100px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+    flex-wrap: wrap;
+}
+
+.total-fixo .bloco-total {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.total-fixo .bloco-total span:first-child {
+    font-size: 10.5px;
+    font-weight: 600;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.total-fixo .bloco-total span:last-child {
+    font-size: 16px;
+    font-weight: 700;
+    color: rgb(212, 85, 0);
+}
+
+/* ===== Modais (Setor / Material) ===== */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-caixa {
+    background-color: rgb(235, 235, 235);
+    border-radius: 10px;
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 25px;
+    box-shadow: 0 10px 36px rgba(0,0,0,0.3);
+}
+
+/* Modal de Material — tela quase cheia, já que tem muitos campos
+   (inclusive os fiscais). O de Setor continua compacto (.modal-caixa
+   normal), só o de Material usa este modificador. */
+#modalMaterial .modal-caixa {
+    max-width: 1200px;
+    width: 95vw;
+    max-height: 94vh;
+}
+
+.modal-cabecalho {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.modal-cabecalho h2 {
+    font-size: 20px;
+}
+
+.modal-fechar {
+    background: none;
+    border: none;
+    font-size: 26px;
+    color: #555;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+}
+
+.modal-fechar:hover {
+    color: #000;
+}
+
+.linha-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.linha-form input {
+    flex: 1;
+    padding: 9px 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.form-modal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px 18px;
+}
+
+.form-modal-grid label {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    font-weight: 600;
+    font-size: 13px;
+    color: #333;
+    gap: 5px;
+}
+
+.rotulo-com-opcional {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+
+.texto-opcional {
+    font-weight: normal;
+    color: #888;
+    font-size: 11px;
+}
+
+.form-modal-grid input,
+.form-modal-grid select,
+.form-modal-grid textarea {
+    padding: 9px 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: normal;
+    resize: vertical;
+}
+
+.campo-largura-total {
+    grid-column: span 2;
+}
+
+/* O botão de "Adicionar" material fica na própria linha (grid-column:
+   span 2), mas sem ESTICAR pra preencher a célula inteira — senão
+   vira um botão gigante, esticado tanto na largura quanto na altura.
+   Padding igual ao dos outros botões laranja do site (.btn-laranja). */
+#btnSubmitMaterial {
+    justify-self: start;
+    align-self: start;
+    width: auto;
+    height: auto;
+    padding: 10px 22px;
+}
+
+/* Chips de setores cadastrados */
+.chips-lista {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.chip-obra {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: white;
+    color: #333;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: 0 0 6px rgba(0,0,0,0.1);
+}
+
+.chip-obra button {
+    background: none;
+    border: none;
+    color: crimson;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 15px;
+    line-height: 1;
+    padding: 0;
+}
+
+.chip-obra button:hover {
+    color: #a30000;
+}
+
+.sem-obras {
+    color: #666;
+    font-size: 13px;
+}
+
+@media (max-width: 700px) {
+    .container {
+        padding: 20px;
+    }
+    .topo-pagina {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .barra-acoes {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .botoes-cadastro {
+        justify-content: stretch;
+    }
+    .botoes-cadastro button {
+        flex: 1;
+    }
+    .form-modal-grid {
+        grid-template-columns: 1fr;
+    }
+    .campo-largura-total {
+        grid-column: span 1;
+    }
+}

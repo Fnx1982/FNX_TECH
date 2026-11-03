@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script src="config.js"></script>
+  <script src="auth-worker.js?v=6"></script>
+<script src="auth-guard.js"></script>
+<meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Detalhe da Obra</title>
+  <link rel="stylesheet" href="propostas.css?v=9" />
+  <link rel="stylesheet" href="obras.css" />
+  <script src="confirm-modal.js"></script>
+  <script src="validacao.js"></script>
+  <script src="logo-empresa.js"></script>
+  <script src="propostas-core.js?v=8"></script>
+  <link rel="stylesheet" href="mobile.css?v=3" />
+  <link rel="stylesheet" href="fnx-tema.css?v=1" />
+</head>
+<body>
+  <main class="container">
+    <div class="topo-pagina">
+      <div>
+        <h1 id="tituloObra">Obra</h1>
+      </div>
+      <a href="obras.html" class="btn-voltar">Voltar</a>
+    </div>
+
+    <div class="detalhe-topo-info">
+      <h2 id="clienteObra"></h2>
+      <div class="servico" id="servicoObra"></div>
+      <div class="endereco-com-mapa" id="localObra"></div>
+      <div id="statusObraDetalhe" style="margin-top:10px;"></div>
+
+      <div class="detalhe-observacao" id="blocoObservacao">
+        <label for="campoObservacaoObra">Observação</label>
+        <textarea id="campoObservacaoObra" rows="3" placeholder="Anotações sobre esta obra..."></textarea>
+      </div>
+    </div>
+
+    <div class="cards-lucro" id="blocoLucros">
+      <div class="card-lucro">
+        <div class="rotulo">Lucro Mão de Obra</div>
+        <div class="valor" id="lucroMaoDeObraValor">R$ 0,00</div>
+        <div class="detalhe-conta" id="lucroMaoDeObraConta"></div>
+      </div>
+      <div class="card-lucro">
+        <div class="rotulo">Lucro Material</div>
+        <div class="valor" id="lucroMaterialValor">R$ 0,00</div>
+        <div class="detalhe-conta" id="lucroMaterialConta"></div>
+      </div>
+      <div class="card-lucro">
+        <div class="rotulo">Lucro Total</div>
+        <div class="valor" id="lucroTotalValor">R$ 0,00</div>
+        <div class="detalhe-conta">Mão de Obra + Material</div>
+      </div>
+    </div>
+
+    <div class="secao-detalhe" id="blocoFuncionarios">
+      <h3>Funcionários nesta obra</h3>
+      <div class="lista-itens-obra" id="listaFuncionariosObra"></div>
+      <div class="form-rapido-item">
+        <select id="novoFuncNome">
+          <option value="" disabled selected>Selecione o funcionário</option>
+        </select>
+        <input type="number" id="novoFuncCobrado" placeholder="Valor cobrado (opcional)" step="0.01" min="0" />
+        <input type="number" id="novoFuncPago" placeholder="Valor pago (opcional)" step="0.01" min="0" />
+        <button type="button" class="btn-laranja" id="btnAddFuncionarioObra">+ Adicionar</button>
+      </div>
+    </div>
+
+    <div class="secao-detalhe" id="blocoMateriais">
+      <h3>Materiais anotados</h3>
+      <div class="lista-itens-obra" id="listaMateriaisObra"></div>
+      <div class="form-rapido-item">
+        <input type="text" id="novoMatNome" placeholder="Nome (opcional)" />
+        <input type="text" id="novoMatCodigo" placeholder="Código (opcional)" />
+        <input type="number" id="novoMatValor" placeholder="Valor (opcional)" step="0.01" min="0" />
+        <input type="date" id="novoMatData" />
+        <button type="button" class="btn-laranja" id="btnAddMaterialObra">+ Adicionar</button>
+      </div>
+    </div>
+    <div class="secao-detalhe">
+      <h3>Demandas</h3>
+      <p class="texto-ajuda">Peça uma tarefa pra alguém, com foto e local — a pessoa recebe um aviso, e você recebe outro quando ela marcar como feito.</p>
+      <div class="lista-itens-obra" id="listaDemandasObra"></div>
+
+      <div class="form-rapido-item" style="flex-wrap:wrap;">
+        <input type="text" id="novaDemandaTitulo" placeholder="Título/local (ex: Piso do bloco B)" />
+        <select id="novaDemandaAtribuido"><option value="">Atribuir para...</option></select>
+        <input type="file" id="novaDemandaFoto" accept="image/*" style="max-width:180px;" />
+        <button type="button" class="btn-laranja" id="btnAddDemanda">+ Adicionar demanda</button>
+      </div>
+      <textarea id="novaDemandaDescricao" placeholder="Descrição (opcional)" rows="2" style="width:100%; margin-top:8px; font-family:inherit; padding:8px; border-radius:8px; border:1px solid #ccc;"></textarea>
+    </div>
+  </main>
+
+  <!-- Modal: concluir demanda -->
+  <div class="modal-overlay" id="modalConcluirDemanda">
+    <div class="modal-caixa-grande" style="max-width:420px;">
+      <div class="modal-cabecalho">
+        <h2>Marcar como concluída</h2>
+        <button type="button" class="modal-fechar" id="fecharModalConcluirDemanda">&times;</button>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:12px; padding:4px;">
+        <label>
+          Foto da conclusão (opcional)
+          <input type="file" id="fotoConclusaoDemanda" accept="image/*" style="display:block; margin-top:6px;" />
+        </label>
+        <label>
+          Observação (opcional)
+          <textarea id="obsConclusaoDemanda" rows="2" style="width:100%; margin-top:6px; font-family:inherit; padding:8px; border-radius:8px; border:1px solid #ccc;"></textarea>
+        </label>
+        <button type="button" class="btn-laranja" id="btnConfirmarConclusaoDemanda">Confirmar conclusão</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="mapas.js?v=1"></script>
+  <script src="obra-detalhe.js?v=20261007"></script>
+  <script src="notificacoes.js?v=3"></script>
+  <script src="camera.js?v=1"></script>
+  <script src="modal-expandir.js?v=1"></script>
+  <footer class="fnx-rodape">Created by Yan Victor · <a href="https://www.instagram.com/yanszaida/" target="_blank" rel="noopener">@yanszaida</a></footer>
+</body>
+</html>

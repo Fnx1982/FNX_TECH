@@ -1,0 +1,116 @@
+/* ==========================================================================
+   AJUSTES PARA CELULAR — vale pra TODAS as páginas.
+   Este arquivo é carregado por último em cada página (depois do CSS
+   próprio dela), então só mexe no layout em telas pequenas e não muda
+   nada no computador.
+   ========================================================================== */
+
+@media (max-width: 768px) {
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    overflow-x: hidden;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  /* Caixas principais: várias páginas tinham largura fixa (420px a
+     1050px) — no celular ocupam a tela toda, com respiro menor. */
+  .container,
+  .container-principal,
+  .card-login,
+  .wrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 18px 14px !important;
+    border-radius: 0 !important;
+  }
+
+  body:not(.pagina-home) { padding-top: 12px !important; padding-bottom: 20px !important; }
+
+  .container h1 { font-size: 22px !important; }
+  .container h2 { font-size: 18px !important; }
+
+  /* Imagens e vídeos nunca passam da tela */
+  img, video, canvas, iframe { max-width: 100%; }
+
+  /* Formulários de 2 ou 3 colunas viram 1 coluna */
+  form,
+  .form-grid,
+  .form-modal-grid,
+  .grid-impostos,
+  .obs-item-grid,
+  .resumo-cards,
+  .cards-lucro,
+  .feriados-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Itens de grade/flex podiam ficar mais largos que a tela por causa
+     do tamanho "natural" do campo — isso libera eles pra encolher. */
+  form > *, .form-grid > *, .form-modal-grid > *, label { min-width: 0; }
+  form { padding: 14px !important; }
+  input[type="file"] { width: 100%; }
+  input:not([type="checkbox"]):not([type="radio"]), select, textarea { width: 100%; box-sizing: border-box; }
+
+  /* No celular o iPhone dá zoom em campo com letra menor que 16px —
+     isso empurrava a tela pro lado ao tocar num campo. */
+  input, select, textarea { font-size: 16px !important; max-width: 100%; }
+
+  /* Filtros com largura mínima grande (Boletos, Extrato...) passam a
+     quebrar linha em vez de estourar a tela. */
+  .filtros, .barra-filtros, .filtros-linha, .linha-filtros { flex-wrap: wrap !important; }
+  .filtro-busca, .select-simples { min-width: 0 !important; flex: 1 1 100% !important; }
+
+  /* Linhas de botões quebram linha em vez de sair da tela */
+  .barra-acoes, .acoes, .topo-pagina, .abas, .botoes, .modal-rodape,
+  .proposta-acoes, .card-acoes { flex-wrap: wrap !important; gap: 8px; }
+
+  /* Tabelas largas: rolam de lado DENTRO delas, sem empurrar a página */
+  table:not(.tabela-resumo-impostos) {
+    display: block;
+    width: 100% !important;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+  /* EXCEÇÃO: a grade do calendário (FullCalendar) também é feita de
+     tabelas — ela precisa continuar sendo tabela normal, senão os dias
+     ficam embaralhados e não dá pra tocar num dia pra agendar. */
+  .fc table {
+    display: table !important;
+    width: 100% !important;
+    overflow: visible !important;
+    white-space: normal !important;
+  }
+  .itens-tabela textarea { white-space: normal; min-width: 240px; }
+  /* Tabela de itens do orçamento: cada coluna com um mínimo legível
+     (a tabela rola de lado com o dedo). */
+  .itens-tabela tr.linha-item-principal td:first-child { min-width: 210px; }
+  .itens-tabela td input, .itens-tabela td select { min-width: 76px; }
+
+  /* Janelas (modais) ocupam quase a tela toda e rolam por dentro */
+  .modal-caixa, .modal-caixa-grande, .modal-content, .modal-conteudo, .modal-box {
+    width: 96vw !important;
+    max-width: 96vw !important;
+    max-height: 92vh;
+    overflow-y: auto;
+    padding: 18px 14px !important;
+  }
+
+  /* Cadastro de usuários (gerenciarcontas) */
+  .lista-checkbox-permissao { grid-template-columns: 1fr !important; }
+
+  /* Painel de notificações não sai da tela */
+  #painelNotificacoes { width: calc(100vw - 24px) !important; max-width: 360px; }
+}
+
+/* ==========================================================================
+   TABLET (até 1100px) — caixas com largura fixa (ex.: 900px em Cadastro
+   de usuários) não passam mais da tela; campos de seleção encolhem.
+   ========================================================================== */
+@media (max-width: 1100px) {
+  .container { max-width: calc(100vw - 24px) !important; box-sizing: border-box; }
+  select, input:not([type="checkbox"]):not([type="radio"]) { max-width: 100%; }
+}

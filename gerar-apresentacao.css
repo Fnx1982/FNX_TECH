@@ -1,0 +1,255 @@
+/* gerar-apresentacao.css — só o que não existe em propostas.css */
+
+.texto-opcional {
+  font-weight: normal;
+  font-size: 12px;
+  color: #888;
+}
+
+/* Labels soltos direto dentro de .form-secao (fora de .form-grid) —
+   usados pelos campos de texto grande da Etapa 2. Sem isso, ficam
+   sem estilo nenhum (aparência padrão do navegador, cantos
+   quadrados, e o próximo label pode até sobrepor a caixa). */
+.form-secao > label {
+  display: block;
+  font-weight: 600;
+  font-size: 13px;
+  color: #333;
+  margin-bottom: 16px;
+}
+.form-secao > label > input,
+.form-secao > label > select,
+.form-secao > label > textarea {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: normal;
+  color: #222;
+  resize: vertical;
+  box-sizing: border-box;
+}
+.form-secao > label > textarea {
+  line-height: 1.5;
+}
+.form-secao > label > input:focus,
+.form-secao > label > select:focus,
+.form-secao > label > textarea:focus {
+  outline: none;
+  border-color: #FF6A00;
+  box-shadow: 0 0 0 3px rgba(255, 106, 0, 0.15);
+}
+
+.bloco-foto-local {
+  margin-top: 16px;
+}
+.foto-local-area {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 8px;
+}
+.foto-local-preview {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: #f0f0f0;
+  border: 2px dashed #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.foto-local-preview span {
+  font-size: 12px;
+  color: #999;
+  text-align: center;
+  padding: 8px;
+}
+.foto-local-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.bloco-proposta-anexada {
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 16px;
+  background: #fafafa;
+}
+.bloco-proposta-cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.bloco-proposta-numero {
+  font-size: 14px;
+  color: #FF6A00;
+}
+
+.preview-itens-proposta {
+  font-size: 12px;
+  color: #555;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  padding: 10px;
+  margin: 10px 0;
+  display: none;
+}
+.preview-itens-proposta.visivel { display: block; }
+.preview-itens-proposta .linha-preview {
+  display: flex;
+  justify-content: space-between;
+  padding: 2px 0;
+}
+.preview-itens-proposta .linha-preview.total {
+  font-weight: 700;
+  border-top: 1px solid #ddd;
+  margin-top: 4px;
+  padding-top: 6px;
+}
+
+.barra-final-apres {
+  display: flex;
+  justify-content: center;
+  margin: 30px 0 60px;
+}
+
+/* ── Etapas ─────────────────────────────────────────── */
+.etapas-indicador {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 20px 0 24px;
+}
+.etapa-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid #e0e0e0;
+  background: #fff;
+  color: #888;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.etapa-pill:hover { border-color: #FF6A00; }
+.etapa-pill.active {
+  background: #FF6A00;
+  border-color: #FF6A00;
+  color: #fff;
+}
+.etapa-pill.concluida {
+  border-color: #1c8a4b;
+  color: #1c8a4b;
+}
+.etapa-numero {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.08);
+  font-size: 11px;
+}
+.etapa-pill.active .etapa-numero { background: rgba(255,255,255,0.3); }
+
+.etapas-navegacao {
+  display: flex;
+  justify-content: space-between;
+  margin: 24px 0 60px;
+}
+
+.resumo-revisao {
+  font-size: 14px;
+  line-height: 1.8;
+}
+.resumo-revisao .linha-resumo {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+.resumo-revisao .linha-resumo strong { color: #333; }
+
+/* ── Lista de Apresentações Salvas ──────────────────────── */
+.card-apresentacao {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.card-apresentacao-info strong {
+  display: block;
+  font-size: 15px;
+  color: #222;
+}
+.card-apresentacao-info span {
+  font-size: 12.5px;
+  color: #888;
+}
+.card-apresentacao-acoes {
+  display: flex;
+  gap: 8px;
+}
+.card-apresentacao-acoes button {
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.card-apresentacao-acoes button:hover { background: #f5f5f5; }
+.btn-baixar-apres { color: #1c8a4b; border-color: #1c8a4b; }
+.btn-editar-apres { color: #FF6A00; border-color: #FF6A00; }
+.btn-excluir-apres { color: #E5141B; border-color: #E5141B; }
+/* ===== Cartão do orçamento escolhido (prévia) ===== */
+.preview-itens-proposta.visivel { display: block; padding: 0 !important; border: none !important; background: none !important; }
+.preview-itens-proposta .pv-topo { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;
+  background: #262626; color: #fff; border-radius: 12px 12px 0 0; padding: 14px 16px; border-bottom: 5px solid #FF6A00; }
+.pv-numero { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: #FFB27A; font-weight: 700; }
+.pv-cliente { font-size: 16px; font-weight: 700; margin-top: 2px; }
+.pv-endereco { font-size: 12px; color: #ccc; margin-top: 3px; }
+.pv-status { font-size: 11px; font-weight: 700; background: rgba(255,255,255,.12); border-radius: 20px; padding: 3px 10px; white-space: nowrap; }
+.pv-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 12px; background: #fff; border: 1px solid #eee; border-top: none; }
+.pv-tile { background: #f6f6f6; border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; }
+.pv-tile span { font-size: 10.5px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: .04em; }
+.pv-tile b { font-size: 16px; color: #222; }
+.pv-tile small { font-size: 11px; color: #999; }
+.pv-tile.pv-total { background: #FF6A00; }
+.pv-tile.pv-total span, .pv-tile.pv-total small { color: rgba(255,255,255,.85); }
+.pv-tile.pv-total b { color: #fff; font-size: 18px; }
+.pv-itens { list-style: none; margin: 0; padding: 4px 12px 8px; background: #fff; border: 1px solid #eee; border-top: none; }
+.pv-itens li { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px dashed #eee; font-size: 13px; }
+.pv-itens li:last-child { border-bottom: none; }
+.pv-tipo { font-size: 10px; font-weight: 700; border-radius: 10px; padding: 1px 8px; flex: 0 0 auto; }
+.pv-tipo.srv { color: #B34700; background: #FFF1E6; }
+.pv-tipo.mat { color: #1D5FB4; background: #E3EEFB; }
+.pv-nome { flex: 1; color: #333; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pv-valor { font-weight: 600; color: #222; }
+.pv-mais { font-size: 12px; color: #888; padding: 0 12px 8px; background: #fff; border: 1px solid #eee; border-top: none; }
+.pv-chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 12px; background: #fffaf2; border: 1px solid #eee; border-top: none; border-radius: 0 0 12px 12px; }
+.pv-chips span { font-size: 12px; background: #fff; border: 1px solid #f0d9b0; border-radius: 20px; padding: 3px 10px; color: #7a5a20; }
+.pv-itens:last-child, .pv-mais:last-child, .pv-tiles:last-child { border-radius: 0 0 12px 12px; }
+@media (max-width: 600px) { .pv-tiles { grid-template-columns: 1fr; } }

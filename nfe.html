@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script src="config.js"></script>
+  <script>
+  // TELA TRAVADA: emissão de notas ainda em desenvolvimento.
+  // Para liberar de novo, é só apagar este bloco <script> inteiro.
+  location.replace("em-construcao.html?pagina=" + encodeURIComponent("Nota Fiscal — Material") + "&tipo=notas");
+</script>
+
+  <script src="auth-worker.js?v=6"></script>
+  <script src="auth-guard.js"></script>
+  <script src="confirm-modal.js"></script>
+  <script src="validacao.js"></script>
+  <script src="validacao-fiscal.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NF-e (Material) — FNX TECH</title>
+  <link rel="stylesheet" href="nota-fiscal.css" />
+  <link rel="stylesheet" href="mobile.css?v=3" />
+  <link rel="stylesheet" href="fnx-tema.css?v=1" />
+</head>
+<body>
+
+  <main class="container">
+
+    <div class="topo-pagina">
+      <div>
+        <h1>NF-e — Material</h1>
+        <p>Nota fiscal eletrônica de produto</p>
+      </div>
+      <a href="home.html" class="btn-voltar">← Voltar</a>
+    </div>
+    <div class="atalhos-fluxo">
+      <a href="nfe.html" class="atalho-fluxo atalho-atual">📦 Material</a>
+      <a href="nfse.html" class="atalho-fluxo">🔧 Mão de Obra</a>
+      <a href="consulta-notas.html" class="atalho-fluxo">🔍 Consulta</a>
+      <a href="recebidos.html" class="atalho-fluxo">📥 Recebidos</a>
+      <a href="contatos.html" class="atalho-fluxo">👤 Clientes/Fornecedores</a>
+    </div>
+
+    <div class="aviso-certificado">
+      <b>Emissão real ainda não configurada.</b> Falta escolher e conectar um provedor de emissão (Focus NFe, PlugNotas, etc). Por enquanto, esta tela salva e organiza os dados no padrão da DANFE, prontos pra conferência — nada é enviado à SEFAZ ainda.
+    </div>
+
+    <div class="card-secao">
+      <h2 id="tituloFormulario">Nova NF-e</h2>
+      <input type="hidden" id="campoPropostaId" />
+
+      <!-- ═══════════ EMITENTE (dados fixos da FNX TECH) ═══════════ -->
+      <h2 style="margin-top:8px;">Emitente <span class="sub-h2">dados fixos da FNX TECH — confira uma vez, fica salvo pras próximas notas</span></h2>
+      <div class="grid-campos" style="margin-bottom:16px;">
+        <div class="campo"><label for="empCnpj">CNPJ</label><input type="text" id="empCnpj" /></div>
+        <div class="campo"><label for="empInscEstadual">Inscrição Estadual</label><input type="text" id="empInscEstadual" /></div>
+        <div class="campo"><label for="empInscEstadualSubstTrib">Insc. Estadual Subst. Trib.</label><input type="text" id="empInscEstadualSubstTrib" placeholder="Se houver" /></div>
+        <div class="campo full"><label for="empRazaoSocial">Nome / Razão Social</label><input type="text" id="empRazaoSocial" /></div>
+        <div class="campo full"><label for="empEndereco">Endereço</label><input type="text" id="empEndereco" /></div>
+        <div class="campo"><label for="empMunicipio">Município</label><input type="text" id="empMunicipio" /></div>
+        <div class="campo"><label for="empUf">UF</label><input type="text" id="empUf" maxlength="2" /></div>
+        <div class="campo"><label for="empCep">CEP</label><input type="text" id="empCep" /></div>
+        <div class="campo"><label for="empFone">Fone</label><input type="text" id="empFone" /></div>
+      </div>
+      <button type="button" class="btn-salvar-rascunho" id="btnSalvarDadosEmpresa" style="margin-bottom:24px;">Salvar dados da empresa</button>
+
+      <!-- ═══════════ NATUREZA DA OPERAÇÃO ═══════════ -->
+      <div class="grid-campos" style="margin-bottom:16px;">
+        <div class="campo full">
+          <label for="campoNaturezaOperacao">Natureza da Operação</label>
+          <select id="campoNaturezaOperacao">
+            <option value="Venda de mercadoria adquirida ou recebida de terceiros" selected>Venda de mercadoria adquirida ou recebida de terceiros</option>
+            <option value="Venda de produção do estabelecimento">Venda de produção do estabelecimento</option>
+            <option value="Remessa para conserto">Remessa para conserto</option>
+            <option value="Devolução de mercadoria">Devolução de mercadoria</option>
+            <option value="Outra">Outra</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- ═══════════ DESTINATÁRIO ═══════════ -->
+      <h2>Destinatário / Remetente</h2>
+      <div class="grid-campos" style="margin-bottom:16px;">
+        <div class="campo campo-alinha-base full">
+          <label for="campoTomadorNome">Cliente / Destinatário</label>
+          <input type="text" id="campoTomadorNome" placeholder="Nome ou razão social" list="listaContatosDatalist" />
+          <datalist id="listaContatosDatalist"></datalist>
+        </div>
+        <div class="campo campo-alinha-base" style="grid-column: span 2; min-width: 320px;">
+          <label for="campoTomadorDocumento">CPF / CNPJ</label>
+          <div style="display:flex; gap:6px;">
+            <input type="text" id="campoTomadorDocumento" placeholder="000.000.000-00" style="flex:1; min-width:160px;" />
+            <button type="button" id="btnBuscarCnpjTomador" class="btn-salvar-rascunho" style="white-space:nowrap;">Buscar CNPJ</button>
+          </div>
+        </div>
+        <div class="campo"><label for="campoTomadorInscEstadual">Inscrição Estadual</label><input type="text" id="campoTomadorInscEstadual" placeholder="ou ISENTO" /></div>
+        <div class="campo full"><label for="campoTomadorEndereco">Endereço</label><input type="text" id="campoTomadorEndereco" placeholder="Rua, número" /></div>
+        <div class="campo"><label for="campoTomadorBairro">Bairro/Distrito</label><input type="text" id="campoTomadorBairro" /></div>
+        <div class="campo"><label for="campoTomadorMunicipio">Município</label><input type="text" id="campoTomadorMunicipio" /></div>
+        <div class="campo"><label for="campoTomadorUf">UF</label><input type="text" id="campoTomadorUf" maxlength="2" /></div>
+        <div class="campo"><label for="campoTomadorCep">CEP</label><input type="text" id="campoTomadorCep" /></div>
+        <div class="campo"><label for="campoTomadorFone">Fone/Fax</label><input type="text" id="campoTomadorFone" /></div>
+        <div class="campo"><label for="campoDataEmissao">Data da Emissão</label><input type="date" id="campoDataEmissao" /></div>
+        <div class="campo"><label for="campoDataSaidaEntrada">Data Saída/Entrada</label><input type="date" id="campoDataSaidaEntrada" /></div>
+        <div class="campo"><label for="campoHoraSaida">Hora da Saída</label><input type="time" id="campoHoraSaida" /></div>
+      </div>
+
+      <!-- ═══════════ FATURA/DUPLICATAS ═══════════ -->
+      <div class="campo full" style="margin-bottom:16px;">
+        <label for="campoFaturaDuplicatas">Fatura / Duplicatas</label>
+        <input type="text" id="campoFaturaDuplicatas" placeholder="Ex: 001: 03/08/2026 R$1.271,30;" />
+      </div>
+
+      <!-- ═══════════ ITENS ═══════════ -->
+      <h2 style="margin-top:20px;">Dados dos Produtos</h2>
+      <table class="tabela-itens" id="tabelaItens">
+        <thead><tr><th style="width:95px;">Código</th><th>Descrição</th><th style="width:95px;">NCM</th><th style="width:70px;">CSOSN</th><th style="width:65px;">CFOP</th><th style="width:60px;">UN</th><th style="width:60px;">Qtd.</th><th style="width:110px;">Valor unit. (R$)</th><th>Total</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <button type="button" class="btn-add-linha" id="btnAddItem">+ Adicionar material</button>
+      <datalist id="listaMateriaisDatalist"></datalist>
+
+      <!-- ═══════════ CÁLCULO DO IMPOSTO ═══════════ -->
+      <h2 style="margin-top:24px;">Cálculo do Imposto</h2>
+      <div class="grid-campos" style="margin-bottom:16px;">
+        <div class="campo"><label for="campoBcIcms">BC ICMS</label><input type="number" id="campoBcIcms" step="0.01" min="0" value="0" /></div>
+        <div class="campo"><label for="campoValorIcms">Valor ICMS</label><input type="number" id="campoValorIcms" step="0.01" min="0" value="0" /></div>
+        <div class="campo"><label for="campoBcIcmsSt">BC ICMS ST</label><input type="number" id="campoBcIcmsSt" step="0.01" min="0" value="0" /></div>
+        <div class="campo"><label for="campoValorIcmsSt">Valor ICMS ST</label><input type="number" id="campoValorIcmsSt" step="0.01" min="0" value="0" /></div>
+        <div class="campo"><label for="campoValorIpi">Valor IPI</label><input type="number" id="campoValorIpi" step="0.01" min="0" value="0" /></div>
+        <div class="campo"><label for="campoValorFrete">Valor do Frete</label><input type="number" id="campoValorFrete" step="0.01" min="0" value="0" /></div>
+        <div class="campo"><label for="campoValorSeguro">Valor do Seguro</label><input type="number" id="campoValorSeguro" step="0.01" min="0" value="0" /></div>
+        <div class="campo"><label for="campoDesconto">Desconto</label><input type="number" id="campoDesconto" step="0.01" min="0" value="0" /></div>
+        <div class="campo"><label for="campoOutrasDespesas">Outras Despesas</label><input type="number" id="campoOutrasDespesas" step="0.01" min="0" value="0" /></div>
+        <div class="campo"><label for="campoValorPis">Valor PIS</label><input type="number" id="campoValorPis" step="0.01" min="0" value="0" /></div>
+        <div class="campo"><label for="campoValorCofins">Valor COFINS</label><input type="number" id="campoValorCofins" step="0.01" min="0" value="0" /></div>
+      </div>
+
+      <!-- ═══════════ TRANSPORTADOR ═══════════ -->
+      <h2 style="margin-top:24px;">Transportador / Volumes <span class="sub-h2">deixe em branco se não houver frete</span></h2>
+      <div class="grid-campos" style="margin-bottom:16px;">
+        <div class="campo"><label for="campoFretePorContaDe">Frete por conta de</label>
+          <select id="campoFretePorContaDe">
+            <option value="9 - Sem Frete" selected>9 - Sem Frete</option>
+            <option value="0 - Contratação por conta do Remetente">0 - Contratação por conta do Remetente</option>
+            <option value="1 - Contratação por conta do Destinatário">1 - Contratação por conta do Destinatário</option>
+            <option value="2 - Contratação por conta de Terceiros">2 - Contratação por conta de Terceiros</option>
+          </select>
+        </div>
+        <div class="campo"><label for="campoTransportadorRazaoSocial">Razão Social</label><input type="text" id="campoTransportadorRazaoSocial" /></div>
+        <div class="campo"><label for="campoTransportadorCnpj">CNPJ/CPF</label><input type="text" id="campoTransportadorCnpj" /></div>
+        <div class="campo"><label for="campoTransportadorCodigoAntt">Código ANTT</label><input type="text" id="campoTransportadorCodigoAntt" placeholder="Se houver" /></div>
+        <div class="campo"><label for="campoTransportadorPlaca">Placa do Veículo</label><input type="text" id="campoTransportadorPlaca" /></div>
+        <div class="campo"><label for="campoTransportadorUf">UF do Veículo</label><input type="text" id="campoTransportadorUf" maxlength="2" /></div>
+        <div class="campo full"><label for="campoTransportadorEndereco">Endereço do Transportador</label><input type="text" id="campoTransportadorEndereco" /></div>
+        <div class="campo"><label for="campoTransportadorMunicipio">Município</label><input type="text" id="campoTransportadorMunicipio" /></div>
+        <div class="campo"><label for="campoTransportadorEnderecoUf">UF</label><input type="text" id="campoTransportadorEnderecoUf" maxlength="2" /></div>
+        <div class="campo"><label for="campoTransportadorInscEstadual">Inscrição Estadual</label><input type="text" id="campoTransportadorInscEstadual" /></div>
+        <div class="campo"><label for="campoQuantidadeVolumes">Quantidade</label><input type="number" id="campoQuantidadeVolumes" step="0.001" min="0" value="0" /></div>
+        <div class="campo"><label for="campoEspecieVolumes">Espécie</label><input type="text" id="campoEspecieVolumes" placeholder="Ex: Caixas, Pacotes" /></div>
+        <div class="campo"><label for="campoMarcaVolumes">Marca</label><input type="text" id="campoMarcaVolumes" /></div>
+        <div class="campo"><label for="campoNumeracaoVolumes">Numeração</label><input type="text" id="campoNumeracaoVolumes" /></div>
+        <div class="campo"><label for="campoPesoBruto">Peso Bruto</label><input type="number" id="campoPesoBruto" step="0.001" min="0" value="0" /></div>
+        <div class="campo"><label for="campoPesoLiquido">Peso Líquido</label><input type="number" id="campoPesoLiquido" step="0.001" min="0" value="0" /></div>
+      </div>
+
+      <!-- ═══════════ RETENÇÕES ═══════════ -->
+      <h2 style="margin-top:24px;">Retenções</h2>
+      <div class="grid-campos" style="margin-bottom:16px;">
+        <div class="campo"><label for="campoRetPis">PIS</label><input type="number" id="campoRetPis" step="0.01" min="0" value="0" /></div>
+        <div class="campo"><label for="campoRetCofins">COFINS</label><input type="number" id="campoRetCofins" step="0.01" min="0" value="0" /></div>
+        <div class="campo"><label for="campoRetCsll">CSLL</label><input type="number" id="campoRetCsll" step="0.01" min="0" value="0" /></div>
+        <div class="campo"><label for="campoRetIrrf">IRRF</label><input type="number" id="campoRetIrrf" step="0.01" min="0" value="0" /></div>
+        <div class="campo"><label for="campoRetInss">INSS</label><input type="number" id="campoRetInss" step="0.01" min="0" value="0" /></div>
+        <div class="campo"><label for="campoRetIss">ISS</label><input type="number" id="campoRetIss" step="0.01" min="0" value="0" /></div>
+      </div>
+
+      <div class="campo full" style="margin-top:20px;">
+        <label for="campoObservacoes">Informações Complementares</label>
+        <textarea id="campoObservacoes" placeholder="Informações adicionais para a nota"></textarea>
+      </div>
+
+      <div class="resumo-valores">
+        <div class="linha-resumo"><span>Valor Total dos Produtos</span><span id="resumoSubtotal">R$ 0,00</span></div>
+        <div class="linha-resumo"><span>Impostos + Frete + Seguro + Despesas - Desconto</span><span id="resumoImpostos">R$ 0,00</span></div>
+        <div class="linha-resumo total"><span>Valor Total da Nota</span><span id="resumoTotal">R$ 0,00</span></div>
+      </div>
+
+      <div class="barra-acoes" style="margin-top:18px;">
+        <button type="button" class="btn-salvar-rascunho" id="btnSalvarRascunho">Salvar rascunho</button>
+        <button type="button" class="btn-emitir" id="btnEmitir">Emitir NF-e</button>
+        <button type="button" class="btn-salvar-rascunho" id="btnNovaNota">+ Nova nota</button>
+      </div>
+    </div>
+
+    <h2 style="margin-bottom:14px;">NF-e salvas para conferência</h2>
+    <div class="lista-notas" id="listaNotas"></div>
+    <div class="vazio" id="vazioNotas" style="display:none;">Nenhuma NF-e registrada ainda.</div>
+
+  </main>
+
+  <script>const TIPO_NOTA_PAGINA = "NF-e";</script>
+  <script src="nota-fiscal.js"></script>
+  <script src="modal-expandir.js?v=1"></script>
+  <footer class="fnx-rodape">Created by Yan Victor · <a href="https://www.instagram.com/yanszaida/" target="_blank" rel="noopener">@yanszaida</a></footer>
+</body>
+</html>

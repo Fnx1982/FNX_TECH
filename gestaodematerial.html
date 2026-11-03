@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <script src="config.js"></script>
+    <script src="auth-worker.js?v=6"></script>
+<script src="auth-guard.js"></script>
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Materiais</title>
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="gestaodematerial.css">
+    <script src="confirm-modal.js"></script>
+    <script src="validacao.js"></script>
+  <link rel="stylesheet" href="mobile.css?v=3" />
+  <link rel="stylesheet" href="fnx-tema.css?v=1" />
+</head>
+<body>
+  <main class="container">
+    <div class="topo-pagina">
+      <h1>Materiais e Serviços</h1>
+      <a href="home.html" class="btn-voltar">Voltar</a>
+    </div>
+
+    <!-- Abas de nível superior: Materiais / Serviços -->
+    <div class="abas abas-nivel-superior">
+      <button type="button" class="aba active" id="btnAbaMateriais">📦 Materiais</button>
+      <button type="button" class="aba" id="btnAbaServicos">🔧 Serviços</button>
+    </div>
+
+    <!-- ══════════════ PAINEL: MATERIAIS ══════════════ -->
+    <div id="painelMateriais">
+
+    <!-- Barra de ações -->
+    <div class="barra-acoes">
+      <div class="abas">
+        <button type="button" class="aba active" id="btnVisaoSetor">Por Setor</button>
+        <button type="button" class="aba" id="btnVisaoMaterial">Por Material</button>
+      </div>
+
+      <div class="botoes-cadastro">
+        <button type="button" class="btn-secundario" id="btnAbrirSetor">+ Setor</button>
+        <button type="button" class="btn-laranja" id="btnAbrirMaterial">+ Material</button>
+      </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card-filtros">
+      <h2>Filtros</h2>
+      <div class="filtros">
+        <div class="filtro-busca">
+          <label class="filtro-label" for="buscaTexto">Buscar</label>
+          <input type="text" id="buscaTexto" placeholder="Nome, código ou observação..." />
+        </div>
+
+        <div class="multi-select" id="multiFiltroSetor">
+          <button type="button" class="multi-select-toggle" id="toggleFiltroSetor">
+            <span class="filtro-label">Setor</span>
+            <span class="filtro-valor" id="resumoFiltroSetor">Todos</span>
+          </button>
+          <div class="multi-select-painel" id="painelFiltroSetor"></div>
+        </div>
+
+        <button type="button" class="btn-limpar-filtros" id="btnLimparFiltros">Limpar filtros</button>
+      </div>
+    </div>
+
+    <div class="card-filtros" id="blocoPendentesMateriais" style="display:none;">
+      <h2>Pendentes <span style="font-weight:normal; font-size:12px; color:#888;">(rascunhos salvos automaticamente, ainda não finalizados)</span></h2>
+      <div class="lista-servicos" id="listaPendentesMateriais"></div>
+    </div>
+
+    <!-- Conteúdo agrupado (setor ou material) -->
+    <div id="grupos"></div>
+    <div class="sem-resultados" id="semResultados" style="display:none;">
+      <p id="semResultadosTexto">Nenhum material encontrado com esses filtros.</p>
+      <button type="button" class="btn-laranja" id="btnCadastrarDaBusca" style="display:none;">+ Cadastrar como material novo</button>
+    </div>
+
+    </div><!-- /painelMateriais -->
+
+    <!-- ══════════════ PAINEL: SERVIÇOS ══════════════ -->
+    <div id="painelServicos" style="display:none;">
+
+      <div class="barra-acoes">
+        <div></div>
+        <div class="botoes-cadastro">
+          <button type="button" class="btn-laranja" id="btnAbrirServico">+ Serviço</button>
+        </div>
+      </div>
+
+      <div class="card-filtros">
+        <div class="filtro-busca">
+          <label class="filtro-label" for="buscaServicos">Buscar</label>
+          <input type="text" id="buscaServicos" placeholder="Buscar por descrição, código LC 116 ou CNAE..." />
+        </div>
+      </div>
+
+      <div class="card-filtros" id="blocoPendentesServicos" style="display:none;">
+        <h2>Pendentes <span style="font-weight:normal; font-size:12px; color:#888;">(rascunhos salvos automaticamente, ainda não finalizados)</span></h2>
+        <div class="lista-servicos" id="listaPendentesServicos"></div>
+      </div>
+
+      <div id="listaServicos" class="lista-servicos"></div>
+      <div class="sem-resultados" id="vazioServicos" style="display:none;">
+        <p id="vazioServicosTexto">Nenhum serviço cadastrado ainda.</p>
+        <button type="button" class="btn-laranja" id="btnCadastrarServicoDaBusca" style="display:none;">+ Cadastrar como serviço novo</button>
+      </div>
+    </div><!-- /painelServicos -->
+  </main>
+
+  <!-- Total de materiais (só aparece na aba Materiais) -->
+  <div class="total-fixo" id="totalFixoMateriais">
+    <div class="bloco-total">
+      <span>Itens exibidos</span>
+      <span id="totalItensValor">0</span>
+    </div>
+    <div class="bloco-total">
+      <span>Quantidade total</span>
+      <span id="totalQuantidadeValor">0</span>
+    </div>
+    <div class="bloco-total">
+      <span>Valor total</span>
+      <span id="totalValorValor">R$ 0,00</span>
+    </div>
+  </div>
+
+  <!-- Modal: Cadastrar / gerenciar Setores -->
+  <div class="modal-overlay" id="modalSetor">
+    <div class="modal-caixa">
+      <div class="modal-cabecalho">
+        <h2>Setores</h2>
+        <button type="button" class="modal-fechar" id="fecharModalSetor">&times;</button>
+      </div>
+      <form id="form-setor" class="linha-form">
+        <input type="text" id="novoSetorInput" placeholder="Nome do setor" required />
+        <button type="submit" class="btn-laranja">Adicionar</button>
+      </form>
+      <div id="listaSetores" class="chips-lista"></div>
+    </div>
+  </div>
+
+  <!-- Modal: Cadastrar / Editar Material -->
+  <div class="modal-overlay" id="modalMaterial">
+    <div class="modal-caixa">
+      <div class="modal-cabecalho">
+        <h2 id="tituloModalMaterial">Novo Material</h2>
+        <button type="button" class="modal-fechar" id="fecharModalMaterial">&times;</button>
+      </div>
+      <form id="form-material" class="form-modal-grid">
+        <label class="campo-largura-total">
+          Nome do material
+          <input type="text" id="nomeMaterial" placeholder="Ex: Cimento CP II 50kg" required />
+        </label>
+
+        <label>
+          Setor
+          <select id="setorMaterial" required>
+            <option value="" disabled selected>Selecione o setor</option>
+          </select>
+        </label>
+
+        <label>
+          Código
+          <input type="text" id="codigoMaterial" placeholder="Ex: 0012" required />
+        </label>
+
+        <label>
+          Valor unitário (R$)
+          <input type="number" id="valorMaterial" placeholder="0,00" step="0.01" min="0" required />
+        </label>
+
+        <label>
+          <span class="rotulo-com-opcional">Quantidade <span class="texto-opcional">(opcional)</span></span>
+          <input type="number" id="quantidadeMaterial" placeholder="0" min="0" />
+        </label>
+
+        <label class="campo-largura-total">
+          Observação
+          <textarea id="obsMaterial" rows="2" placeholder="Opcional"></textarea>
+        </label>
+
+        <!-- Campos fiscais, usados na emissão de NF-e -->
+        <label>
+          <span class="rotulo-com-opcional">NCM <span class="texto-opcional">(opcional)</span></span>
+          <input type="text" id="ncmMaterial" placeholder="00000000" maxlength="8" />
+        </label>
+        <label>
+          <span class="rotulo-com-opcional">CFOP <span class="texto-opcional">(opcional)</span></span>
+          <input type="text" id="cfopMaterial" placeholder="ex: 5102" maxlength="4" />
+        </label>
+        <label>
+          <span class="rotulo-com-opcional">CEST <span class="texto-opcional">(se aplicável)</span></span>
+          <input type="text" id="cestMaterial" placeholder="opcional" />
+        </label>
+        <label>
+          <span class="rotulo-com-opcional">EAN / GTIN <span class="texto-opcional">(código de barras)</span></span>
+          <input type="text" id="eanMaterial" placeholder="deixe em branco se não tiver" />
+        </label>
+        <label>
+          Origem da mercadoria
+          <select id="origemMaterial">
+            <option value="0">0 — Nacional</option>
+            <option value="1">1 — Estrangeira, importação direta</option>
+            <option value="2">2 — Estrangeira, adquirida no mercado interno</option>
+            <option value="3">3 — Nacional, +40% de conteúdo importado</option>
+            <option value="4">4 — Nacional, produção segundo processos básicos</option>
+            <option value="5">5 — Nacional, até 40% de conteúdo importado</option>
+            <option value="6">6 — Estrangeira, importação direta, sem similar nacional</option>
+            <option value="7">7 — Estrangeira, mercado interno, sem similar nacional</option>
+            <option value="8">8 — Nacional, +70% de conteúdo importado</option>
+          </select>
+        </label>
+        <label>
+          <span class="rotulo-com-opcional">CST / CSOSN <span class="texto-opcional">(situação tributária ICMS)</span></span>
+          <input type="text" id="cstCsosnMaterial" placeholder="ex: 102 (Simples) ou 00 (Normal)" />
+        </label>
+        <label>
+          <span class="rotulo-com-opcional">Unidade <span class="texto-opcional">(opcional)</span></span>
+          <select id="unidadeMaterial">
+            <option value="UND">UND</option>
+            <option value="CM">CM</option>
+            <option value="CM²">CM²</option>
+            <option value="M">M</option>
+            <option value="M²">M²</option>
+            <option value="ML">ML</option>
+          </select>
+        </label>
+
+        <div class="campo-largura-total">
+          <span class="rotulo-com-opcional" style="display:block;margin-bottom:8px;">Códigos extras <span class="texto-opcional">— qualquer outro código fiscal que aparecer na nota de referência</span></span>
+          <div id="listaCamposExtrasMaterial" style="display:flex; flex-direction:column; gap:8px; margin-bottom:8px;"></div>
+          <button type="button" id="btnAddCampoExtraMaterial" style="background:#f7f7f7;border:1px dashed #ddd;border-radius:8px;padding:8px 14px;font-family:inherit;font-size:12.5px;font-weight:600;color:#555;cursor:pointer;width:100%;">+ Adicionar código extra</button>
+        </div>
+
+        <button type="submit" id="btnSubmitMaterial" class="btn-laranja campo-largura-total">Adicionar</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Cadastrar / Editar Serviço -->
+  <div class="modal-overlay" id="modalServico">
+    <div class="modal-caixa">
+      <div class="modal-cabecalho">
+        <h2 id="tituloFormulario">Novo serviço</h2>
+        <button type="button" class="modal-fechar" id="fecharModalServico">&times;</button>
+      </div>
+      <div class="form-modal-grid">
+        <input type="hidden" id="campoId" />
+        <label class="campo-largura-total">
+          Descrição do serviço
+          <input type="text" id="campoNome" placeholder="ex: Instalação elétrica residencial" />
+        </label>
+        <label>
+          Valor padrão (R$)
+          <input type="number" id="campoValor" step="0.01" min="0" placeholder="opcional" />
+        </label>
+        <label>
+          Unidade
+          <select id="campoUnidade">
+            <option value="UND">UND</option>
+            <option value="CM">CM</option>
+            <option value="CM²">CM²</option>
+            <option value="M">M</option>
+            <option value="M²">M²</option>
+            <option value="ML">ML</option>
+          </select>
+        </label>
+        <label>
+          Código de Serviço (LC 116)
+          <input type="text" id="campoCodigoLC116" placeholder="ex: 07.02" />
+        </label>
+        <label>
+          CNAE
+          <input type="text" id="campoCnae" placeholder="ex: 4321-5/00" />
+        </label>
+        <label>
+          Alíquota ISS (%)
+          <input type="number" id="campoAliquotaIss" step="0.01" min="0" max="100" placeholder="ex: 5" />
+        </label>
+        <label class="campo-largura-total">
+          Observação
+          <textarea id="campoObservacao"></textarea>
+        </label>
+
+        <div class="campo-largura-total">
+          <span class="rotulo-codigos-extras">Códigos extras <span class="texto-opcional-inline">— qualquer outro código fiscal que aparecer na nota de referência</span></span>
+          <div id="listaCamposExtras" style="display:flex; flex-direction:column; gap:8px; margin:8px 0;"></div>
+          <button type="button" id="btnAddCampoExtra" class="btn-secundario">+ Adicionar código extra</button>
+        </div>
+
+        <button type="button" id="btnSalvarServico" class="btn-laranja campo-largura-total">Salvar</button>
+        <button type="button" id="btnCancelarEdicao" class="btn-secundario campo-largura-total" style="display:none;">Cancelar edição</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="gestaodematerial.js?v=2"></script>
+  <script src="servicos.js?v=2"></script>
+  <script src="fiscal-cadastro.js?v=1"></script>
+  <script>
+    // ── Alternância entre as abas de nível superior (Materiais / Serviços) ──
+    const btnAbaMateriais = document.getElementById("btnAbaMateriais");
+    const btnAbaServicos = document.getElementById("btnAbaServicos");
+    const painelMateriais = document.getElementById("painelMateriais");
+    const painelServicos = document.getElementById("painelServicos");
+    const totalFixoMateriais = document.getElementById("totalFixoMateriais");
+
+    btnAbaMateriais.addEventListener("click", () => {
+      btnAbaMateriais.classList.add("active");
+      btnAbaServicos.classList.remove("active");
+      painelMateriais.style.display = "block";
+      painelServicos.style.display = "none";
+      totalFixoMateriais.style.display = "flex";
+    });
+
+    btnAbaServicos.addEventListener("click", () => {
+      btnAbaServicos.classList.add("active");
+      btnAbaMateriais.classList.remove("active");
+      painelMateriais.style.display = "none";
+      painelServicos.style.display = "block";
+      totalFixoMateriais.style.display = "none";
+    });
+  </script>
+  <script src="modal-expandir.js?v=1"></script>
+  <footer class="fnx-rodape">Created by Yan Victor · <a href="https://www.instagram.com/yanszaida/" target="_blank" rel="noopener">@yanszaida</a></footer>
+</body>
+</html>

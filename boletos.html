@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script src="config.js"></script>
+  <script src="auth-worker.js?v=6"></script>
+<script src="auth-guard.js"></script>
+<meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Boletos</title>
+  <link rel="stylesheet" href="boletos.css" />
+  <script src="confirm-modal.js"></script>
+  <script src="validacao.js"></script>
+  <link rel="stylesheet" href="mobile.css?v=3" />
+  <link rel="stylesheet" href="fnx-tema.css?v=1" />
+</head>
+<body>
+  <main class="container">
+    <div class="topo-pagina">
+      <div>
+        <h1>Boletos</h1>
+        <p>Despesas e entradas. Status calculado automaticamente pela data de vencimento.</p>
+      </div>
+      <a href="home.html" class="btn-voltar">Voltar</a>
+    </div>
+
+    <div class="barra-acoes">
+      <div class="abas" id="abasStatus">
+        <button type="button" class="aba active" data-status-aba="pendente">Pendente</button>
+        <button type="button" class="aba" data-status-aba="atrasado">
+          Atrasado <span class="contador-atrasados" id="contadorAtrasados" style="display:none;">0</span>
+        </button>
+        <button type="button" class="aba" data-status-aba="pago">Pago</button>
+        <button type="button" class="aba" data-status-aba="todos">Todos</button>
+      </div>
+      <button type="button" class="btn-laranja" id="btnNovoBoleto">+ Novo Boleto</button>
+    </div>
+
+    <div class="card-filtros">
+      <h2>Filtros</h2>
+      <div class="filtros">
+        <div class="filtro-busca">
+          <label class="filtro-label" for="buscaTexto">Buscar</label>
+          <input type="text" id="buscaTexto" placeholder="Cliente, fornecedor, código..." />
+        </div>
+        <div class="select-simples">
+          <label class="filtro-label" for="filtroTipo">Tipo</label>
+          <select id="filtroTipo">
+            <option value="todos">Todos</option>
+            <option value="despesa">Despesa</option>
+            <option value="entrada">Entrada</option>
+          </select>
+        </div>
+        <div class="select-simples">
+          <label class="filtro-label" for="filtroBanco">Conta</label>
+          <select id="filtroBanco">
+            <option value="todos">Todos</option>
+          </select>
+        </div>
+        <div class="select-simples">
+          <label class="filtro-label" for="filtroMes">Mês (vencimento)</label>
+          <select id="filtroMes"><option value="todos">Todos</option></select>
+        </div>
+        <div class="select-simples">
+          <label class="filtro-label" for="filtroAno">Ano (vencimento)</label>
+          <select id="filtroAno"><option value="todos">Todos</option></select>
+        </div>
+        <button type="button" class="btn-limpar-filtros" id="btnLimparFiltros">Limpar filtros</button>
+      </div>
+    </div>
+
+    <div class="lista-boletos" id="listaBoletos"></div>
+    <div class="sem-resultados" id="semResultados" style="display:none;">
+      Nenhum boleto encontrado com esses filtros.
+    </div>
+  </main>
+
+  <!-- Modal: Cadastrar / Editar Boleto -->
+  <div class="modal-overlay" id="modalBoleto">
+    <div class="modal-caixa">
+      <div class="modal-cabecalho">
+        <h2 id="tituloModalBoleto">Novo Boleto</h2>
+        <button type="button" class="modal-fechar" id="fecharModalBoleto">&times;</button>
+      </div>
+      <form id="form-boleto" class="form-modal-grid">
+        <div class="tipo-toggle campo-largura-total">
+          <button type="button" class="tipo-despesa active" id="btnTipoDespesa">Despesa</button>
+          <button type="button" class="tipo-entrada" id="btnTipoEntrada">Entrada</button>
+        </div>
+        <input type="hidden" id="tipoBoleto" value="despesa" />
+
+        <div class="tipo-toggle campo-largura-total" id="toggleQuantidade">
+          <button type="button" class="tipo-despesa active" id="btnUmBoleto">Um boleto</button>
+          <button type="button" class="tipo-entrada" id="btnVariosBoletos">Vários boletos</button>
+        </div>
+
+        <div class="separador-secao-form">Conta</div>
+        <label class="campo-largura-total">
+          Qual conta vai receber/pagar isso <span class="texto-opcional-inline">(opcional)</span>
+          <select id="campoBancoBoleto">
+            <option value="">Nenhum específico</option>
+          </select>
+        </label>
+
+        <div class="separador-secao-form">Identificação</div>
+
+        <label class="campo-largura-total">
+          Cliente / Fornecedor <span class="texto-opcional-inline">(opcional, vale pra todos se forem vários)</span>
+          <input type="text" id="campoNomeBoleto" placeholder="Nome do cliente ou de onde comprou o material" />
+        </label>
+
+        <!-- Modo "Um boleto" -->
+        <div id="blocoUmBoleto" class="campo-largura-total form-modal-grid" style="padding:0;">
+          <label>
+            Código <span class="texto-opcional-inline">(opcional)</span>
+            <input type="text" id="campoCodigoBoleto" placeholder="Código do boleto" />
+          </label>
+          <label>
+            Valor <span class="texto-opcional-inline">(opcional)</span>
+            <input type="number" id="campoValorBoleto" placeholder="0,00" step="0.01" min="0" />
+          </label>
+          <label>
+            Data de vencimento <span class="texto-opcional-inline">(opcional)</span>
+            <input type="date" id="campoDataVencimentoBoleto" />
+          </label>
+        </div>
+
+        <!-- Modo "Vários boletos" -->
+        <div id="blocoVariosBoletos" class="campo-largura-total" style="display:none;">
+          <table class="tabela-lote-boletos">
+            <thead><tr><th>Código</th><th>Valor</th><th>Vencimento</th><th></th></tr></thead>
+            <tbody id="corpoTabelaLote"></tbody>
+          </table>
+          <button type="button" class="btn-add-linha" id="btnAddLinhaLote">+ Adicionar boleto na leva</button>
+        </div>
+
+        <div class="separador-secao-form">Datas</div>
+
+        <label class="campo-largura-total">
+          Data de cadastro <span class="texto-opcional-inline">(opcional)</span>
+          <input type="date" id="campoDataCadastroBoleto" />
+        </label>
+
+        <div class="separador-secao-form" id="separadorArquivos">Arquivos</div>
+
+        <label class="campo-largura-meia" id="labelArquivoBoleto">
+          Arquivo do boleto (PDF) <span class="texto-opcional-inline">(opcional)</span>
+          <input type="file" id="campoArquivoBoleto" accept="application/pdf,image/*" />
+        </label>
+
+        <label class="campo-largura-meia" id="labelArquivoComprovante">
+          Comprovante de pagamento (PDF) <span class="texto-opcional-inline">(opcional)</span>
+          <input type="file" id="campoArquivoComprovante" accept="application/pdf,image/*" />
+        </label>
+        <p class="texto-opcional-inline campo-largura-total" id="avisoArquivosVarios" style="display:none;">
+          Pra vários boletos de uma vez, anexa o arquivo de cada um depois, editando ele individualmente na lista.
+        </p>
+
+        <div class="separador-secao-form">Observação</div>
+
+        <label class="campo-largura-total">
+          Observação <span class="texto-opcional-inline">(opcional, vale pra todos se forem vários)</span>
+          <textarea id="campoObservacaoBoleto" rows="3" placeholder="Alguma observação sobre este boleto..."></textarea>
+        </label>
+
+        <div class="campo-largura-total aviso-comprovante" id="avisoMarcaPago" style="display:none;">
+          Anexar um comprovante marca este boleto como <strong>Pago</strong> automaticamente.
+        </div>
+
+        <button type="submit" id="btnSubmitBoleto" class="btn-laranja campo-largura-total">Adicionar</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Popup de visualização de PDF (boleto ou comprovante) -->
+  <div id="popup-arquivo" class="popup">
+    <div class="popup-content">
+      <span class="fechar" id="fecharPopupArquivo">&times;</span>
+      <div id="popup-arquivo-body"></div>
+      <button id="btn-fechar-popup-arquivo" class="btn-laranja">Fechar</button>
+    </div>
+  </div>
+
+  <script src="boletos.js"></script>
+  <script src="camera.js?v=1"></script>
+  <script src="modal-expandir.js?v=1"></script>
+  <footer class="fnx-rodape">Created by Yan Victor · <a href="https://www.instagram.com/yanszaida/" target="_blank" rel="noopener">@yanszaida</a></footer>
+</body>
+</html>

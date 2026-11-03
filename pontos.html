@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script src="config.js"></script>
+  <script src="auth-worker.js?v=6"></script>
+<script src="auth-guard.js"></script>
+<meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Controle de Ponto</title>
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" integrity="sha384-42kyIPf7HDYLkGffmxDhSx/3Z/53wGBs3nD6wEFxsbeDc7rMO6mkYbkAcpRsnMU2" crossorigin="anonymous" />
+  <link rel="stylesheet" href="pontos.css?v=5" />
+  <script src="confirm-modal.js"></script>
+  <link rel="stylesheet" href="mobile.css?v=3" />
+  <link rel="stylesheet" href="fnx-tema.css?v=1" />
+</head>
+<body>
+  <main class="container">
+    <div class="topo-pagina">
+      <h1>Controle de Ponto</h1>
+      <a href="home.html" class="btn-voltar">Voltar</a>
+    </div>
+
+    <!-- Identificação do colaborador -->
+    <div class="card-funcionario">
+      <div class="card-funcionario-info">
+        <span class="label">Colaborador</span>
+        <span class="valor nome" id="funcNome">Carregando...</span>
+        <div>
+          <span class="cargo-tag" id="funcSetor">—</span>
+          <span class="cargo-tag" id="funcRegistro" style="background: rgba(0,0,0,0.05); color: #555;">—</span>
+        </div>
+      </div>
+      <div class="card-funcionario-acoes">
+        <button type="button" class="btn-secundario" id="btnTrocarFuncionario" title="Trocar de colaborador (apenas em modo de teste)">
+          <i class='bx bx-transfer'></i> Trocar
+        </button>
+        <button type="button" class="btn-secundario" id="btnConfigJornada" title="Configurar minha jornada">
+          <i class='bx bx-cog'></i> Jornada
+        </button>
+      </div>
+    </div>
+
+    <!-- Botão principal de bater ponto -->
+    <div class="card-ponto-principal">
+      <div class="relogio" id="relogio">--:--:--</div>
+      <div class="data-atual" id="dataAtual">—</div>
+      <button type="button" class="btn-bater-ponto" id="btnBaterPonto">
+        <i class='bx bx-fingerprint'></i>&nbsp; Bater Ponto
+      </button>
+      <div class="gps-status" id="gpsStatus">
+        <span class="dot"></span>
+        <span class="texto">Aguardando GPS...</span>
+        <span class="gps-coords" id="gpsCoords"></span>
+      </div>
+      <button type="button" class="btn-tentar-gps" id="btnTentarGPS" title="Tentar obter GPS novamente">
+        <i class='bx bx-refresh'></i> Tentar GPS
+      </button>
+    </div>
+
+    <!-- Resumo do dia -->
+    <div class="cards-resumo" id="cardsResumoDia"></div>
+
+    <!-- Registros do dia -->
+    <div class="secao">
+      <div class="secao-cabecalho">
+        <div class="secao-titulo">
+          <i class='bx bx-time-five'></i>
+          <span>Registros de hoje</span>
+        </div>
+        <span class="cargo-tag" id="contagemRegistros">0 batidas</span>
+      </div>
+      <div class="secao-corpo">
+        <table id="tabelaRegistros">
+          <thead>
+            <tr>
+              <th>Tipo</th>
+              <th>Hora</th>
+              <th>Localização</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyRegistros">
+            <tr><td colspan="4" style="padding: 30px; color: #999;">Nenhum registro ainda hoje. Bateu o ponto, bonifique!</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Ocorrências do dia -->
+    <div class="secao">
+      <div class="secao-cabecalho">
+        <div class="secao-titulo">
+          <i class='bx bx-list-check'></i>
+          <span>Ocorrências do dia</span>
+        </div>
+        <button type="button" class="btn-laranja" id="btnNovaOcorrencia">
+          <i class='bx bx-plus'></i> Adicionar
+        </button>
+      </div>
+      <div class="secao-corpo">
+        <table id="tabelaOcorrencias">
+          <thead>
+            <tr>
+              <th>Tipo</th>
+              <th>Período</th>
+              <th>Descrição</th>
+              <th>Anexo</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyOcorrencias">
+            <tr><td colspan="5" style="padding: 30px; color: #999;">Nenhuma ocorrência hoje.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Banco de horas do mês -->
+    <div class="secao">
+      <div class="secao-cabecalho">
+        <div class="secao-titulo">
+          <i class='bx bx-wallet'></i>
+          <span>Banco de Horas do Mês</span>
+        </div>
+        <select id="selectMesBanco" class="filtro-grupo" style="height: 36px; padding: 4px 10px; font-size: 13px; min-width: 0; max-width: 200px;"></select>
+      </div>
+      <div class="banco-horas" id="bancoHorasConteudo">
+        <!-- Preenchido dinamicamente -->
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal: Adicionar / Editar Ocorrência -->
+  <div class="modal-overlay" id="modalOcorrencia">
+    <div class="modal-caixa">
+      <div class="modal-cabecalho">
+        <h2 id="tituloModalOcorrencia">Nova Ocorrência</h2>
+        <button type="button" class="modal-fechar" id="fecharModalOcorrencia">&times;</button>
+      </div>
+      <form id="formOcorrencia" class="form-modal-grid">
+        <label class="campo-largura-total">
+          Tipo de Ocorrência
+          <select id="ocorrenciaTipo" required>
+            <option value="">Selecione o tipo</option>
+            <option value="hora_extra">⏱ Hora Extra</option>
+            <option value="abono">✅ Abono</option>
+            <option value="atestado">🏥 Atestado Médico</option>
+            <option value="falta">❌ Falta</option>
+            <option value="ferias">🏖 Férias</option>
+            <option value="feriado">📅 Feriado</option>
+            <option value="outros">📝 Outros</option>
+          </select>
+        </label>
+
+        <label>
+          Data Início
+          <input type="date" id="ocorrenciaDataInicio" required />
+        </label>
+
+        <label>
+          Data Fim
+          <input type="date" id="ocorrenciaDataFim" required />
+        </label>
+
+        <label>
+          Hora Início (opcional)
+          <input type="time" id="ocorrenciaHoraInicio" />
+        </label>
+
+        <label>
+          Hora Fim (opcional)
+          <input type="time" id="ocorrenciaHoraFim" />
+        </label>
+
+        <label class="campo-largura-total">
+          Horas consideradas (em horas)
+          <input type="number" id="ocorrenciaHoras" step="0.25" min="0" max="24" placeholder="Ex: 8.00" />
+        </label>
+
+        <label class="campo-largura-total">
+          Descrição / Observação
+          <textarea id="ocorrenciaDescricao" placeholder="Detalhes da ocorrência..."></textarea>
+        </label>
+
+        <div class="campo-largura-total">
+          <label style="font-size: 13px; color: #333; font-weight: 600; display: block; margin-bottom: 6px;">
+            Comprovante / Anexo (imagem)
+          </label>
+          <div class="upload-anexo" id="areaUpload">
+            <input type="file" id="ocorrenciaAnexo" accept="image/*,application/pdf" />
+            <div class="icone"><i class='bx bx-cloud-upload'></i></div>
+            <div class="texto">Clique para anexar uma imagem ou PDF<br><small>(atestado, declaração, etc.)</small></div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-laranja campo-largura-total">
+          <i class='bx bx-save'></i> Salvar Ocorrência
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Editar Registro de Ponto -->
+  <div class="modal-overlay" id="modalEditarPonto">
+    <div class="modal-caixa">
+      <div class="modal-cabecalho">
+        <h2>Editar Registro de Ponto</h2>
+        <button type="button" class="modal-fechar" id="fecharModalEditarPonto">&times;</button>
+      </div>
+      <form id="formEditarPonto" class="form-modal-grid">
+        <label>
+          Tipo
+          <select id="editarPontoTipo" required>
+            <option value="E">Entrada</option>
+            <option value="S">Saída</option>
+          </select>
+        </label>
+        <label>
+          Data
+          <input type="date" id="editarPontoData" required />
+        </label>
+        <label>
+          Hora
+          <input type="time" id="editarPontoHora" required />
+        </label>
+        <label>
+          Índice (sequência do dia)
+          <input type="number" id="editarPontoIndice" min="1" required />
+        </label>
+        <label class="campo-largura-total">
+          Motivo da edição
+          <input type="text" id="editarPontoMotivo" placeholder="Ex: Esqueci de bater o ponto" />
+        </label>
+        <button type="submit" class="btn-laranja campo-largura-total">
+          <i class='bx bx-save'></i> Salvar Alterações
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Configurações de Jornada -->
+  <div class="modal-overlay" id="modalJornada">
+    <div class="modal-caixa">
+      <div class="modal-cabecalho">
+        <h2>Configurar Minha Jornada</h2>
+        <button type="button" class="modal-fechar" id="fecharModalJornada">&times;</button>
+      </div>
+      <form id="formJornada" class="form-modal-grid">
+        <label>
+          Jornada diária (em horas)
+          <input type="number" id="jornadaDiaria" step="0.25" min="1" max="24" required />
+        </label>
+        <label>
+          Jornada semanal (em horas)
+          <input type="number" id="jornadaSemanal" step="0.5" min="1" max="60" required />
+        </label>
+        <label>
+          Tolerância (em minutos)
+          <input type="number" id="tolerancia" min="0" max="60" required />
+        </label>
+        <label class="campo-largura-total">
+          <span style="display: flex; align-items: center; gap: 10px;">
+            <span class="switch">
+              <input type="checkbox" id="jornadaAtiva" />
+              <span class="slider"></span>
+            </span>
+            <span>Jornada ativa (desmarque para folgas/fins de semana)</span>
+          </span>
+        </label>
+        <button type="submit" class="btn-laranja campo-largura-total">
+          <i class='bx bx-save'></i> Salvar Configurações
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Trocar de colaborador (modo de teste / gestor) -->
+  <div class="modal-overlay" id="modalTrocarFunc">
+    <div class="modal-caixa">
+      <div class="modal-cabecalho">
+        <h2>Selecionar colaborador</h2>
+        <button type="button" class="modal-fechar" id="fecharModalTrocarFunc">&times;</button>
+      </div>
+      <div class="form-modal-grid">
+        <label class="campo-largura-total">
+          Funcionário
+          <select id="selectFuncionario" required>
+            <option value="">Carregando...</option>
+          </select>
+        </label>
+        <button type="button" id="btnConfirmarTrocaFunc" class="btn-laranja campo-largura-total">
+          <i class='bx bx-check'></i> Selecionar
+        </button>
+      </div>
+      <p style="margin-top: 12px; font-size: 12px; color: #777;">
+        Use esta opção para alternar o colaborador logado e gerenciar pontos em nome de outro (útil para gestores ou para testes).
+      </p>
+    </div>
+  </div>
+
+  <!-- Popup de anexo (imagem ampliada) -->
+  <div id="popup-anexo" class="popup">
+    <div class="popup-content">
+      <span class="fechar" id="fecharPopup">&times;</span>
+      <div id="popup-body"></div>
+      <button id="btn-fechar-popup" class="btn-laranja" style="margin-top: 14px; width: 100%;">Fechar</button>
+    </div>
+  </div>
+
+  <!-- Mapa do registro -->
+  <div id="popup-mapa" class="popup">
+    <div class="popup-content">
+      <span class="fechar" id="fecharPopupMapa">&times;</span>
+      <h3 style="margin-bottom: 12px;">Localização do registro</h3>
+      <div id="mapaBody"></div>
+      <button id="btn-fechar-mapa" class="btn-laranja" style="margin-top: 14px; width: 100%;">Fechar</button>
+    </div>
+  </div>
+
+  <script src="pontos-core.js?v=5"></script>
+  <script src="pontos.js"></script>
+  <script src="camera.js?v=1"></script>
+  <script src="modal-expandir.js?v=1"></script>
+  <footer class="fnx-rodape">Created by Yan Victor · <a href="https://www.instagram.com/yanszaida/" target="_blank" rel="noopener">@yanszaida</a></footer>
+</body>
+</html>

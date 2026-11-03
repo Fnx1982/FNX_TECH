@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script src="config.js"></script>
+  <script src="auth-worker.js?v=6"></script>
+  <script src="auth-guard.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Em Andamento</title>
+  <link rel="stylesheet" href="propostas.css?v=9" />
+  <script src="confirm-modal.js"></script>
+  <script src="validacao.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js" integrity="sha384-vxxMdt1K6XlME6zkLsgFrrHIeC7XIdAo1GW/uhhObjJXnymxiIi/eoMXsKJA13ZJ" crossorigin="anonymous"></script>
+  <script src="logo-empresa.js"></script>
+  <script src="propostas-core.js?v=8"></script>
+  <script src="propostas-form.js?v=13"></script>
+  <link rel="stylesheet" href="mobile.css?v=3" />
+  <link rel="stylesheet" href="fnx-tema.css?v=1" />
+</head>
+<body>
+  <main class="container">
+    <div class="topo-pagina">
+      <div>
+        <h1>Em Andamento</h1>
+        <p>Obras em execução (azul) ou já finalizadas (verde).</p>
+      </div>
+      <a href="home.html" class="btn-voltar">Voltar</a>
+    </div>
+    <div class="atalhos-fluxo">
+      <a href="visita-tecnica.html" class="atalho-fluxo">🔍 Visita</a>
+      <a href="orcamento.html" class="atalho-fluxo">📝 Orçamento</a>
+      <a href="propostas.html" class="atalho-fluxo">📋 Análise</a>
+      <a href="andamento.html" class="atalho-fluxo atalho-atual">⚙ Em Andamento</a>
+      <a href="obras.html" class="atalho-fluxo">🏗 Obras</a>
+    </div>
+
+    <div class="barra-acoes">
+      <div class="abas">
+        <button type="button" class="aba active" data-status-aba="andamento">Em Andamento</button>
+        <button type="button" class="aba" data-status-aba="finalizada">Finalizadas</button>
+      </div>
+    </div>
+
+    <div class="card-filtros">
+      <h2>Filtros</h2>
+      <div class="filtros">
+        <div class="filtro-busca">
+          <label class="filtro-label" for="buscaTexto">Buscar</label>
+          <input type="text" id="buscaTexto" placeholder="Cliente, local ou serviço..." />
+        </div>
+        <div class="select-simples">
+          <label class="filtro-label" for="filtroMes">Mês</label>
+          <select id="filtroMes"><option value="todos">Todos</option></select>
+        </div>
+        <div class="select-simples">
+          <label class="filtro-label" for="filtroAno">Ano</label>
+          <select id="filtroAno"><option value="todos">Todos</option></select>
+        </div>
+        <button type="button" class="btn-limpar-filtros" id="btnLimparFiltros">Limpar filtros</button>
+      </div>
+    </div>
+
+    <div class="lista-propostas" id="listaPropostas"></div>
+    <div class="sem-resultados" id="semResultados" style="display:none;">
+      Nenhuma proposta encontrada com esses filtros.
+    </div>
+  </main>
+
+  <script src="mapas.js?v=1"></script>
+  <script src="andamento.js?v=20261029"></script>
+  <script src="modal-expandir.js?v=1"></script>
+  <footer class="fnx-rodape">Created by Yan Victor · <a href="https://www.instagram.com/yanszaida/" target="_blank" rel="noopener">@yanszaida</a></footer>
+</body>
+</html>

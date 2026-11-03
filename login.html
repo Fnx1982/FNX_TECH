@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <script src="config.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet' />
+    <link rel="stylesheet" href="login.css" />
+    <script src="auth-worker.js?v=6" defer></script>
+    <script src="login.js" defer></script>
+    <script src="senha-visivel.js" defer></script>
+    <title>FNX TECH - login</title>
+  <link rel="stylesheet" href="mobile.css?v=3" />
+  <link rel="stylesheet" href="fnx-tema.css?v=1" />
+</head>
+<body>
+    <main class="container">
+        <form onsubmit="event.preventDefault(); logar();">
+            <h1>FNX TECH</h1>
+            <div class="input-box">
+                <input id="registro" placeholder="Seu registro" type="text" inputmode="numeric" required />
+                <i class="bx bxs-user"></i>
+            </div>
+            <div class="input-box">
+                <input id="senha" placeholder="Senha" type="password" required />
+                <i class="bx bxs-lock-alt"></i>
+            </div>
+            <div class="remember-forgot">
+                <label>
+                    <input type="checkbox" id="lembrar" />
+                    Lembrar-me
+                </label>
+                <a href="#" id="linkRecuperarSenha">Recuperar senha</a>
+            </div>
+
+            <button type="submit" class="login">Login</button>
+            <p id="mensagemErroLogin" style="color: crimson; text-align: center; margin-top: 10px; font-size: 13px; display: none;"></p>
+        </form>
+    </main>
+
+    <!-- Modal: Recuperar senha -->
+    <div id="modalRecuperarSenha" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:1000; align-items:center; justify-content:center;">
+      <div style="background:#fff; border-radius:12px; padding:26px; width:90%; max-width:360px;">
+        <h2 style="font-size:18px; margin-bottom:6px;">Recuperar senha</h2>
+        <p style="font-size:13px; color:#666; margin-bottom:16px;">Digite seu registro — vamos mandar uma senha temporária pro e-mail cadastrado na sua conta.</p>
+        <input type="text" id="campoRegistroRecuperar" placeholder="Seu registro" inputmode="numeric" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc; margin-bottom:12px; box-sizing:border-box;" />
+        <div style="display:flex; gap:8px;">
+          <button type="button" id="btnCancelarRecuperar" style="flex:1; padding:10px; border-radius:100px; border:1px solid #ccc; background:#fff; cursor:pointer;">Cancelar</button>
+          <button type="button" id="btnEnviarRecuperar" style="flex:1; padding:10px; border-radius:100px; border:none; background:#FF6A00; color:#fff; font-weight:700; cursor:pointer;">Enviar</button>
+        </div>
+        <p id="mensagemRecuperarSenha" style="font-size:12.5px; margin-top:12px; text-align:center;"></p>
+      </div>
+    </div>
+  <script src="modal-expandir.js?v=1"></script>
+  <footer class="fnx-rodape">Created by Yan Victor · <a href="https://www.instagram.com/yanszaida/" target="_blank" rel="noopener">@yanszaida</a></footer>
+</body>
+</html>

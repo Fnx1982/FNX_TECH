@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <script src="config.js"></script>
+    <script src="auth-worker.js?v=6"></script>
+<script src="auth-guard.js"></script>
+<meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet' />
+    <link rel="stylesheet" href="editar.css">
+    <script src="confirm-modal.js"></script>
+    <script src="validacao.js"></script>
+    <script src="senha-visivel.js"></script>
+    <title>Editar Usuário</title>
+    
+  <link rel="stylesheet" href="mobile.css?v=3" />
+<style>
+  .bloco-acesso-temp { display: flex; flex-direction: column; gap: 6px; background: #f6f8fb; border: 1px dashed #c9d3e0; border-radius: 10px; padding: 10px 12px; margin: 6px 0 12px; }
+  .bloco-acesso-temp small { color: #667; font-size: 12px; }
+  .linha-check-temp { display: flex !important; flex-direction: row !important; align-items: center; gap: 8px; font-weight: 600; }
+  .linha-check-temp input { width: 16px; height: 16px; }
+</style>
+  <link rel="stylesheet" href="fnx-tema.css?v=1" />
+</head>
+<body>
+    <main class="container">
+        <h1>Editar Usuário</h1>
+        <form id="formEditarUsuario">
+            <label>
+                Nome Completo
+                <input type="text" id="nome" required />
+            </label>
+            <label>
+                Registro
+                <input type="text" id="registro" required />
+            </label>
+            <label>
+                Email <span style="font-weight:normal;color:#888;font-size:12px;">(opcional)</span>
+                <input type="email" id="email" />
+            </label>
+            <label>
+                Telefone <span style="font-weight:normal;color:#888;font-size:12px;">(opcional)</span>
+                <input type="tel" id="telefone" placeholder="(99) 99999-9999" />
+            </label>
+            <label>
+                Sexo
+                <select id="sexo" required>
+                    <option value="" disabled>Selecione</option>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Feminino">Feminino</option>
+                    <option value="Outro">Outro</option>
+                </select>
+            </label>
+            <label>
+                CPF <span style="font-weight:normal;color:#888;font-size:12px;">(opcional)</span>
+                <input type="text" id="cpf" />
+            </label>
+            <label>
+                RG <span style="font-weight:normal;color:#888;font-size:12px;">(opcional)</span>
+                <input type="text" id="rg" />
+            </label>
+            <label>
+                Endereço <span style="font-weight:normal;color:#888;font-size:12px;">(opcional)</span>
+                <input type="text" id="endereco" />
+            </label>
+            <label>
+                Nova senha <span style="font-weight:normal;color:#888;font-size:12px;">(deixe em branco para manter a senha atual)</span>
+                <input type="password" id="senha" minlength="6" />
+            </label>
+            <label>
+                Setor
+                <select id="setor" required>
+                    <option value="" disabled>Selecione o setor</option>
+                </select>
+            </label>
+            <label>
+                Nível de acesso a Obras
+                <select id="nivelAcessoObra">
+                    <option value="total">Total — vê e edita tudo, inclusive financeiro</option>
+                    <option value="obra-sem-financeiro">Restrito — só demanda, nome do cliente e endereço</option>
+                </select>
+            </label>
+
+            <div class="bloco-acesso-temp">
+                <label class="linha-check-temp"><input type="checkbox" id="acessoTemporario" /> ⏳ Cadastro temporário</label>
+                <label id="rotuloAcessoAte" style="display:none;">Pode entrar até (inclusive)
+                    <input type="date" id="acessoAte" />
+                </label>
+                <small>Depois dessa data a pessoa não entra mais. Para virar cadastro normal, desmarque.</small>
+            </div>
+
+            <button type="submit" class="btn-salvar">Salvar Alterações</button>
+        </form>
+        <button id="btnExcluir" class="btn-excluir">Excluir Usuário</button>
+        <button class="btn-voltar" onclick="window.location.href='gerenciarcontas.html'">Voltar</button>
+    </main>
+
+    <script>
+        // Função para aplicar máscara no telefone (mesma lógica da página principal)
+        function mascaraTelefone(event) {
+            let input = event.target;
+            let valor = input.value.replace(/\D/g, '');
+
+            if (valor.length > 11) {
+                valor = valor.slice(0, 11);
+            }
+
+            if (valor.length > 10) {
+                valor = valor.replace(/^(\d{2})(\d{5})(\d{4}).*/, '($1) $2-$3');
+            } else if (valor.length > 5) {
+                valor = valor.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, '($1) $2-$3');
+            } else if (valor.length > 2) {
+                valor = valor.replace(/^(\d{2})(\d{0,5})/, '($1) $2');
+            } else if (valor.length > 0) {
+                valor = valor.replace(/^(\d{0,2})/, '($1');
+            }
+
+            input.value = valor;
+        }
+
+        document.getElementById("telefone").addEventListener("input", mascaraTelefone);
+
+        // Função para obter parâmetro da URL
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        const registroOriginal = getQueryParam("registro");
+        if (registroOriginal === null) {
+            window.location.href = "gerenciarcontas.html?erro=usuario_nao_especificado";
+        }
+
+        let usuario = null;
+
+        async function carregarUsuario() {
+            const resposta = await apiListarUsuarios();
+            if (!resposta.ok) {
+                mostrarToast(resposta.erro || "Não foi possível carregar o usuário.", "erro");
+                return;
+            }
+            usuario = resposta.usuarios.find(u => String(u.registro) === String(registroOriginal));
+            if (!usuario) {
+                window.location.href = "gerenciarcontas.html?erro=usuario_nao_encontrado";
+                return;
+            }
+
+            // Popula o select de Setor com os setores cadastrados no servidor.
+            const respSetores = await apiDataGet("setores");
+            const setoresDisponiveis = (respSetores.ok && respSetores.valor) ? respSetores.valor : [];
+            const selectSetorEditar = document.getElementById("setor");
+            setoresDisponiveis.forEach((s) => {
+                const opt = document.createElement("option");
+                opt.value = s;
+                opt.textContent = s;
+                selectSetorEditar.appendChild(opt);
+            });
+            if (usuario.setor && !setoresDisponiveis.includes(usuario.setor)) {
+                const opt = document.createElement("option");
+                opt.value = usuario.setor;
+                opt.textContent = usuario.setor + " (não está mais na lista)";
+                selectSetorEditar.appendChild(opt);
+            }
+
+            // Preenche o formulário — o campo de senha NUNCA é preenchido,
+            // porque o servidor só guarda o hash, não a senha em si.
+            document.getElementById("nome").value = usuario.nome;
+            document.getElementById("registro").value = usuario.registro;
+            document.getElementById("email").value = usuario.email || "";
+            document.getElementById("telefone").value = usuario.telefone || "";
+            document.getElementById("sexo").value = usuario.sexo || "";
+            document.getElementById("cpf").value = usuario.cpf || "";
+            document.getElementById("rg").value = usuario.rg || "";
+            document.getElementById("endereco").value = usuario.endereco || "";
+            document.getElementById("setor").value = usuario.setor || "";
+            document.getElementById("nivelAcessoObra").value = usuario.nivelAcessoObra || "total";
+            document.getElementById("acessoTemporario").checked = !!usuario.acessoAte;
+            document.getElementById("acessoAte").value = usuario.acessoAte || "";
+            document.getElementById("rotuloAcessoAte").style.display = usuario.acessoAte ? "" : "none";
+        }
+        document.getElementById("acessoTemporario").addEventListener("change", (e) => {
+            document.getElementById("rotuloAcessoAte").style.display = e.target.checked ? "" : "none";
+        });
+
+        carregarUsuario();
+
+        // Salvar alterações
+        document.getElementById("formEditarUsuario").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const campoNome = document.getElementById("nome");
+            const campoRegistro = document.getElementById("registro");
+            const campoSexo = document.getElementById("sexo");
+            const campoSenha = document.getElementById("senha");
+            const campoSetor = document.getElementById("setor");
+            const campoTelefone = document.getElementById("telefone");
+            const campoEmail = document.getElementById("email");
+
+            limparErrosDoFormulario(this);
+
+            const nome = campoNome.value.trim();
+            const registro = campoRegistro.value.trim();
+            const email = campoEmail.value.trim();
+            const telefone = campoTelefone.value.trim();
+            const sexo = campoSexo.value;
+            const cpf = document.getElementById("cpf").value.trim();
+            const rg = document.getElementById("rg").value.trim();
+            const endereco = document.getElementById("endereco").value.trim();
+            const senha = campoSenha.value; // pode ficar em branco = mantém a atual
+            const setor = campoSetor.value;
+            const nivelAcessoObra = document.getElementById("nivelAcessoObra").value;
+            const acessoAte = document.getElementById("acessoTemporario").checked ? document.getElementById("acessoAte").value : "";
+
+            let temErro = false;
+            if (!nome) { marcarCampoComErro(campoNome, "Informe o nome completo."); temErro = true; }
+            if (!registro) { marcarCampoComErro(campoRegistro, "Informe o registro."); temErro = true; }
+            if (!sexo) { marcarCampoComErro(campoSexo, "Selecione o sexo."); temErro = true; }
+            if (senha && senha.length < 6) { marcarCampoComErro(campoSenha, "A nova senha precisa ter pelo menos 6 caracteres."); temErro = true; }
+            if (!setor) { marcarCampoComErro(campoSetor, "Selecione o setor."); temErro = true; }
+            if (document.getElementById("acessoTemporario").checked && !acessoAte) { marcarCampoComErro(document.getElementById("acessoAte"), "Escolha até quando vale."); temErro = true; }
+
+            const telefoneRegex = /^\(\d{2}\)\s?\d{4,5}-\d{4}$/;
+            if (telefone && !telefoneRegex.test(telefone)) {
+                marcarCampoComErro(campoTelefone, "Telefone inválido. Use (99) 99999-9999, ou deixe em branco.");
+                temErro = true;
+            }
+
+            if (temErro) {
+                focarPrimeiroErro(this);
+                return;
+            }
+
+            const botao = this.querySelector(".btn-salvar");
+            const textoOriginal = botao.textContent;
+            botao.disabled = true;
+            botao.textContent = "Salvando...";
+
+            try {
+                const resposta = await apiSalvarUsuario({
+                    registro, registroOriginal, nome, email, telefone, sexo, cpf, rg, endereco, setor, nivelAcessoObra, acessoAte,
+                    senha: senha || undefined, // omitido = servidor mantém o hash atual
+                });
+                if (!resposta.ok) {
+                    if ((resposta.erro || "").toLowerCase().includes("registro")) {
+                        marcarCampoComErro(campoRegistro, resposta.erro);
+                    } else {
+                        mostrarToast(resposta.erro || "Não foi possível salvar.", "erro");
+                    }
+                    focarPrimeiroErro(this);
+                    return;
+                }
+                window.location.href = "gerenciarcontas.html";
+            } catch (err) {
+                mostrarToast("Não foi possível conectar ao servidor.", "erro");
+            } finally {
+                botao.disabled = false;
+                botao.textContent = textoOriginal;
+            }
+        });
+
+        // Excluir usuário
+        document.getElementById("btnExcluir").addEventListener("click", async function() {
+            if (!usuario) return;
+            const confirmado = await confirmarAcao(
+                `Excluir o usuário "${usuario.nome}"?`,
+                "Essa ação não pode ser desfeita."
+            );
+            if (!confirmado) return;
+
+            const resposta = await apiExcluirUsuario(usuario.registro);
+            if (!resposta.ok) {
+                mostrarToast(resposta.erro || "Não foi possível excluir.", "erro");
+                return;
+            }
+            window.location.href = "gerenciarcontas.html";
+        });
+    </script>
+  <script src="modal-expandir.js?v=1"></script>
+  <footer class="fnx-rodape">Created by Yan Victor · <a href="https://www.instagram.com/yanszaida/" target="_blank" rel="noopener">@yanszaida</a></footer>
+</body>
+</html>

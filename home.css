@@ -1,0 +1,465 @@
+/* ==========================================================================
+   CONFIGURAÇÕES GERAIS
+   ========================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Montserrat", sans-serif;
+}
+
+body, html {
+  height: 100%;
+  overflow-x: hidden;
+  background: #f2f2f2;
+}
+
+/* ==========================================================================
+   MENU LATERAL (SIDEBAR)
+   ========================================================================== */
+.menu {
+  background-color: #131313;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 70px;
+  transition: width 0.3s linear;
+  overflow-y: auto; /* Permite scroll se abrir muitos submenus */
+  overflow-x: hidden;
+  z-index: 1000;
+}
+
+.menu:hover,
+nav.menu.expanded {
+  width: 230px;
+}
+
+.menu ul {
+  margin: 5px 0;
+  list-style: none;
+}
+
+.menu li {
+  width: 100%;
+  height: auto; /* Garante que o item cresça ao abrir submenu */
+}
+
+.menu li a {
+  display: flex;
+  align-items: center;
+  color: #8a8a8a;
+  font-size: 16px;
+  text-decoration: none;
+  padding: 10px 15px;
+  transition: background-color 0.15s linear, color 0.15s linear;
+  cursor: pointer;
+}
+
+.menu li:hover > a,
+nav.menu li.active > a {
+  color: #FF6A00;
+  background-color: #1a1a1a;
+  border-left: 4px solid #FF6A00;
+  padding-left: 11px;
+}
+
+/* Texto do Menu */
+.menu .span-menu {
+  margin-left: 10px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  flex-grow: 1;
+}
+
+.menu:hover .span-menu,
+nav.menu.expanded .span-menu {
+  opacity: 1;
+}
+
+/* Ícones BoxIcons */
+.bx {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Logo */
+.menu .logo {
+  width: 130px;
+  max-width: 90%;
+  aspect-ratio: 1 / 1;
+  height: auto;
+  display: block;
+  margin: 15px auto;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
+  border: 2px solid rgba(255,255,255,0.15);
+}
+
+/* ==========================================================================
+   SUBMENUS (MULTINÍVEL)
+   ========================================================================== */
+.has-submenu > a {
+  justify-content: space-between;
+}
+
+.submenu-arrow {
+  font-size: 18px;
+  color: #8a8a8a;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.menu:hover .submenu-arrow,
+nav.menu.expanded .submenu-arrow {
+  opacity: 1;
+}
+
+/* Primeiro Nível de Submenu */
+.submenu {
+  list-style: none;
+  padding-left: 20px;
+  background-color: #1a1a1a;
+  display: none; /* Controlado pelo JS */
+}
+
+/* Segundo Nível (Ex: Dentro do Extrato) */
+.submenu .submenu {
+  background-color: #222222;
+  padding-left: 15px;
+  border-left: 1px dashed #333;
+}
+
+.submenu li a {
+  font-size: 14px;
+  color: #b0b0b0;
+  padding: 8px 10px;
+}
+
+.submenu li a:hover {
+  color: #FF6A00;
+}
+
+/* ==========================================================================
+   CONTEÚDO PRINCIPAL (DASHBOARD)
+   ========================================================================== */
+.dashboard {
+  margin-left: 70px;
+  min-height: 100vh;
+  padding: 20px;
+  background: rgb(208, 207, 207);
+  transition: margin-left 0.3s linear;
+}
+
+.menu:hover ~ .dashboard,
+nav.menu.expanded ~ .dashboard {
+  margin-left: 230px;
+}
+
+/* Card Montante (Fixo) */
+.dashboard .card-montante {
+  position: fixed;
+  bottom: 20px;
+  left: 90px;
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  width: 280px;
+  transition: left 0.3s ease;
+  z-index: 900;
+}
+
+.menu:hover ~ .dashboard .card-montante {
+  left: 250px;
+}
+
+.card-montante h2 { font-size: 18px; margin-bottom: 10px; color: #333; }
+.card-montante input, .card-montante textarea {
+  width: 100%; padding: 10px; margin: 5px 0 10px;
+  border: 1px solid #ccc; border-radius: 6px; font-size: 14px;
+}
+
+.card-montante button {
+  background: #FF6A00; color: white; border: none;
+  padding: 10px 15px; border-radius: 6px; cursor: pointer;
+  margin-bottom: 8px; transition: background 0.2s; width: 100%;
+}
+
+.card-montante button:hover { background: #D45500; }
+
+/* Calendar Box */
+.calendar-box {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  padding: 20px;
+  width: 350px;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+/* ==========================================================================
+   MODAL DE LOGOUT
+   ========================================================================== */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.5);
+  display: none; justify-content: center; align-items: center;
+  z-index: 9999;
+}
+
+.modal-overlay.active { display: flex; }
+
+.modal-content {
+  background: #fff; padding: 20px 30px; border-radius: 12px;
+  text-align: center; max-width: 320px; width: 90%;
+}
+
+.modal-buttons { margin-top: 20px; display: flex; gap: 10px; }
+.modal-buttons button {
+  flex: 1; padding: 8px; border-radius: 6px; border: none; cursor: pointer;
+}
+
+.modal-buttons #btn-yes:hover { background: #FF6A00; color: white; }
+
+/* ==========================================================================
+   SCROLLBAR CUSTOMIZADA
+   ========================================================================== */
+.menu::-webkit-scrollbar { width: 4px; }
+.menu::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+.menu::-webkit-scrollbar-thumb:hover { background: #FF6A00; }
+
+/* ==========================================================================
+   CELULAR — o menu lateral vira uma barra no topo com botão ☰.
+   Tocando no botão o menu abre por cima da tela inteira; tocando num
+   item, vai pra página. Os cards descem um embaixo do outro.
+   ========================================================================== */
+.btn-menu-mobile { display: none; }
+
+/* Etiqueta nas telas de nota fiscal travadas (em desenvolvimento) */
+.tag-em-breve {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #FF6A00;
+  border: 1px solid rgba(255, 106, 0, 0.5);
+  border-radius: 10px;
+  padding: 1px 6px;
+  margin-left: 4px;
+}
+
+/* Celular E tablet (tela de toque até 1100px): menu ☰ no topo */
+@media (max-width: 768px), (hover: none) and (max-width: 1100px) {
+  .menu,
+  .menu:hover {
+    width: 100%;
+    height: 64px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .menu > a { order: 0; }
+  .menu .logo {
+    width: 46px;
+    margin: 9px auto;
+  }
+  .btn-menu-mobile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 10px;
+    left: 12px;
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 10px;
+    background: #1f1f1f;
+    color: #FF6A00;
+    cursor: pointer;
+    z-index: 2;
+  }
+  .btn-menu-mobile .bx { font-size: 28px; }
+
+  /* Menu aberto: tela cheia, com rolagem.
+     100dvh = altura que REALMENTE aparece no celular (sem a barra de
+     endereço do navegador). Com 100vh, o fim do menu (Calendário, Sair)
+     ficava escondido atrás da barra e não dava pra alcançar. */
+  nav.menu.aberto-mobile {
+    height: 100vh;
+    height: 100dvh;
+    overflow-y: auto;
+    overscroll-behavior: contain; /* rolar o menu não rola a página de trás */
+    -webkit-overflow-scrolling: touch;
+    z-index: 3000;
+  }
+  nav.menu.aberto-mobile ul {
+    padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px));
+  }
+  /* O botão de fechar (X) fica sempre visível, mesmo rolando o menu */
+  nav.menu.aberto-mobile .btn-menu-mobile { position: fixed; z-index: 3001; }
+  /* Com o menu aberto, a página de trás fica parada */
+  body.menu-mobile-aberto { overflow: hidden; }
+
+  /* No celular os textos do menu aparecem sempre (não há "passar o mouse") */
+  .menu .span-menu,
+  .menu .submenu-arrow { opacity: 1; }
+  .menu li a { padding: 13px 18px; font-size: 17px; }
+
+  .menu:hover ~ .dashboard,
+  nav.menu.expanded ~ .dashboard,
+  .dashboard {
+    margin-left: 0;
+    padding: 14px 14px 20px;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  /* "Eventos de Hoje" sobe pro topo da tela (antes ficava escondido lá
+     embaixo, depois de uma tela inteira de espaço vazio). */
+  body.pagina-home {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: rgb(208, 207, 207);
+  }
+  body.pagina-home > .calendar-box { order: -1; margin: 78px 14px 0 !important; }
+
+  /* Cards fixos no canto viram blocos normais, um embaixo do outro */
+  .dashboard .card-montante,
+  .menu:hover ~ .dashboard .card-montante {
+    position: static;
+    width: 100%;
+  }
+  .calendar-box {
+    position: static;
+    z-index: auto;
+    width: auto;
+    margin: 0 14px 20px;
+  }
+
+  /* Sino de notificações alinhado dentro da barra do topo */
+  #sinoNotificacao { top: 10px !important; right: 12px !important; }
+}
+
+/* ==========================================================================
+   CONTA LOGADA — botão com as iniciais ao lado do sino
+   ========================================================================== */
+#contaLogada {
+  position: fixed;
+  top: 16px;
+  right: 124px; /* fica à esquerda do 💡 de sugestões, que fica ao lado do sino */
+  z-index: 2000;
+  font-family: 'Montserrat', sans-serif;
+}
+#btnContaLogada {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 14px 0 4px;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 22px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.12);
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+}
+.avatar-conta {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #FF6A00;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.avatar-conta.grande { width: 46px; height: 46px; font-size: 17px; }
+.avatar-conta.com-foto {
+  background-size: cover;
+  background-position: center;
+  background-color: #ddd;
+}
+.painel-conta-foto { display: flex; gap: 8px; margin-bottom: 10px; }
+.painel-conta-foto button {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 18px;
+  border: 1px solid #FF6A00;
+  background: #FFF6EF;
+  color: #B34700;
+  font-weight: 700;
+  font-size: 12.5px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.painel-conta-foto #btnRemoverFotoPerfil { border-color: #ddd; background: #f6f6f6; color: #777; }
+#painelConta {
+  position: absolute;
+  top: 52px;
+  right: 0;
+  width: 280px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0,0,0,.18);
+  padding: 14px;
+}
+.painel-conta-topo { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.painel-conta-nome { font-weight: 700; font-size: 15px; color: #222; }
+.painel-conta-setor { font-size: 12px; color: #888; }
+.painel-conta-linha {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 12.5px;
+  padding: 8px 0;
+  border-top: 1px solid #f0f0f0;
+}
+.painel-conta-linha span { color: #888; }
+.painel-conta-linha b { color: #333; text-align: right; word-break: break-all; }
+.painel-conta-linha a { color: #FF6A00; }
+.painel-conta-sair {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  border: none;
+  border-radius: 20px;
+  background: #f4f4f4;
+  color: #c62828;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+}
+.painel-conta-sair:hover { background: #fdecec; }
+
+/* Celular E tablet (tela de toque até 1100px): menu ☰ no topo */
+@media (max-width: 768px), (hover: none) and (max-width: 1100px) {
+  /* No celular: só as iniciais, dentro da barra do topo, ao lado do sino */
+  #contaLogada { top: 10px; right: 116px; }
+  #btnContaLogada { padding: 0 4px; width: 44px; justify-content: center; }
+  .nome-conta { display: none; }
+  #painelConta { position: fixed; top: 62px; right: 10px; width: calc(100vw - 20px); max-width: 320px; }
+  /* Com o menu aberto, o botão some pra não ficar por cima */
+  body.menu-mobile-aberto #contaLogada { display: none; }
+}

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script src="config.js"></script>
+  <script src="auth-worker.js?v=6"></script>
+  <script src="auth-guard.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Comissão — FNX TECH</title>
+  <link rel="stylesheet" href="comissao.css" />
+  <script src="confirm-modal.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <link rel="stylesheet" href="mobile.css?v=3" />
+  <link rel="stylesheet" href="fnx-tema.css?v=1" />
+</head>
+<body>
+  <main class="container">
+    <div class="topo-pagina">
+      <div>
+        <h1>Comissão</h1>
+        <p>Calculada sobre o lucro das obras finalizadas.</p>
+      </div>
+      <a href="home.html" class="btn-voltar">← Voltar</a>
+    </div>
+
+    <div class="card-secao">
+      <h2>Configurações</h2>
+
+      <h3 class="subtitulo-config">Percentual de comissão</h3>
+      <div class="linha-percentual">
+        <label>
+          % sobre o lucro de cada obra
+          <input type="number" id="campoPercentualComissao" min="0" max="100" step="0.1" value="10" />
+        </label>
+        <button type="button" class="btn-laranja" id="btnSalvarPercentual">Salvar</button>
+      </div>
+
+      <h3 class="subtitulo-config">INSS e ISS do mês <span class="texto-opcional-inline">(desconta do lucro antes de calcular a comissão)</span></h3>
+      <div class="linha-percentual-empilhada">
+        <label>
+          Mês de referência
+          <select id="campoMesImpostos"></select>
+        </label>
+        <label>
+          INSS (%) sobre a Mão de obra
+          <input type="number" id="campoInssMensal" min="0" max="100" step="0.1" value="11" />
+        </label>
+        <label>
+          ISS (%) sobre a Mão de obra
+          <input type="number" id="campoIssMensal" min="0" max="100" step="0.1" value="5" />
+        </label>
+        <button type="button" class="btn-laranja" id="btnSalvarImpostosMensal">Salvar</button>
+      </div>
+      <p class="texto-ajuda">
+        Vale pra todas as obras finalizadas nesse mês, automaticamente — só muda quando você mudar aqui. Se alguma obra específica precisar de um percentual diferente, edita direto nela, na lista de obras.
+      </p>
+    </div>
+
+    <div class="card-secao">
+      <h2>Período do relatório</h2>
+      <div class="abas-periodo" id="abasPeriodo">
+        <button type="button" class="aba-periodo active" data-periodo="mensal">Mensal</button>
+        <button type="button" class="aba-periodo" data-periodo="trimestral">Trimestral</button>
+        <button type="button" class="aba-periodo" data-periodo="semestral">Semestral</button>
+        <button type="button" class="aba-periodo" data-periodo="anual">Anual</button>
+      </div>
+      <div class="seletor-periodo" id="seletorPeriodo"></div>
+    </div>
+
+    <div class="card-secao" id="resumoPeriodoCard">
+      <h2 id="tituloResumoPeriodo">Resumo</h2>
+      <div class="resumo-comissao-grid">
+        <div class="resumo-item">
+          <span class="resumo-label">Obras finalizadas</span>
+          <span class="resumo-valor" id="resumoQtdObras">0</span>
+        </div>
+        <div class="resumo-item">
+          <span class="resumo-label">Lucro bruto</span>
+          <span class="resumo-valor" id="resumoLucroTotal">R$ 0,00</span>
+        </div>
+        <div class="resumo-item">
+          <span class="resumo-label">INSS + ISS</span>
+          <span class="resumo-valor" id="resumoImpostosTotal">R$ 0,00</span>
+        </div>
+        <div class="resumo-item">
+          <span class="resumo-label">Lucro líquido</span>
+          <span class="resumo-valor" id="resumoLucroLiquido">R$ 0,00</span>
+        </div>
+        <div class="resumo-item destaque">
+          <span class="resumo-label">Comissão total</span>
+          <span class="resumo-valor" id="resumoComissaoTotal">R$ 0,00</span>
+        </div>
+      </div>
+      <button type="button" class="btn-laranja" id="btnGerarPdfComissao">📄 Gerar PDF do período</button>
+    </div>
+
+    <div class="card-secao">
+      <h2>Obras do período</h2>
+      <div class="lista-obras-comissao" id="listaObrasComissao"></div>
+      <div class="sem-resultados" id="semObrasComissao" style="display:none;">
+        Nenhuma obra finalizada nesse período.
+      </div>
+    </div>
+
+    <div class="card-secao" id="secaoObrasSemData" style="display:none;">
+      <h2>Obras finalizadas sem data</h2>
+      <p class="texto-ajuda">Essas obras foram marcadas como finalizadas antes dessa data começar a ser registrada. Escolha uma data pra cada uma, pra elas entrarem nos relatórios por período.</p>
+      <div class="lista-obras-comissao" id="listaObrasSemData"></div>
+    </div>
+  </main>
+
+  <script src="propostas-core.js?v=8"></script>
+  <script src="comissao.js"></script>
+  <script src="modal-expandir.js?v=1"></script>
+  <footer class="fnx-rodape">Created by Yan Victor · <a href="https://www.instagram.com/yanszaida/" target="_blank" rel="noopener">@yanszaida</a></footer>
+</body>
+</html>

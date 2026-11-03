@@ -1,0 +1,236 @@
+.grupo-mes {
+    margin-bottom: 28px;
+}
+
+.grupo-mes-titulo {
+    font-size: 16px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 10px;
+    padding-left: 4px;
+    border-left: 4px solid rgb(255, 106, 0);
+    padding-left: 10px;
+}
+
+.grade-obras {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+}
+
+.card-obra {
+    background-color: rgba(255, 255, 255, 0.92);
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    padding: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+    border-left: 6px solid rgb(255, 106, 0);
+}
+
+.card-obra:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+    transform: translateY(-2px);
+}
+
+.card-obra-cliente {
+    font-weight: 700;
+    font-size: 15px;
+    color: #222;
+}
+
+.card-obra-servico {
+    font-size: 12px;
+    color: #666;
+    margin-top: 3px;
+    max-height: 32px;
+    overflow: hidden;
+}
+
+.card-obra-lucro {
+    margin-top: 10px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.card-obra-lucro.positivo { color: #1c8a4b; }
+.card-obra-lucro.negativo { color: crimson; }
+
+.card-obra-data {
+    font-size: 11px;
+    color: #999;
+    margin-top: 6px;
+}
+
+/* ===== Página de detalhe da obra ===== */
+.detalhe-topo-info {
+    background: rgba(255,255,255,0.85);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.detalhe-topo-info h2 {
+    font-size: 20px;
+    margin-bottom: 4px;
+}
+
+.detalhe-topo-info .servico {
+    font-size: 13px;
+    color: #666;
+}
+
+.detalhe-observacao {
+    margin-top: 14px;
+}
+
+.detalhe-observacao label {
+    font-weight: 600;
+    font-size: 13px;
+    color: #444;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.detalhe-observacao textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-family: inherit;
+    font-size: 14px;
+    resize: vertical;
+}
+
+.cards-lucro {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.card-lucro {
+    background: rgba(255,255,255,0.9);
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.08);
+    padding: 16px;
+    text-align: center;
+}
+
+.card-lucro .rotulo {
+    font-size: 11px;
+    font-weight: 600;
+    color: #777;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.card-lucro .valor {
+    font-size: 20px;
+    font-weight: 700;
+    margin-top: 6px;
+}
+
+.card-lucro .detalhe-conta {
+    font-size: 11px;
+    color: #999;
+    margin-top: 4px;
+}
+
+.valor.positivo { color: #1c8a4b; }
+.valor.negativo { color: crimson; }
+
+.secao-detalhe {
+    background: rgba(255,255,255,0.85);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-bottom: 18px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.secao-detalhe h3 {
+    font-size: 16px;
+    margin-bottom: 12px;
+}
+
+.lista-itens-obra {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.item-obra-linha {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255,255,255,0.7);
+    border-radius: 6px;
+    padding: 10px 12px;
+    flex-wrap: wrap;
+}
+
+.item-obra-linha .info {
+    flex: 1;
+    font-size: 13px;
+}
+
+.item-obra-linha .info strong {
+    font-size: 14px;
+}
+
+.item-obra-linha .acoes {
+    display: flex;
+    gap: 6px;
+}
+
+.form-rapido-item {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.form-rapido-item input {
+    flex: 1;
+    min-width: 110px;
+    padding: 9px 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-family: inherit;
+    font-size: 13px;
+}
+
+.form-rapido-item button {
+    flex: 0 0 auto;
+}
+
+@media (max-width: 700px) {
+    .cards-lucro { grid-template-columns: 1fr; }
+    .grade-obras { grid-template-columns: 1fr; }
+}
+
+/* ── Abas de obras ── */
+.abas { display:flex; gap:2px; background:#fff; border-radius:100px; padding:4px; box-shadow:0 1px 4px rgba(0,0,0,.07); width:fit-content; margin-bottom:16px; }
+.aba  { font-family:inherit; font-size:12px; font-weight:600; color:#999; background:none; border:none; border-radius:100px; padding:8px 18px; cursor:pointer; transition:all .18s; white-space:nowrap; }
+.aba:hover { color:#333; }
+.aba.active { background:#FF6A00; color:#fff; }
+
+/* ── Topo do card ── */
+.card-obra-topo { display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:6px; flex-wrap:wrap; }
+.card-obra-num  { font-size:11px; font-weight:700; color:#999; }
+
+/* ── Badges de status ── */
+.badge-obra       { font-size:10px; font-weight:700; padding:2px 9px; border-radius:20px; text-transform:uppercase; white-space:nowrap; }
+.badge-andamento  { background:#EBF2FB; color:#2B6CB0; }
+.badge-finalizada { background:#E8F5EF; color:#1C8A4B; }
+
+/* ── Ações dos cards ── */
+.card-obra-acoes { display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
+.card-obra-acoes button { font-family:inherit; font-size:11px; font-weight:600; padding:5px 11px; border-radius:20px; border:none; cursor:pointer; transition:opacity .15s; }
+.card-obra-acoes button:hover { opacity:.78; }
+.btn-ver-obra      { background:#FFF1E6; color:#D45500; }
+.btn-status-obra   { background:#E8F5EF; color:#1C8A4B; }
+.btn-lixeira-mini  { background:#FBE8EC; color:crimson; padding:5px 10px !important; }
+.btn-restaurar-obra     { background:#EBF2FB; color:#2B6CB0; }
+.btn-excluir-def-obra   { background:#FBE8EC; color:crimson; }

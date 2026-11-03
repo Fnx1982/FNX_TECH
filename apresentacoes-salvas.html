@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script src="config.js"></script>
+  <script src="auth-worker.js?v=6"></script>
+  <script src="auth-guard.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apresentações Salvas — FNX TECH</title>
+  <link rel="stylesheet" href="propostas.css?v=9" />
+  <link rel="stylesheet" href="gerar-apresentacao.css?v=2" />
+  <script src="confirm-modal.js?v=3"></script>
+  <link rel="stylesheet" href="mobile.css?v=3" />
+  <link rel="stylesheet" href="fnx-tema.css?v=1" />
+</head>
+<body>
+  <main class="container">
+    <div class="topo-pagina">
+      <div>
+        <h1>Apresentações Salvas</h1>
+        <p>Todas as propostas comerciais em PDF já geradas pelo site.</p>
+      </div>
+      <div style="display:flex; gap:10px;">
+        <a href="gerar-apresentacao.html" class="btn-laranja" style="text-decoration:none; display:inline-flex; align-items:center;">+ Nova Apresentação</a>
+        <a href="gerar-apresentacao.html" class="btn-voltar">← Voltar</a>
+      </div>
+    </div>
+
+    <div id="listaApresentacoesSalvas"></div>
+    <div class="sem-resultados" id="semApresentacoes" style="display:none;">
+      Nenhuma apresentação foi gerada ainda.
+    </div>
+  </main>
+
+  <script src="apresentacoes-salvas.js"></script>
+  <script src="modal-expandir.js?v=1"></script>
+  <footer class="fnx-rodape">Created by Yan Victor · <a href="https://www.instagram.com/yanszaida/" target="_blank" rel="noopener">@yanszaida</a></footer>
+</body>
+</html>

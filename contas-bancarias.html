@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script src="config.js"></script>
+  <script src="auth-worker.js?v=6"></script>
+  <script src="auth-guard.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FNX TECH — Gerenciamento de Contas</title>
+  <link rel="stylesheet" href="extrato.css" />
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <script src="extrato-export.js"></script>
+  <script src="confirm-modal.js"></script>
+  <script src="validacao.js"></script>
+  <link rel="stylesheet" href="mobile.css?v=3" />
+  <link rel="stylesheet" href="fnx-tema.css?v=1" />
+  <style>
+    .contas-grade { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin: 16px 0 8px; }
+    .conta-card { position: relative; background: #fff; border-radius: 14px; padding: 14px 16px 12px; border: 2px solid transparent;
+      box-shadow: 0 2px 10px rgba(0,0,0,.08); cursor: pointer; text-align: left; font: inherit; color: inherit; transition: border-color .15s, transform .15s; }
+    .conta-card:hover { transform: translateY(-2px); }
+    .conta-card.ativa { border-color: var(--fnx-laranja); box-shadow: 0 6px 18px rgba(255,106,0,.18); }
+    .conta-card .faixa { position: absolute; left: 0; top: 12px; bottom: 12px; width: 5px; border-radius: 0 4px 4px 0; }
+    .conta-card .nome { font-weight: 800; font-size: 15px; margin-bottom: 2px; padding-right: 54px; }
+    .conta-card .dados { font-size: 12px; color: #777; min-height: 16px; }
+    .conta-card .saldo { margin-top: 10px; font-size: 18px; font-weight: 800; }
+    .conta-card .saldo.pos { color: #1c8a4b; } .conta-card .saldo.neg { color: var(--fnx-vermelho); }
+    .conta-card .acoes-conta { position: absolute; top: 8px; right: 8px; display: flex; gap: 4px; }
+    .conta-card .acoes-conta button { border: none; background: #f3f3f3; border-radius: 8px; width: 26px; height: 26px; cursor: pointer; font-size: 13px; }
+    .conta-card .acoes-conta button:hover { background: #FFF1E6; }
+    .conta-nova { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 104px; border: 2px dashed #bbb; background: transparent;
+      box-shadow: none; color: #666; font-weight: 700; }
+    .conta-nova:hover { border-color: var(--fnx-laranja); color: var(--fnx-laranja); }
+    .saldo-geral { font-size: 13px; color: #555; }
+    .saldo-geral b { font-size: 15px; }
+    #areaExtrato[hidden] { display: none; }
+    .vazio-contas { background: #fff; border-radius: 14px; padding: 26px; text-align: center; color: #666; margin-top: 12px; }
+    .cores-conta { display: flex; gap: 8px; flex-wrap: wrap; }
+    .cores-conta label { display: inline-flex; }
+    .cores-conta input { position: absolute; opacity: 0; pointer-events: none; }
+    .cores-conta span { width: 28px; height: 28px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 1px #ccc; cursor: pointer; }
+    .cores-conta input:checked + span { box-shadow: 0 0 0 2px #111; }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <div class="topo-pagina">
+      <div>
+        <h1>Gerenciamento de Contas</h1>
+        <span class="banco-tag" id="tagContaAtual">Financeiro</span>
+      </div>
+      <a href="home.html" class="btn-voltar">Voltar</a>
+    </div>
+    <div class="saldo-geral" id="saldoGeral"></div>
+
+    <div class="contas-grade" id="gradeContas"></div>
+    <div class="vazio-contas" id="vazioContas" style="display:none;">
+      Nenhuma conta cadastrada ainda. Clique em <b>+ Nova conta</b> para começar.
+    </div>
+
+    <div id="areaExtrato" hidden>
+    <!-- Resumo geral (todos os lançamentos) -->
+      <div class="resumo-cards">
+        <div class="resumo-card entrada">
+          <div class="resumo-label">Entradas (total)</div>
+          <div class="resumo-valor" id="resumoEntradaValor">R$ 0,00</div>
+        </div>
+        <div class="resumo-card saida">
+          <div class="resumo-label">Saídas (total)</div>
+          <div class="resumo-valor" id="resumoSaidaValor">R$ 0,00</div>
+        </div>
+        <div class="resumo-card saldo">
+          <div class="resumo-label">Saldo (total)</div>
+          <div class="resumo-valor" id="resumoSaldoValor">R$ 0,00</div>
+        </div>
+      </div>
+  
+      <!-- Barra de ações -->
+      <div class="barra-acoes">
+        <button type="button" class="btn-secundario" id="btnAbrirClassificacao">+ Classificação</button>
+        <button type="button" class="btn-laranja" id="btnAbrirLancamento">+ Lançamento</button>
+      </div>
+  
+      <!-- Dados da conta — usados pra montar o OFX/CNAB240 corretamente -->
+      <details class="card-filtros" style="margin-bottom:14px;">
+        <summary style="cursor:pointer; font-weight:700; font-size:15px;">Dados da conta (pra OFX/CNAB240)</summary>
+        <div class="filtros" style="margin-top:12px;">
+          <div class="select-simples">
+            <label class="filtro-label" for="dadosContaBanco">Código do banco</label>
+            <input type="text" id="dadosContaBanco" placeholder="ex: 077" maxlength="3" />
+          </div>
+          <div class="select-simples">
+            <label class="filtro-label" for="dadosContaAgencia">Agência</label>
+            <input type="text" id="dadosContaAgencia" placeholder="ex: 1234" />
+          </div>
+          <div class="select-simples">
+            <label class="filtro-label" for="dadosContaConta">Conta</label>
+            <input type="text" id="dadosContaConta" placeholder="ex: 56789-0" />
+          </div>
+          <button type="button" class="btn-limpar-filtros" id="btnSalvarDadosConta">Salvar</button>
+        </div>
+      </details>
+  
+      <!-- Exportação -->
+      <div class="barra-acoes" style="flex-wrap:wrap;">
+        <button type="button" class="btn-secundario" id="btnGerarPdfExtrato">📄 Gerar PDF</button>
+        <button type="button" class="btn-secundario" id="btnGerarExcelExtrato">📊 Gerar Planilha</button>
+        <button type="button" class="btn-secundario" id="btnGerarOfxExtrato">🏦 Gerar OFX</button>
+        <button type="button" class="btn-secundario" id="btnGerarCnabExtrato">📋 Gerar CNAB240</button>
+        <button type="button" class="btn-secundario" id="btnImprimirExtrato">🖨 Imprimir</button>
+      </div>
+  
+      <!-- Filtros -->
+      <div class="card-filtros">
+        <h2>Filtros</h2>
+        <div class="filtros">
+          <div class="filtro-busca">
+            <label class="filtro-label" for="buscaTexto">Buscar</label>
+            <input type="text" id="buscaTexto" placeholder="Descrição ou observação..." />
+          </div>
+  
+          <div class="select-simples">
+            <label class="filtro-label" for="filtroTipo">Tipo</label>
+            <select id="filtroTipo">
+              <option value="todos">Todos</option>
+              <option value="entrada">Entradas</option>
+              <option value="saida">Saídas</option>
+            </select>
+          </div>
+  
+          <div class="multi-select" id="multiClassificacao">
+            <button type="button" class="multi-select-toggle" id="toggleClassificacao">
+              <span class="filtro-label">Classificação</span>
+              <span class="filtro-valor" id="resumoClassificacao">Todas</span>
+            </button>
+            <div class="multi-select-painel" id="painelClassificacao"></div>
+          </div>
+  
+          <button type="button" class="btn-limpar-filtros" id="btnLimparFiltros">Limpar filtros</button>
+        </div>
+      </div>
+  
+      <!-- Tabela de lançamentos -->
+      <div class="tabela-card">
+        <table id="tabelaLancamentos">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Descrição</th>
+              <th>Classificação</th>
+              <th>Observação</th>
+              <th>Valor</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="sem-resultados" id="semResultados" style="display:none;">
+        Nenhum lançamento encontrado com esses filtros.
+      </div>
+  
+    </div>
+  </main>
+
+  <!-- Total fixo no rodapé (entrada / saída / saldo do que está filtrado) -->
+  <div class="total-fixo">
+    <div class="bloco-total entrada">
+      <span>Entradas</span>
+      <span id="totalEntradaValor">R$ 0,00</span>
+    </div>
+    <div class="bloco-total saida">
+      <span>Saídas</span>
+      <span id="totalSaidaValor">R$ 0,00</span>
+    </div>
+    <div class="bloco-total saldo">
+      <span>Saldo</span>
+      <span id="totalSaldoValor">R$ 0,00</span>
+    </div>
+  </div>
+
+  <!-- Modal: Cadastrar / gerenciar Classificações -->
+  <div class="modal-overlay" id="modalClassificacao">
+    <div class="modal-caixa">
+      <div class="modal-cabecalho">
+        <h2>Classificações</h2>
+        <button type="button" class="modal-fechar" id="fecharModalClassificacao">&times;</button>
+      </div>
+      <form id="form-classificacao" class="linha-form">
+        <input type="text" id="novaClassificacaoInput" placeholder="Ex: Material, Salário, Combustível..." required />
+        <button type="submit" class="btn-laranja">Adicionar</button>
+      </form>
+      <div id="listaClassificacoes" class="chips-lista"></div>
+    </div>
+  </div>
+
+  <!-- Modal: Cadastrar / Editar Lançamento -->
+  <div class="modal-overlay" id="modalLancamento">
+    <div class="modal-caixa">
+      <div class="modal-cabecalho">
+        <h2 id="tituloModalLancamento">Novo lançamento</h2>
+        <button type="button" class="modal-fechar" id="fecharModalLancamento">&times;</button>
+      </div>
+      <form id="form-lancamento" class="form-modal-grid">
+        <input type="hidden" id="tipoLancamento" value="entrada" />
+
+        <div class="tipo-toggle campo-largura-total">
+          <button type="button" class="tipo-entrada active" id="btnTipoEntrada">Entrada</button>
+          <button type="button" class="tipo-saida" id="btnTipoSaida">Saída</button>
+        </div>
+
+        <label>
+          Data
+          <input type="date" id="dataLancamento" required />
+        </label>
+
+        <label>
+          Valor (R$)
+          <input type="number" id="valor" placeholder="0,00" step="0.01" min="0" required />
+        </label>
+
+        <label class="campo-largura-total">
+          Descrição
+          <input type="text" id="descricao" placeholder="Ex: Pagamento fornecedor X" required />
+        </label>
+
+        <label class="campo-largura-total">
+          Classificação
+          <select id="classificacao" required>
+            <option value="" disabled selected>Selecione</option>
+          </select>
+        </label>
+
+        <label class="campo-largura-total">
+          Observação
+          <textarea id="observacao" rows="2" placeholder="Opcional"></textarea>
+        </label>
+
+        <label class="campo-largura-total">
+          Vincular a um Boleto <span class="texto-opcional-inline">(opcional)</span>
+          <select id="vinculoBoletoLancamento">
+            <option value="">Nenhum</option>
+          </select>
+        </label>
+
+        <button type="submit" id="btnSubmitLancamento" class="btn-laranja campo-largura-total">Adicionar</button>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- Modal: Cadastrar / Editar Conta -->
+  <div class="modal-overlay" id="modalConta">
+    <div class="modal-caixa">
+      <div class="modal-cabecalho">
+        <h2 id="tituloModalConta">Nova conta</h2>
+        <button type="button" class="modal-fechar" id="fecharModalConta">&times;</button>
+      </div>
+      <form id="formConta" class="form-modal-grid">
+        <label class="campo-largura-total">
+          Nome da conta
+          <input type="text" id="contaNome" placeholder="Ex: Conta principal, Caixa, Banco X" required maxlength="60" />
+        </label>
+        <label>
+          Código do banco <span class="texto-opcional-inline">(opcional)</span>
+          <input type="text" id="contaCodigo" placeholder="ex: 077" maxlength="3" inputmode="numeric" />
+        </label>
+        <label>
+          Agência <span class="texto-opcional-inline">(opcional)</span>
+          <input type="text" id="contaAgencia" placeholder="ex: 0001" />
+        </label>
+        <label class="campo-largura-total">
+          Número da conta <span class="texto-opcional-inline">(opcional)</span>
+          <input type="text" id="contaNumero" placeholder="ex: 12345-6" />
+        </label>
+        <div class="campo-largura-total">
+          <div style="font-size:13px; font-weight:600; margin-bottom:6px;">Cor</div>
+          <div class="cores-conta" id="coresConta"></div>
+        </div>
+        <button type="submit" class="btn-laranja campo-largura-total" id="btnSalvarConta">Salvar conta</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="contas-bancarias.js?v=1"></script>
+  <script src="modal-expandir.js?v=1"></script>
+  <footer class="fnx-rodape">Created by Yan Victor · <a href="https://www.instagram.com/yanszaida/" target="_blank" rel="noopener">@yanszaida</a></footer>
+</body>
+</html>

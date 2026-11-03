@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script src="config.js"></script>
+  <script src="auth-worker.js?v=6"></script>
+<script src="auth-guard.js"></script>
+<meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Financeiro de Funcionários</title>
+  <link rel="stylesheet" href="funcionarios.css" />
+  <script src="confirm-modal.js"></script>
+  <script src="validacao.js"></script>
+  <link rel="stylesheet" href="mobile.css?v=3" />
+  <link rel="stylesheet" href="fnx-tema.css?v=1" />
+</head>
+<body>
+  <main class="container">
+    <div class="topo-pagina">
+      <h1>Financeiro de Funcionários</h1>
+      <a href="home.html" class="btn-voltar">Voltar</a>
+    </div>
+
+    <!-- Barra de ações -->
+    <div class="barra-acoes">
+      <div class="abas">
+        <button type="button" class="aba active" id="btnVisaoObra">Por Obra</button>
+        <button type="button" class="aba" id="btnVisaoFuncionario">Por Funcionário</button>
+      </div>
+
+      <div class="botoes-cadastro">
+        <button type="button" class="btn-secundario" id="btnAbrirObra">+ Obra</button>
+        <button type="button" class="btn-laranja" id="btnAbrirPagamento">+ Pagamento</button>
+      </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card-filtros">
+      <h2>Filtros</h2>
+      <div class="filtros">
+        <div class="multi-select" id="multiMes">
+          <button type="button" class="multi-select-toggle" id="toggleMes">
+            <span class="filtro-label">Mês</span>
+            <span class="filtro-valor" id="resumoMes">Todos</span>
+          </button>
+          <div class="multi-select-painel" id="painelMes"></div>
+        </div>
+
+        <div class="select-simples">
+          <label class="filtro-label" for="filtroObra">Obra</label>
+          <select id="filtroObra">
+            <option value="todas">Todas</option>
+          </select>
+        </div>
+
+        <div class="multi-select" id="multiNome">
+          <button type="button" class="multi-select-toggle" id="toggleNome">
+            <span class="filtro-label">Funcionário</span>
+            <span class="filtro-valor" id="resumoNome">Todos</span>
+          </button>
+          <div class="multi-select-painel" id="painelNome"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conteúdo agrupado (obra ou funcionário) -->
+    <div id="grupos"></div>
+  </main>
+
+  <!-- Total fixo no rodapé -->
+  <div class="total-fixo">
+    <span class="total-fixo-label">Total exibido</span>
+    <span class="total-fixo-valor" id="totalFixoValor">R$ 0,00</span>
+  </div>
+
+  <!-- Modal: Cadastrar / gerenciar Obras -->
+  <div class="modal-overlay" id="modalObra">
+    <div class="modal-caixa">
+      <div class="modal-cabecalho">
+        <h2>Obras</h2>
+        <button type="button" class="modal-fechar" id="fecharModalObra">&times;</button>
+      </div>
+      <form id="form-obra" class="linha-form">
+        <input type="text" id="novaObraInput" placeholder="Nome da obra" required />
+        <button type="submit" class="btn-laranja">Adicionar</button>
+      </form>
+      <div id="listaObras" class="chips-lista"></div>
+    </div>
+  </div>
+
+  <!-- Modal: Cadastrar / Editar Pagamento -->
+  <div class="modal-overlay" id="modalPagamento">
+    <div class="modal-caixa">
+      <div class="modal-cabecalho">
+        <h2 id="tituloModalPagamento">Novo Pagamento</h2>
+        <button type="button" class="modal-fechar" id="fecharModalPagamento">&times;</button>
+      </div>
+      <form id="form-funcionario" class="form-modal-grid">
+        <label>
+          Funcionário
+          <input type="text" id="nome" placeholder="Nome do funcionário" required />
+        </label>
+
+        <label>
+          Obra
+          <select id="obra" required>
+            <option value="" disabled selected>Selecione a obra</option>
+          </select>
+        </label>
+
+        <label>
+          Mês
+          <select id="mes" required>
+            <option value="" disabled selected>Selecione o mês</option>
+            <option value="Janeiro">Janeiro</option>
+            <option value="Fevereiro">Fevereiro</option>
+            <option value="Março">Março</option>
+            <option value="Abril">Abril</option>
+            <option value="Maio">Maio</option>
+            <option value="Junho">Junho</option>
+            <option value="Julho">Julho</option>
+            <option value="Agosto">Agosto</option>
+            <option value="Setembro">Setembro</option>
+            <option value="Outubro">Outubro</option>
+            <option value="Novembro">Novembro</option>
+            <option value="Dezembro">Dezembro</option>
+          </select>
+        </label>
+
+        <label>
+          Valor Pago (R$)
+          <input type="number" id="valor" placeholder="0,00" step="0.01" required />
+        </label>
+
+        <label class="campo-largura-total">
+          Comprovante
+          <input type="file" id="comprovante" accept="image/*,application/pdf" />
+        </label>
+
+        <button type="submit" id="btnSubmitFuncionario" class="btn-laranja campo-largura-total">Adicionar</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Popup do comprovante -->
+  <div id="popup-comprovante" class="popup">
+    <div class="popup-content">
+      <span class="fechar" id="fecharPopup">&times;</span>
+      <div id="popup-body"></div>
+      <button id="btn-fechar-popup" class="btn-laranja">Fechar</button>
+    </div>
+  </div>
+
+  <script src="funcionarios.js?v=20261007"></script>
+  <script src="camera.js?v=1"></script>
+  <script src="modal-expandir.js?v=1"></script>
+  <footer class="fnx-rodape">Created by Yan Victor · <a href="https://www.instagram.com/yanszaida/" target="_blank" rel="noopener">@yanszaida</a></footer>
+</body>
+</html>

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <script src="config.js"></script>
+  <script src="auth-worker.js?v=6"></script>
+<script src="auth-guard.js"></script>
+<meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="home.css?v=8">
+  <title>FNX TECH — Início</title>
+  <link rel="stylesheet" href="mobile.css?v=3" />
+  <link rel="stylesheet" href="fnx-tema.css?v=1" />
+</head>
+<body class="pagina-home">
+  <nav class="menu" id="menuPrincipal">
+    <!-- Botão do menu no celular (no computador fica escondido) -->
+    <button type="button" class="btn-menu-mobile" id="btnMenuMobile" aria-label="Abrir menu">
+      <i class='bx bx-menu'></i>
+    </button>
+    <!-- LOGO -->
+    <a href="#">
+      <span class="logo logo-vazia" role="img" aria-label="Logo FNX TECH (em desenvolvimento)"></span>
+    </a>
+
+    <ul>
+      <li class="lista" id="gerenciarcontas-menu">
+        <a href="gerenciarcontas.html">
+          <i class='bx bx-user'></i>
+          <span class="span-menu">Cadastro</span>
+        </a>
+      </li>
+
+      <!-- Financeiro -->
+      <li class="lista has-submenu" id="financeiro-menu">
+        <a class="submenu-toggle">
+          <i class='bx bx-wallet'></i>
+          <span class="span-menu">Financeiro</span>
+          <i class='bx bx-chevron-down submenu-arrow'></i>
+        </a>
+        <ul class="submenu">
+          <li class="lista" id="contas-bancarias-item">
+            <a href="contas-bancarias.html">
+              <i class='bx bx-wallet-alt'></i>
+              <span class="span-menu">Gerenciamento de Contas</span>
+            </a>
+          </li>
+          <li class="lista">
+            <a href="funcionarios.html">
+              <i class='bx bx-file'></i>
+              <span class="span-menu">Funcionarios</span>
+            </a>
+          </li>
+          <li class="lista" id="comissao-menu">
+            <a href="comissao.html">
+              <i class='bx bx-credit-card-front'></i>
+              <span class="span-menu">Comissão</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <!-- Relatórios (global) -->
+      <li class="lista" id="relatorios-menu">
+        <a href="relatorios.html">
+          <i class='bx bx-bar-chart-alt-2'></i>
+          <span class="span-menu">Relatórios</span>
+        </a>
+      </li>
+
+      <li class="lista" id="obras-menu">
+        <a href="obras.html">
+          <i class='bx bx-building-house'></i>
+          <span class="span-menu">Obras</span>
+        </a>
+      </li>
+
+      <li class="lista" id="gestaomaterial-menu">
+        <a href="gestaodematerial.html">
+          <i class='bx bx-archive'></i>
+          <span class="span-menu">Materiais e Serviços</span>
+        </a>
+      </li>
+
+      <li class="lista" id="armazenamento-menu">
+        <a href="armazenamento.html">
+          <i class='bx bx-store'></i>
+          <span class="span-menu">Armazenamento</span>
+        </a>
+      </li>
+
+      <!-- Boletos -->
+      <li class="lista" id="boletos-menu">
+        <a href="boletos.html">
+          <i class='bx bx-file'></i>
+          <span class="span-menu">Boletos</span>
+        </a>
+      </li>
+
+      <!-- Clientes (quadro) -->
+      <li class="lista" id="clientes-crm-menu">
+        <a href="clientes-crm.html">
+          <i class='bx bx-group'></i>
+          <span class="span-menu">Contatos</span>
+        </a>
+      </li>
+
+      <!-- Quadros (estilo Trello) -->
+      <li class="lista" id="quadros-menu">
+        <a href="quadros.html">
+          <i class='bx bx-columns'></i>
+          <span class="span-menu">Quadros</span>
+        </a>
+      </li>
+
+      <!-- Notas -->
+      <li class="lista has-submenu" id="notas-menu">
+        <a href="#" class="submenu-toggle">
+          <i class='bx bx-note'></i>
+          <span class="span-menu">Notas</span>
+          <i class='bx bx-chevron-down submenu-arrow'></i>
+        </a>
+        <ul class="submenu">
+          <li class="lista">
+            <a href="nfse.html">
+              <i class='bx bx-wrench'></i>
+              <span class="span-menu">Mão de Obra <small class="tag-em-breve">em breve</small></span>
+            </a>
+          </li>
+          <li class="lista">
+            <a href="nfe.html">
+              <i class='bx bx-cube'></i>
+              <span class="span-menu">Material <small class="tag-em-breve">em breve</small></span>
+            </a>
+          </li>
+          <li class="lista">
+            <a href="consulta-notas.html">
+              <i class='bx bx-search'></i>
+              <span class="span-menu">Consulta <small class="tag-em-breve">em breve</small></span>
+            </a>
+          </li>
+          <li class="lista">
+            <a href="recebidos.html">
+              <i class='bx bx-file'></i>
+              <span class="span-menu">Recebidos</span>
+            </a>
+          </li>
+          <li class="lista">
+            <a href="contatos.html">
+              <i class='bx bx-id-card'></i>
+              <span class="span-menu">Clientes/Fornecedores</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <!-- Propostas -->
+      <li class="lista has-submenu" id="propostas-menu">
+        <a href="#" class="submenu-toggle">
+          <i class='bx bx-file-blank'></i>
+          <span class="span-menu">Propostas</span>
+          <i class='bx bx-chevron-down submenu-arrow'></i>
+        </a>
+        <ul class="submenu">
+          <li class="lista">
+            <a href="visita-tecnica.html">
+              <i class='bx bx-camera'></i>
+              <span class="span-menu">Visita Técnica</span>
+            </a>
+          </li>
+          <li class="lista">
+            <a href="orcamento.html">
+              <i class='bx bx-calculator'></i>
+              <span class="span-menu">Orçamento</span>
+            </a>
+          </li>
+          <li class="lista">
+            <a href="propostas.html">
+              <i class='bx bx-file'></i>
+              <span class="span-menu">Análise</span>
+            </a>
+          </li>
+          <li class="lista">
+            <a href="andamento.html">
+              <i class='bx bx-time-five'></i>
+              <span class="span-menu">Em Andamento</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <li class="lista" id="reuniao-menu">
+        <a href="reuniao.html">
+          <i class='bx bx-group'></i>
+          <span class="span-menu">Reunião</span>
+        </a>
+      </li>
+
+      <!-- Mídias Sociais -->
+      <li class="lista has-submenu" id="midias-menu">
+        <a href="#" class="submenu-toggle">
+          <i class='bx bx-envelope'></i>
+          <span class="span-menu">Mídias Sociais</span>
+          <i class='bx bx-chevron-down submenu-arrow'></i>
+        </a>
+        <ul class="submenu">
+          <li class="lista">
+            <a href="#" data-link-social="facebook" target="_blank" rel="noopener">
+              <i class='bx bxl-facebook'></i>
+              <span class="span-menu">Facebook</span>
+            </a>
+          </li>
+          <li class="lista">
+            <a href="#" data-link-social="instagram" target="_blank" rel="noopener">
+              <i class='bx bxl-instagram'></i>
+              <span class="span-menu">Instagram</span>
+            </a>
+          </li>
+          <li class="lista">
+            <a href="#" data-link-social="site" target="_blank" rel="noopener">
+              <i class='bx bx-globe'></i>
+              <span class="span-menu">Website</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <!-- Pontos -->
+      <li class="lista has-submenu" id="pontos-menu">
+        <a href="#" class="submenu-toggle">
+          <i class='bx bx-map-pin'></i>
+          <span class="span-menu">Pontos</span>
+          <i class='bx bx-chevron-down submenu-arrow'></i>
+        </a>
+        <ul class="submenu">
+          <li class="lista" id="pontos-confirmacao-item">
+            <a href="pontos-confirmacao.html">
+              <i class='bx bx-check-square'></i>
+              <span class="span-menu">Confirmação</span>
+            </a>
+          </li>
+          <li class="lista" id="pontos-consulta-item">
+            <a href="pontos-consulta.html">
+              <i class='bx bx-search'></i>
+              <span class="span-menu">Consulta</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <!-- Calendário -->
+      <li class="lista" id="calendario-menu">
+        <a href="calendario.html">
+          <i class='bx bx-calendar'></i>
+          <span class="span-menu">Calendário</span>
+        </a>
+      </li>
+
+      <!-- Botão Sair -->
+      <li>
+        <a href="login.html" id="logout-link">
+          <i class='bx bx-log-out'></i>
+          <span class="span-menu">Sair</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="dashboard">
+    <!-- Card Montante -->
+    <div class="card-montante">
+      <h2>Montante Atual</h2>
+      <input type="text" id="montante" placeholder="Digite o valor" />
+      <button onclick="salvarMontante()">Salvar Montante</button>
+
+      <h3>Mês</h3>
+      <textarea id="observacao" rows="4" placeholder="Digite o mês"></textarea>
+      <button onclick="salvarObservacao()">Salvar Mês</button>
+    </div>
+  </div>
+
+  <!-- Modal de confirmação (único) -->
+  <div id="logout-modal" class="modal-overlay">
+    <div class="modal-content">
+      <p>Deseja realmente sair?</p>
+      <div class="modal-buttons">
+        <button id="btn-yes">Sim</button>
+        <button id="btn-no">Não</button>
+      </div>
+    </div>
+  </div>
+  <div class="calendar-box">
+        <h2>Eventos de Hoje</h2>
+        <ul id="events-list">
+            <!-- Eventos aparecerão aqui -->
+        </ul>
+    </div>
+
+    <script src="https://apis.google.com/js/api.js"></script>
+<script src="https://accounts.google.com/gsi/client"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js"></script>
+
+<script src="google-auth.js?v=3"></script>
+<script src="permissoes-setor.js?v=7"></script>
+<script src="home.js?v=7"></script>
+<script>
+  // Mídias sociais: endereços vêm do config.js (FNX_LINKS)
+  document.querySelectorAll("[data-link-social]").forEach((a) => {
+    const url = (typeof FNX_LINKS !== "undefined" && FNX_LINKS[a.dataset.linkSocial]) || "";
+    if (url) { a.href = url; return; }
+    a.removeAttribute("target");
+    a.addEventListener("click", (e) => { e.preventDefault(); if (typeof mostrarToast === "function") mostrarToast("Link ainda não configurado."); });
+    const span = a.querySelector(".span-menu");
+    if (span && !span.querySelector(".tag-em-breve")) span.insertAdjacentHTML("beforeend", ' <small class="tag-em-breve">em breve</small>');
+  });
+</script>
+<script src="conta-logada.js?v=2"></script>
+<script src="sugestoes.js?v=3"></script>
+<script>
+  window.onload = () => initGoogleAPI();
+</script>
+
+  <script src="notificacoes.js?v=3"></script>
+  <script src="modal-expandir.js?v=1"></script>
+  <footer class="fnx-rodape">Created by Yan Victor · <a href="https://www.instagram.com/yanszaida/" target="_blank" rel="noopener">@yanszaida</a></footer>
+</body>
+</html>

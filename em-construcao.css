@@ -1,0 +1,198 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Montserrat", sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    background: rgb(208, 207, 207);
+    padding: 40px 0;
+}
+
+.container {
+    width: 800px;
+    max-width: 95vw;
+    background-color: transparent;
+    border: 2px solid rgba(255, 255, 255, .2);
+    border-radius: 10px;
+    color: #000000;
+    padding: 30px 40px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+    backdrop-filter: blur(50px);
+    margin-bottom: 40px;
+}
+
+.topo-pagina {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.topo-pagina h1 {
+    font-size: 24px;
+}
+
+.btn-voltar {
+    background-color: #fff;
+    border: none;
+    border-radius: 40px;
+    padding: 10px 22px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    text-decoration: none;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    transition: 0.3s;
+}
+.btn-voltar:hover {
+    background-color: transparent;
+    border: 2px solid rgba(0, 0, 0, 0.3);
+}
+
+/* ===== Cena da obra ===== */
+.cena-obra {
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 12px;
+    padding: 30px 20px 24px;
+    text-align: center;
+}
+
+.texto-em-obra {
+    font-size: 26px;
+    font-weight: 700;
+    color: rgb(255, 106, 0);
+    margin-bottom: 6px;
+}
+
+.pontos span {
+    display: inline-block;
+    animation: pontoFade 1.4s infinite;
+}
+.pontos span:nth-child(2) { animation-delay: 0.2s; }
+.pontos span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes pontoFade {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 1; }
+}
+
+.ilustracao-muro {
+    width: 100%;
+    max-width: 560px;
+    height: auto;
+}
+
+.ilustracao-muro .base {
+    fill: #999;
+    opacity: 0.35;
+}
+
+.ilustracao-muro .linha-chao {
+    fill: #999;
+    opacity: 0.5;
+}
+
+.fileira rect {
+    fill: #D85A30;
+    opacity: 0;
+}
+
+.fileira-1 { animation: aparecer 4.5s ease-in-out infinite; }
+.fileira-2 { animation: aparecer 4.5s ease-in-out infinite; animation-delay: 0.9s; }
+.fileira-3 { animation: aparecer 4.5s ease-in-out infinite; animation-delay: 1.8s; }
+.fileira-4 { animation: aparecer 4.5s ease-in-out infinite; animation-delay: 2.7s; }
+
+.fileira rect { animation: inherit; }
+
+@keyframes aparecer {
+    0% { opacity: 0; }
+    4% { opacity: 1; }
+    82% { opacity: 1; }
+    100% { opacity: 1; }
+}
+
+.pedreiro .cabeca { fill: #F0997B; }
+.pedreiro .corpo { fill: #378ADD; }
+.pedreiro .braco { fill: #378ADD; transform-origin: 484px 196px; }
+.pedreiro .perna { fill: #534AB7; }
+.pedreiro .colher { fill: #5F5E5A; transform-origin: 479px 203px; }
+
+.pedreiro {
+    animation: andarPedreiro 4.5s ease-in-out infinite;
+}
+
+.pedreiro .braco {
+    animation: balancarBraco 1s ease-in-out infinite;
+}
+.pedreiro .colher {
+    animation: balancarColher 1s ease-in-out infinite;
+}
+
+@keyframes andarPedreiro {
+    0% { transform: translateX(0); }
+    22% { transform: translateX(-90px); }
+    47% { transform: translateX(-90px); }
+    58% { transform: translateX(-180px); }
+    82% { transform: translateX(-180px); }
+    100% { transform: translateX(0); }
+}
+
+@keyframes balancarBraco {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(-25deg); }
+}
+
+@keyframes balancarColher {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-5px) rotate(-15deg); }
+}
+
+.texto-em-baixo {
+    margin-top: 14px;
+    font-size: 15px;
+    color: #5F5E5A;
+    font-weight: 500;
+}
+
+.texto-explicacao {
+    max-width: 440px;
+    margin: 12px auto 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #555;
+}
+
+.btn-voltar-grande {
+    display: inline-block;
+    margin-top: 22px;
+    background: rgb(255, 106, 0);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 12px 34px;
+    border-radius: 40px;
+    box-shadow: 0 4px 12px rgba(255, 106, 0, 0.35);
+    transition: transform 0.2s, background-color 0.2s;
+}
+.btn-voltar-grande:hover { background: rgb(212, 85, 0); transform: translateY(-2px); }
+
+@media (max-width: 600px) {
+    .container { padding: 20px; }
+    .texto-em-obra { font-size: 22px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .fileira rect, .pedreiro, .pedreiro .braco, .pedreiro .colher, .pontos span {
+        animation: none !important;
+        opacity: 1;
+    }
+}

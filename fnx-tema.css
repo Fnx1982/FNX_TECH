@@ -1,0 +1,118 @@
+/* ==========================================================================
+   fnx-tema.css — identidade visual FNX TECH (carregado por último em
+   todas as páginas). Paleta: laranja + preto, com vermelho e âmbar de
+   apoio. Para mudar as cores do site inteiro, mexa só nas variáveis.
+   ========================================================================== */
+:root {
+  --fnx-laranja: #FF6A00;
+  --fnx-laranja-escuro: #D45500;
+  --fnx-vermelho: #E5141B;
+  --fnx-ambar: #FFB000;
+  --fnx-preto: #0E0E0E;
+  --fnx-grafite: #1C1C1C;
+  --fnx-claro: #FFF1E6;
+  --fnx-gradiente: linear-gradient(135deg, #FF6A00 0%, #E5141B 100%);
+}
+
+::selection { background: rgba(255, 106, 0, .25); }
+
+/* ── Rodapé "Created by" (todas as páginas) ─────────────────────────── */
+.fnx-rodape {
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: auto;
+  padding: 18px 16px 22px;
+  text-align: center;
+  font-family: "Montserrat", sans-serif;
+  font-size: 12.5px;
+  color: #666;
+  letter-spacing: .02em;
+  clear: both;
+}
+.fnx-rodape a { color: var(--fnx-laranja); font-weight: 700; text-decoration: none; }
+.fnx-rodape a:hover { color: var(--fnx-vermelho); text-decoration: underline; }
+/* Páginas com barra fixa de totais no rodapé (Extrato, Boletos...) */
+body:has(.total-fixo) .fnx-rodape { padding-bottom: 96px; }
+
+/* Tela inicial (computador): rodapé fixo embaixo, entre os dois cartões */
+body.pagina-home { background: rgb(208, 207, 207); }
+body.pagina-home .fnx-rodape {
+  position: fixed; left: 70px; right: 0; bottom: 0; z-index: 800; width: auto; padding: 10px 16px; pointer-events: none;
+}
+body.pagina-home .fnx-rodape a { pointer-events: auto; }
+@media (max-width: 768px), (hover: none) and (max-width: 1100px) {
+  body.pagina-home .fnx-rodape { position: static; padding: 16px 12px 20px; }
+}
+
+/* ── Logo em branco (em desenvolvimento) ────────────────────────────── */
+.logo-vazia {
+  display: block;
+  background: transparent;
+  border: 2px dashed rgba(255, 255, 255, .22) !important;
+}
+
+/* ── Menu lateral: detalhe em gradiente laranja → vermelho ──────────── */
+.menu { border-right: 3px solid transparent; border-image: var(--fnx-gradiente) 1; }
+.menu li:hover > a,
+nav.menu li.active > a { border-left-color: var(--fnx-vermelho) !important; }
+
+/* ── Botões principais com o gradiente da marca ─────────────────────── */
+.btn-laranja,
+.btn-salvar,
+button.login,
+.card-montante button {
+  background: var(--fnx-gradiente) !important;
+  color: #fff !important;
+  border: none !important;
+}
+.btn-laranja:hover,
+.btn-salvar:hover,
+button.login:hover,
+.card-montante button:hover { filter: brightness(1.08); }
+
+/* ── Login (sem imagem de fundo: fundo preto com brilho da marca) ───── */
+body:has(> main.container > form > .input-box) {
+  background:
+    radial-gradient(circle at 15% 20%, rgba(255, 106, 0, .35), transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(229, 20, 27, .30), transparent 45%),
+    var(--fnx-preto) !important;
+  flex-direction: column;
+}
+body:has(> main.container > form > .input-box) .container,
+body:has(> main.container > .input-box) .container {
+  background: rgba(20, 20, 20, .72);
+  border-color: rgba(255, 255, 255, .08);
+  color: #fff;
+  margin: auto 0 0;
+}
+body:has(> main.container > form > .input-box) .container h1 { color: #fff; letter-spacing: .04em; }
+body:has(> main.container > form > .input-box) .container h1::after {
+  content: ""; display: block; width: 56px; height: 4px; margin: 10px auto 0; border-radius: 4px; background: var(--fnx-gradiente);
+}
+body:has(> main.container > form > .input-box) .input-box input {
+  color: #fff; border-color: rgba(255, 255, 255, .18); background: rgba(255, 255, 255, .04);
+}
+body:has(> main.container > form > .input-box) .input-box input:focus { border-color: var(--fnx-laranja); }
+body:has(> main.container > form > .input-box) .input-box input::placeholder { color: rgba(255, 255, 255, .6); }
+body:has(> main.container > form > .input-box) .input-box i,
+body:has(> main.container > form > .input-box) .remember-forgot { color: #ddd; }
+body:has(> main.container > form > .input-box) .remember-forgot label input { accent-color: var(--fnx-laranja); }
+body:has(> main.container > form > .input-box) .fnx-rodape { color: #aaa; margin-top: auto; }
+
+/* Recuperar senha / trocar senha (mesmo visual do login) */
+body:has(> main.container > .input-box) {
+  background:
+    radial-gradient(circle at 15% 20%, rgba(255, 106, 0, .35), transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(229, 20, 27, .30), transparent 45%),
+    var(--fnx-preto) !important;
+  flex-direction: column;
+}
+body:has(> main.container > .input-box) .container p,
+body:has(> main.container > .input-box) .container h1 { color: #eee !important; }
+body:has(> main.container > .input-box) .input-box input { color: #fff; }
+body:has(> main.container > .input-box) .input-box input::placeholder { color: rgba(255, 255, 255, .6); }
+body:has(> main.container > .input-box) .fnx-rodape { color: #aaa; }
+
+@media (max-width: 768px) {
+  .fnx-rodape { font-size: 12px; padding: 16px 12px 20px; }
+}

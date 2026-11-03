@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <script src="config.js"></script>
+  <script src="auth-worker.js?v=6"></script>
+<script src="auth-guard.js"></script>
+<meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Calendar</title>
+  <link rel="stylesheet" href="calendario.css?v=3">
+
+  <!-- FullCalendar -->
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+
+  <!-- Autenticação Google compartilhada com home.html (carrega primeiro) -->
+  <script src="google-auth.js?v=3"></script>
+
+  <!-- Google API -->
+  <script async defer src="https://apis.google.com/js/api.js"
+          onload="initGoogleAPI()">
+  </script>
+
+  <!-- Nova biblioteca de identidade -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <link rel="stylesheet" href="mobile.css?v=3" />
+  <link rel="stylesheet" href="fnx-tema.css?v=1" />
+</head>
+<body>
+  <div class="dashboard">
+    <div class="card-calendario">
+      <h2>
+        Meus Eventos
+        <a href="home.html" class="btn-voltar">Voltar</a>
+      </h2>
+
+      <!-- Conexão com o Google: conecta uma vez e fica conectado -->
+      <div class="barra-google" id="barraGoogle">
+        <span class="status-google" id="statusGoogle">Carregando…</span>
+        <div class="botoes-google">
+          <button type="button" id="btnLogin" style="display:none;">Conectar com Google</button>
+          <button type="button" id="btnTrocarConta" class="btn-secundario-cal" style="display:none;">Trocar conta</button>
+          <button type="button" id="btnLogout" class="btn-secundario-cal" style="display:none;">Desconectar</button>
+        </div>
+      </div>
+      <button type="button" id="btnNovoEvento" class="btn-novo-evento" style="display:none;">+ Novo evento</button>
+
+      <!-- Calendário -->
+      <div id="calendar"></div>
+    </div>
+  </div>
+
+  <!-- Modal para criar/editar evento -->
+  <div id="eventModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="fecharModal()">&times;</span>
+      <h3>Novo Evento</h3>
+
+      <div class="tipos-evento" role="radiogroup" aria-label="Tipo do evento">
+        <label class="tipo-evento"><input type="radio" name="tipoEvento" value="visita" checked /><span>📍 Visita técnica</span></label>
+        <label class="tipo-evento"><input type="radio" name="tipoEvento" value="pagamento" /><span>💳 Pagamento / boleto</span></label>
+        <label class="tipo-evento"><input type="radio" name="tipoEvento" value="outro" /><span>📅 Outro</span></label>
+      </div>
+      <p class="dica-tipo-evento" id="dicaTipoEvento"></p>
+
+      <div class="so-tipo" data-tipos="outro">
+        <label for="eventTitle">Título do evento</label>
+        <input type="text" id="eventTitle" placeholder="Ex: Reunião, entrega de material..." />
+      </div>
+
+      <div class="so-tipo" data-tipos="visita">
+        <label for="eventLocalNome">Nome do local</label>
+        <input type="text" id="eventLocalNome" placeholder="Ex: Ed. L'Espace Alameda, Condomínio Sol Nascente" />
+        <label for="eventClienteVisita">Cliente / responsável</label>
+        <input type="text" id="eventClienteVisita" placeholder="Ex: síndico João, administradora..." />
+        <label for="eventTelefone">Telefone</label>
+        <input type="text" id="eventTelefone" placeholder="(41) 9 9999-9999" inputmode="tel" />
+      </div>
+
+      <div class="so-tipo" data-tipos="pagamento">
+        <label for="eventClientePagamento">Empresa</label>
+        <input type="text" id="eventClientePagamento" placeholder="Ex: Sicredi, Leroy Merlin, fornecedor..." />
+      </div>
+
+      <div class="so-tipo" data-tipos="visita outro">
+        <label for="eventEndereco">Endereço</label>
+        <input type="text" id="eventEndereco" placeholder="Rua, número, bairro, cidade" />
+        <div class="endereco-com-mapa" id="mapaEvento"></div>
+      </div>
+
+      <label for="eventStart">Início</label>
+      <input type="datetime-local" id="eventStart">
+
+      <label for="eventEnd">Fim</label>
+      <input type="datetime-local" id="eventEnd">
+
+      <label for="eventDescricao" id="rotuloDescricaoEvento">Descritivo / Observação</label>
+      <textarea id="eventDescricao" rows="3" placeholder="Detalhes sobre o evento..."></textarea>
+
+      <div class="modal-actions">
+        <button id="btnSalvar" onclick="salvarEvento()">Salvar</button>
+        <button id="btnEditar" onclick="editarEvento()" style="display:none;">Editar</button>
+        <button id="btnExcluir" onclick="excluirEvento()" style="display:none;">Excluir</button>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="mapas.js?v=1"></script>
+  <script src="calendario.js?v=4"></script>
+  <script>
+    // O calendario.js está no final do <body>, então os elementos
+    // (#btnLogin, #calendar, etc.) já existem nesse ponto — não
+    // precisamos esperar DOMContentLoaded, que poderia disparar
+    // depois do script "async" do Google já ter chamado o callback.
+    onGoogleAuthChange(iniciarTelaCalendario);
+  </script>
+  <script src="modal-expandir.js?v=1"></script>
+  <footer class="fnx-rodape">Created by Yan Victor · <a href="https://www.instagram.com/yanszaida/" target="_blank" rel="noopener">@yanszaida</a></footer>
+</body>
+</html>

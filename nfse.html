@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script src="config.js"></script>
+  <script>
+  // TELA TRAVADA: emissão de notas ainda em desenvolvimento.
+  // Para liberar de novo, é só apagar este bloco <script> inteiro.
+  location.replace("em-construcao.html?pagina=" + encodeURIComponent("Nota Fiscal — Mão de Obra") + "&tipo=notas");
+</script>
+
+  <script src="auth-worker.js?v=6"></script>
+  <script src="auth-guard.js"></script>
+  <script src="confirm-modal.js"></script>
+  <script src="validacao.js"></script>
+  <script src="validacao-fiscal.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NFS-e (Mão de Obra) — FNX TECH</title>
+  <link rel="stylesheet" href="nota-fiscal.css" />
+  <link rel="stylesheet" href="mobile.css?v=3" />
+  <link rel="stylesheet" href="fnx-tema.css?v=1" />
+</head>
+<body>
+
+  <main class="container">
+
+    <div class="topo-pagina">
+      <div>
+        <h1>NFS-e — Mão de Obra</h1>
+        <p>Nota fiscal de serviço eletrônica (Padrão Nacional)</p>
+      </div>
+      <a href="home.html" class="btn-voltar">← Voltar</a>
+    </div>
+    <div class="atalhos-fluxo">
+      <a href="nfe.html" class="atalho-fluxo">📦 Material</a>
+      <a href="nfse.html" class="atalho-fluxo atalho-atual">🔧 Mão de Obra</a>
+      <a href="consulta-notas.html" class="atalho-fluxo">🔍 Consulta</a>
+      <a href="recebidos.html" class="atalho-fluxo">📥 Recebidos</a>
+      <a href="contatos.html" class="atalho-fluxo">👤 Clientes/Fornecedores</a>
+    </div>
+
+    <div class="aviso-certificado">
+      <b>Emissão real ainda não configurada.</b> Falta escolher e conectar um provedor de emissão (Focus NFe, PlugNotas, etc). Por enquanto, esta tela salva e organiza os dados no padrão oficial, prontos pra conferência — nada é enviado à prefeitura ainda.
+    </div>
+
+    <div class="card-secao">
+      <h2 id="tituloFormulario">Nova NFS-e</h2>
+      <input type="hidden" id="campoPropostaId" />
+
+      <!-- ═══════════ PRESTADOR (dados fixos da FNX TECH) ═══════════ -->
+      <h2 style="margin-top:8px;">Prestador de Serviços <span class="sub-h2">dados fixos da FNX TECH — confira uma vez, fica salvo pras próximas notas</span></h2>
+      <div class="grid-campos" style="margin-bottom:16px;">
+        <div class="campo"><label for="empCnpj">CNPJ</label><input type="text" id="empCnpj" /></div>
+        <div class="campo"><label for="empInscMunicipal">Inscrição Municipal</label><input type="text" id="empInscMunicipal" /></div>
+        <div class="campo"><label for="empInscEstadual">Inscrição Estadual</label><input type="text" id="empInscEstadual" /></div>
+        <div class="campo full"><label for="empRazaoSocial">Nome / Razão Social</label><input type="text" id="empRazaoSocial" /></div>
+        <div class="campo full"><label for="empEndereco">Endereço</label><input type="text" id="empEndereco" /></div>
+        <div class="campo"><label for="empMunicipio">Município</label><input type="text" id="empMunicipio" /></div>
+        <div class="campo"><label for="empUf">UF</label><input type="text" id="empUf" maxlength="2" /></div>
+        <div class="campo"><label for="empCep">CEP</label><input type="text" id="empCep" /></div>
+        <div class="campo"><label for="empFone">Fone</label><input type="text" id="empFone" /></div>
+        <div class="campo"><label for="empEmail">E-mail</label><input type="text" id="empEmail" /></div>
+        <div class="campo"><label for="empCnae">CNAE</label><input type="text" id="empCnae" placeholder="Código — descrição" /></div>
+        <div class="campo full"><label for="empAtividade">Atividade</label><input type="text" id="empAtividade" placeholder="Código — descrição" /></div>
+        <div class="campo">
+          <label for="empRegimeTributacao">Regime Especial de Tributação</label>
+          <select id="empRegimeTributacao">
+            <option value="1">1 - Microempresa Municipal</option>
+            <option value="2">2 - Estimativa</option>
+            <option value="3">3 - Sociedade de Profissionais</option>
+            <option value="4">4 - Cooperativa</option>
+            <option value="5">5 - MEI</option>
+            <option value="6">6 - ME/EPP Simples Nacional</option>
+            <option value="8" selected>8 - Tributação Normal</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label for="empOptanteSimples">Optante Simples</label>
+          <select id="empOptanteSimples"><option value="SIM" selected>SIM</option><option value="NÃO">NÃO</option></select>
+        </div>
+        <div class="campo">
+          <label for="empIncentivadorCultural">Incentivador Cultural</label>
+          <select id="empIncentivadorCultural"><option value="NÃO" selected>NÃO</option><option value="SIM">SIM</option></select>
+        </div>
+      </div>
+      <button type="button" class="btn-salvar-rascunho" id="btnSalvarDadosEmpresa" style="margin-bottom:24px;">Salvar dados da empresa</button>
+
+      <!-- ═══════════ TOMADOR ═══════════ -->
+      <h2>Tomador de Serviços</h2>
+      <div class="grid-campos" style="margin-bottom:16px;">
+        <div class="campo campo-alinha-base full">
+          <label for="campoTomadorNome">Cliente / Tomador do serviço</label>
+          <input type="text" id="campoTomadorNome" placeholder="Nome ou razão social" list="listaContatosDatalist" />
+          <datalist id="listaContatosDatalist"></datalist>
+        </div>
+        <div class="campo campo-alinha-base" style="grid-column: span 2; min-width: 320px;">
+          <label for="campoTomadorDocumento">CPF / CNPJ</label>
+          <div style="display:flex; gap:6px;">
+            <input type="text" id="campoTomadorDocumento" placeholder="000.000.000-00" style="flex:1; min-width:160px;" />
+            <button type="button" id="btnBuscarCnpjTomador" class="btn-salvar-rascunho" style="white-space:nowrap;">Buscar CNPJ</button>
+          </div>
+        </div>
+        <div class="campo"><label for="campoTomadorInscMunicipal">Inscrição Municipal</label><input type="text" id="campoTomadorInscMunicipal" /></div>
+        <div class="campo"><label for="campoTomadorInscEstadual">Inscrição Estadual</label><input type="text" id="campoTomadorInscEstadual" /></div>
+        <div class="campo full"><label for="campoTomadorEndereco">Endereço</label><input type="text" id="campoTomadorEndereco" placeholder="Rua, número, bairro" /></div>
+        <div class="campo"><label for="campoTomadorMunicipio">Município</label><input type="text" id="campoTomadorMunicipio" /></div>
+        <div class="campo"><label for="campoTomadorUf">UF</label><input type="text" id="campoTomadorUf" maxlength="2" /></div>
+        <div class="campo"><label for="campoTomadorCep">CEP</label><input type="text" id="campoTomadorCep" /></div>
+        <div class="campo"><label for="campoTomadorPais">País</label><input type="text" id="campoTomadorPais" value="Brasil" /></div>
+        <div class="campo"><label for="campoTomadorFone">Fone</label><input type="text" id="campoTomadorFone" /></div>
+        <div class="campo"><label for="campoTomadorEmail">E-mail</label><input type="text" id="campoTomadorEmail" /></div>
+      </div>
+
+      <!-- ═══════════ ITENS ═══════════ -->
+      <h2 style="margin-top:20px;">Discriminação dos Serviços</h2>
+      <table class="tabela-itens" id="tabelaItens">
+        <thead><tr><th>Descrição</th><th>Qtd.</th><th>Valor unit. (R$)</th><th>Total</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <button type="button" class="btn-add-linha" id="btnAddItem">+ Adicionar serviço</button>
+      <datalist id="listaServicosDatalist"></datalist>
+
+      <!-- ═══════════ TRIBUTAÇÃO ISSQN ═══════════ -->
+      <h2 style="margin-top:24px;">Tributação de ISSQN</h2>
+      <div class="grid-campos" style="margin-bottom:16px;">
+        <div class="campo"><label for="campoCompetencia">Competência</label><input type="date" id="campoCompetencia" /></div>
+        <div class="campo"><label for="campoNaturezaOperacao">Natureza da Operação</label>
+          <select id="campoNaturezaOperacao">
+            <option value="1" selected>1 - Operação tributável</option>
+            <option value="2">2 - Tributável com retenção</option>
+            <option value="3">3 - Isenta</option>
+            <option value="4">4 - Imune</option>
+            <option value="5">5 - Exigibilidade suspensa</option>
+          </select>
+        </div>
+        <div class="campo"><label for="campoIssRetido">ISS Retido</label>
+          <select id="campoIssRetido"><option value="NÃO" selected>NÃO</option><option value="SIM">SIM</option></select>
+        </div>
+        <div class="campo"><label for="campoLocalPrestacao">Local de Prestação</label><input type="text" id="campoLocalPrestacao" placeholder="Cidade / UF" value="Curitiba/PR" /></div>
+        <div class="campo"><label for="campoMunicipioIncidencia">Município de Incidência <span class="texto-opcional-inline">(copia o Local de Prestação, a não ser que você mude aqui)</span></label><input type="text" id="campoMunicipioIncidencia" placeholder="Cidade / UF" value="Curitiba/PR" /></div>
+        <div class="campo"><label for="campoAliqIss">Alíquota ISS (%)</label><input type="number" id="campoAliqIss" step="0.0001" min="0" max="100" value="0" /></div>
+      </div>
+
+      <!-- ═══════════ IBS/CBS (Reforma Tributária) ═══════════ -->
+      <h2 style="margin-top:24px;">IBS / CBS <span class="sub-h2">reforma tributária — padrão nacional</span></h2>
+      <div class="grid-campos" style="margin-bottom:16px;">
+        <div class="campo"><label for="campoFinalidade">Finalidade</label>
+          <select id="campoFinalidade">
+            <option value="NFS-e regular" selected>NFS-e regular</option>
+            <option value="NFS-e complementar">NFS-e complementar</option>
+            <option value="NFS-e de ajuste">NFS-e de ajuste</option>
+            <option value="NFS-e para substituição">NFS-e para substituição</option>
+          </select>
+        </div>
+        <div class="campo"><label for="campoEnteGovernamental">Ente Governamental</label>
+          <select id="campoEnteGovernamental"><option value="Não" selected>Não</option><option value="Sim">Sim</option></select>
+        </div>
+        <div class="campo"><label for="campoTipoOperacao">Tipo de Operação</label><input type="text" id="campoTipoOperacao" /></div>
+        <div class="campo"><label for="campoDestinatario">Destinatário</label>
+          <select id="campoDestinatario"><option value="Tomador/Adquirente igual ao Destinatário" selected>Tomador/Adquirente igual ao Destinatário</option><option value="Destinatário diferente do Tomador">Destinatário diferente do Tomador</option></select>
+        </div>
+        <div class="campo"><label for="campoUsoConsumoPessoal">Uso/Consumo Pessoal</label>
+          <select id="campoUsoConsumoPessoal"><option value="Não" selected>Não</option><option value="Sim">Sim</option></select>
+        </div>
+        <div class="campo"><label for="campoIndicadorOperacao">Indicador da Operação</label><input type="text" id="campoIndicadorOperacao" /></div>
+        <div class="campo full"><label for="campoNbs">NBS <span class="texto-opcional-inline">(Nomenclatura Brasileira de Serviços)</span></label><input type="text" id="campoNbs" placeholder="Código — descrição" /></div>
+        <div class="campo"><label for="campoClassificacaoTributaria">Classificação Tributária</label><input type="text" id="campoClassificacaoTributaria" /></div>
+        <div class="campo"><label for="campoCst">CST</label><input type="text" id="campoCst" /></div>
+        <div class="campo"><label for="campoCreditoPresumido">Crédito Presumido</label><input type="text" id="campoCreditoPresumido" placeholder="Se houver" /></div>
+      </div>
+
+      <h3 style="margin-top:14px; font-size:13px; color:var(--texto-3);">Valores IBS/CBS</h3>
+      <div class="grid-campos" style="margin-bottom:16px;">
+        <div class="campo"><label for="campoValorBcIbs">Valor BC</label><input type="number" id="campoValorBcIbs" step="0.01" min="0" value="0" /></div>
+        <div class="campo"><label for="campoVlrTotIbs">Vlr Tot IBS</label><input type="number" id="campoVlrTotIbs" step="0.01" min="0" value="0" /></div>
+        <div class="campo"><label for="campoVlrIbsUf">Vlr IBS UF</label><input type="number" id="campoVlrIbsUf" step="0.01" min="0" value="0" /></div>
+        <div class="campo"><label for="campoAliqIbsUf">Alíq. IBS UF (%)</label><input type="number" id="campoAliqIbsUf" step="0.0001" min="0" value="0" /></div>
+        <div class="campo"><label for="campoAliqEfIbsUf">Alíq. Ef. IBS UF (%)</label><input type="number" id="campoAliqEfIbsUf" step="0.0001" min="0" value="0" /></div>
+        <div class="campo"><label for="campoVlrIbsMun">Vlr IBS Mun</label><input type="number" id="campoVlrIbsMun" step="0.01" min="0" value="0" /></div>
+        <div class="campo"><label for="campoAliqIbsMun">Alíq. IBS Mun (%)</label><input type="number" id="campoAliqIbsMun" step="0.0001" min="0" value="0" /></div>
+        <div class="campo"><label for="campoAliqEfIbsMun">Alíq. Ef. IBS Mun (%)</label><input type="number" id="campoAliqEfIbsMun" step="0.0001" min="0" value="0" /></div>
+        <div class="campo"><label for="campoValorCbs">Valor CBS</label><input type="number" id="campoValorCbs" step="0.01" min="0" value="0" /></div>
+        <div class="campo"><label for="campoAliqCbs">Alíq. CBS (%)</label><input type="number" id="campoAliqCbs" step="0.0001" min="0" value="0" /></div>
+        <div class="campo"><label for="campoAliqEfCbs">Alíq. Ef. CBS (%)</label><input type="number" id="campoAliqEfCbs" step="0.0001" min="0" value="0" /></div>
+      </div>
+
+      <!-- ═══════════ IMPOSTOS FEDERAIS ═══════════ -->
+      <h2 style="margin-top:24px;">Impostos Federais</h2>
+      <div class="grid-campos" style="margin-bottom:16px;">
+        <div class="campo"><label for="campoInssRetido">INSS Retido</label><input type="number" id="campoInssRetido" step="0.01" min="0" value="0" /></div>
+        <div class="campo"><label for="campoIrrfRetido">IRRF Retido</label><input type="number" id="campoIrrfRetido" step="0.01" min="0" value="0" /></div>
+        <div class="campo"><label for="campoPisCofinsCsllRetidos">PIS/COFINS/CSLL Retidos</label><input type="number" id="campoPisCofinsCsllRetidos" step="0.01" min="0" value="0" /></div>
+        <div class="campo"><label for="campoCofinsDevido">COFINS Devido</label><input type="number" id="campoCofinsDevido" step="0.01" min="0" value="0" /></div>
+        <div class="campo"><label for="campoPisDevido">PIS Devido</label><input type="number" id="campoPisDevido" step="0.01" min="0" value="0" /></div>
+        <div class="campo"><label for="campoRetFederais">Ret. Federais</label><input type="number" id="campoRetFederais" step="0.01" min="0" value="0" /></div>
+        <div class="campo"><label for="campoRetEstaduais">Ret. Estaduais</label><input type="number" id="campoRetEstaduais" step="0.01" min="0" value="0" /></div>
+        <div class="campo"><label for="campoRetMunicipais">Ret. Municipais</label><input type="number" id="campoRetMunicipais" step="0.01" min="0" value="0" /></div>
+        <div class="campo"><label for="campoOutrasRetencoes">Outras Retenções</label><input type="number" id="campoOutrasRetencoes" step="0.01" min="0" value="0" /></div>
+      </div>
+
+      <!-- ═══════════ VALORES (descontos/deduções) ═══════════ -->
+      <h2 style="margin-top:24px;">Descontos e Deduções</h2>
+      <div class="grid-campos" style="margin-bottom:16px;">
+        <div class="campo"><label for="campoDescCondicional">Desconto Condicional</label><input type="number" id="campoDescCondicional" step="0.01" min="0" value="0" /></div>
+        <div class="campo"><label for="campoDescIncondicional">Desconto Incondicional</label><input type="number" id="campoDescIncondicional" step="0.01" min="0" value="0" /></div>
+        <div class="campo"><label for="campoDeducoes">Deduções</label><input type="number" id="campoDeducoes" step="0.01" min="0" value="0" /></div>
+      </div>
+
+      <div class="campo full" style="margin-top:20px;">
+        <label for="campoObservacoes">Outras Informações</label>
+        <textarea id="campoObservacoes" placeholder="Informações adicionais para a nota"></textarea>
+      </div>
+
+      <div class="resumo-valores">
+        <div class="linha-resumo"><span>Valor Serviço (subtotal)</span><span id="resumoSubtotal">R$ 0,00</span></div>
+        <div class="linha-resumo"><span>Base de Cálculo</span><span id="resumoBaseCalculo">R$ 0,00</span></div>
+        <div class="linha-resumo"><span>Valor ISS</span><span id="resumoValorIss">R$ 0,00</span></div>
+        <div class="linha-resumo"><span>Total de retenções</span><span id="resumoImpostos">R$ 0,00</span></div>
+        <div class="linha-resumo total"><span>Valor Líquido</span><span id="resumoTotal">R$ 0,00</span></div>
+      </div>
+
+      <div class="barra-acoes" style="margin-top:18px;">
+        <button type="button" class="btn-salvar-rascunho" id="btnSalvarRascunho">Salvar rascunho</button>
+        <button type="button" class="btn-emitir" id="btnEmitir">Emitir NFS-e</button>
+        <button type="button" class="btn-salvar-rascunho" id="btnNovaNota">+ Nova nota</button>
+      </div>
+    </div>
+
+    <h2 style="margin-bottom:14px;">NFS-e salvas para conferência</h2>
+    <div class="lista-notas" id="listaNotas"></div>
+    <div class="vazio" id="vazioNotas" style="display:none;">Nenhuma NFS-e registrada ainda.</div>
+
+  </main>
+
+  <script>const TIPO_NOTA_PAGINA = "NFS-e";</script>
+  <script src="nota-fiscal.js"></script>
+  <script src="modal-expandir.js?v=1"></script>
+  <footer class="fnx-rodape">Created by Yan Victor · <a href="https://www.instagram.com/yanszaida/" target="_blank" rel="noopener">@yanszaida</a></footer>
+</body>
+</html>

@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <script src="config.js"></script>
+<script src="auth-worker.js?v=6"></script>
+<script src="auth-guard.js"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="gerenciacontas.css" />
+<script src="confirm-modal.js"></script>
+<script src="validacao.js"></script>
+<script src="permissoes-setor.js?v=7"></script>
+<script src="senha-visivel.js"></script>
+<title>Gerenciar Usuários</title>
+
+  <link rel="stylesheet" href="mobile.css?v=3" />
+<style>
+  .caixa-acesso-total { display: flex; gap: 10px; align-items: flex-start; background: #FFF6EF; border: 1.5px solid #FF6A00;
+    border-radius: 10px; padding: 12px; margin: 0 0 12px; cursor: pointer; font-size: 13px; line-height: 1.4; }
+  .caixa-acesso-total input { width: 18px; height: 18px; margin-top: 2px; accent-color: #FF6A00; flex: 0 0 auto; }
+  .caixa-acesso-total small { color: #7a5a20; }
+  .bloco-acesso-temp { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 6px; background: #f6f8fb; border: 1px dashed #c9d3e0;
+    border-radius: 10px; padding: 10px 12px; }
+  .bloco-acesso-temp small { color: #667; font-size: 12px; }
+  .linha-check-temp { flex-direction: row !important; align-items: center; gap: 8px; font-weight: 600; }
+  .linha-check-temp input { width: 16px; height: 16px; }
+  .tag-temporario { display: inline-block; margin-top: 3px; font-size: 11px; font-weight: 700; color: #1D5FB4; background: #E3EEFB; border-radius: 10px; padding: 1px 8px; }
+  .tag-temporario.vencido { color: #b03a2e; background: #fbe8e6; }
+</style>
+  <link rel="stylesheet" href="fnx-tema.css?v=1" />
+</head>
+<body>
+<div id="avisoAcessoAdmin" style="display:none; max-width:1100px; margin:16px auto 0; background:#FBE8EC; border-left:4px solid #c0392b; border-radius:8px; padding:12px 16px; font-size:13.5px; line-height:1.5; color:#7a1f1f; font-family:inherit;"></div>
+<main class="container">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: 10px;">
+        <h1 style="margin-bottom:0;">Gerenciar Usuários</h1>
+        <button onclick="window.location.href='home.html'" style="background:#fff; border:1px solid #ddd; border-radius:100px; padding:10px 20px; font-size:13px; font-weight:600; cursor:pointer; width:auto; margin:0; flex-shrink:0;">← Voltar</button>
+    </div>
+
+    <!-- FORMULÁRIO DE CADASTRO DE USUÁRIO -->
+    <form id="formUsuario">
+        <label>
+            Nome Completo
+            <input type="text" id="nome" required />
+        </label>
+        <label>
+            Registro
+            <input type="text" id="registro" required />
+        </label>
+        <label>
+            Email
+            <input type="email" id="email" />
+        </label>
+        <label>
+            Telefone
+            <input type="tel" id="telefone" placeholder="(99) 99999-9999" />
+        </label>
+        <label>
+            Sexo
+            <select id="sexo" required>
+                <option value="" disabled selected>Selecione</option>
+                <option value="Masculino">Masculino</option>
+                <option value="Feminino">Feminino</option>
+                <option value="Outro">Outro</option>
+            </select>
+        </label>
+        <label>
+            CPF
+            <input type="text" id="cpf" placeholder="000.000.000-00" maxlength="14" />
+        </label>
+        <label>
+            RG
+            <input type="text" id="rg" placeholder="00.000.000-0" maxlength="12" />
+        </label>
+        <label>
+            Endereço
+            <input type="text" id="endereco" />
+        </label>
+        <label>
+            Senha
+            <input type="password" id="senha" required />
+        </label>
+        <label>
+            Setor
+            <select id="setor" required>
+                <option value="" disabled selected>Selecione o setor</option>
+            </select>
+        </label>
+        <label>
+            Nível de acesso a Obras
+            <select id="nivelAcessoObra">
+                <option value="total">Total — vê e edita tudo, inclusive financeiro</option>
+                <option value="obra-sem-financeiro">Restrito — só demanda, nome do cliente e endereço</option>
+            </select>
+        </label>
+
+        <div class="bloco-acesso-temp">
+            <label class="linha-check-temp"><input type="checkbox" id="acessoTemporario" /> ⏳ Cadastro temporário</label>
+            <label id="rotuloAcessoAte" style="display:none;">Pode entrar até (inclusive)
+                <input type="date" id="acessoAte" />
+            </label>
+            <small>Depois dessa data a pessoa não consegue mais entrar (e quem estiver logado é desconectado). A conta continua cadastrada — dá pra estender a data ou excluir.</small>
+        </div>
+
+        <button type="submit">Adicionar Usuário</button>
+    </form>
+
+    <!-- FORMULÁRIO DE CADASTRO DE SETOR -->
+    <h2>Cadastrar Setor</h2>
+    <form id="formSetor">
+        <div class="linha-setor">
+            <input type="text" id="novoSetorInput" placeholder="Digite o nome do setor" required />
+            <button type="submit">Adicionar Setor</button>
+        </div>
+    </form>
+
+    <!-- LISTA DE SETORES -->
+    <h2>Setores Cadastrados</h2>
+    <table id="tabelaSetores">
+        <thead>
+            <tr>
+                <th>Nome do Setor</th>
+                <th>Permissões</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <!-- Modal: Definir permissões do setor -->
+    <div class="modal-overlay-permissao" id="modalPermissaoSetor">
+        <div class="modal-caixa-permissao">
+            <div class="modal-cabecalho-permissao">
+                <h2 id="tituloModalPermissao">Permissões do setor</h2>
+                <button type="button" class="modal-fechar-permissao" id="fecharModalPermissao">&times;</button>
+            </div>
+            <label class="caixa-acesso-total" id="caixaAcessoTotal">
+                <input type="checkbox" id="checkAcessoTotal" />
+                <span><b>⭐ Acesso total ao site (administrador)</b><br>
+                <small>Vê e mexe em tudo, inclusive Cadastro (criar, editar e excluir contas), permissões dos setores e o ponto de todos. Só marque para quem pode ter esse poder.</small></span>
+            </label>
+            <p class="texto-ajuda-permissao">Marque o que esse setor pode ver no menu. "Sair" e o login sempre ficam disponíveis para todos.
+            Marcar os itens do menu <b>não</b> dá poder de administrador — isso é só a caixa acima.</p>
+            <div class="lista-checkbox-permissao" id="listaCheckboxPermissao"></div>
+            <div class="modal-rodape-permissao">
+                <button type="button" class="btn-secundario-permissao" id="btnMarcarTudoPermissao">Marcar tudo</button>
+                <button type="button" class="btn-secundario-permissao" id="btnDesmarcarTudoPermissao">Desmarcar tudo</button>
+                <button type="button" class="btn-salvar-permissao" id="btnSalvarPermissaoSetor">Salvar Permissões</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABELA USUÁRIOS -->
+    <h2>Usuários Cadastrados</h2>
+    <table id="tabelaUsuarios">
+        <thead>
+            <tr>
+                <th>Nome Completo</th>
+                <th>Registro</th>
+                <th>Setor</th>
+                <th>Editar</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</main>
+
+<!-- PAINEL: Solicitações de redefinição de senha pendentes -->
+<div class="container">
+<h2>Solicitações de redefinição de senha</h2>
+<p style="font-size:13px;color:#666;">Quando alguém pede "Recuperar senha" na tela de login, a solicitação aparece aqui. Defina uma nova senha e repasse ao usuário.</p>
+<table id="tabelaResets">
+    <thead>
+        <tr>
+            <th>Registro</th>
+            <th>Solicitado em</th>
+            <th>Ação</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+</div>
+
+<!-- PAINEL: Salas de reunião fixas -->
+<div class="container">
+<h2>Salas de reunião fixas</h2>
+<p style="font-size:13px;color:#666;">Salas que aparecem prontas na tela de Reunião. Escolha quais setores podem ver e entrar em cada uma — quem não tem permissão nem fica sabendo que a sala existe. Marcar "Todos" deixa a sala aberta pra qualquer pessoa logada.</p>
+
+<div style="display:flex; gap:16px; align-items:flex-start; flex-wrap:wrap; margin:14px 0;">
+    <div style="flex:1; min-width:200px;">
+        <label style="display:block; font-size:14px; font-weight:600; color:#333; margin-bottom:6px;">Nome da sala</label>
+        <input type="text" id="novaSalaNome" placeholder="ex: Diretoria" style="width:100%; padding:8px 10px; border-radius:5px; border:1px solid #ccc; font-size:14px; font-family:inherit;" />
+    </div>
+    <div style="flex:1; min-width:220px;">
+        <label style="display:block; font-size:14px; font-weight:600; color:#333; margin-bottom:6px;">Quem pode entrar</label>
+        <div id="listaCheckboxSalaSetor" class="lista-chips-setor"></div>
+    </div>
+</div>
+<button id="btnCriarSalaFixa" class="btn-editar" style="margin-bottom:6px;">+ Criar sala</button>
+<p style="font-size:11px;color:#999;margin-bottom:10px;">Marque um ou mais setores. Se não marcar nenhum, a sala fica aberta para todos os setores.</p>
+
+<table id="tabelaSalasFixas">
+    <thead>
+        <tr>
+            <th>Sala</th>
+            <th>Quem pode entrar</th>
+            <th>Ação</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+</div>
+
+<script>
+    // Funções de Setores
+    let setorEmEdicaoPermissao = null;
+
+    function rotuloResumoPermissoes(nomeSetor) {
+        if (ehSetorAdministradorFixo(nomeSetor)) return "Acesso total (fixo)";
+        if (ehSetorAdministradorLocal(nomeSetor)) return "⭐ Acesso total (administrador)";
+        const permissoes = getPermissoesDoSetor(nomeSetor);
+        if (permissoes.length === 0) return "Nenhuma permissão definida";
+        if (permissoes.length === ITENS_MENU_DISPONIVEIS.length) return "Acesso total";
+        return `${permissoes.length} de ${ITENS_MENU_DISPONIVEIS.length} itens`;
+    }
+
+    function carregarSetores() {
+        const setores = JSON.parse(localStorage.getItem("setores")) || [];
+        const selectSetor = document.getElementById("setor");
+        selectSetor.innerHTML = '<option value="" disabled selected>Selecione o setor</option>';
+        setores.forEach(setor => {
+            const option = document.createElement("option");
+            option.value = setor;
+            option.textContent = ehSetorAdministradorLocal(setor) ? `${setor} (acesso total)` : setor;
+            selectSetor.appendChild(option);
+        });
+
+        popularSelectSetoresSala();
+
+        const tbody = document.querySelector("#tabelaSetores tbody");
+        tbody.innerHTML = "";
+        setores.forEach((setor, index) => {
+            const tr = document.createElement("tr");
+            const tdNome = document.createElement("td");
+            tdNome.textContent = setor;
+            tr.appendChild(tdNome);
+
+            const tdPermissoes = document.createElement("td");
+            const btnPermissoes = document.createElement("button");
+            btnPermissoes.textContent = rotuloResumoPermissoes(setor);
+            btnPermissoes.className = "btn-permissoes-setor";
+            btnPermissoes.title = "Clique para configurar o que este setor pode ver";
+            btnPermissoes.addEventListener("click", () => abrirModalPermissao(setor));
+            tdPermissoes.appendChild(btnPermissoes);
+            tr.appendChild(tdPermissoes);
+
+            const tdAcoes = document.createElement("td");
+            const btnExcluir = document.createElement("button");
+            btnExcluir.textContent = "Excluir";
+            btnExcluir.className = "btn-excluir-setor";
+            btnExcluir.addEventListener("click", () => excluirSetor(index));
+            tdAcoes.appendChild(btnExcluir);
+            tr.appendChild(tdAcoes);
+
+            tbody.appendChild(tr);
+        });
+    }
+
+    // ===== Modal de permissões do setor =====
+    function abrirModalPermissao(nomeSetor) {
+        setorEmEdicaoPermissao = nomeSetor;
+        document.getElementById("tituloModalPermissao").textContent = `Permissões — ${nomeSetor}`;
+
+        const permissoesAtuais = getPermissoesDoSetor(nomeSetor);
+        const lista = document.getElementById("listaCheckboxPermissao");
+        lista.innerHTML = "";
+
+        const checkTotal = document.getElementById("checkAcessoTotal");
+        const fixo = ehSetorAdministradorFixo(nomeSetor);
+        checkTotal.checked = fixo || permissoesAtuais.includes(PERMISSAO_ACESSO_TOTAL);
+        checkTotal.disabled = fixo;
+        checkTotal.title = fixo ? "Diretoria e Supervisor TI sempre têm acesso total" : "";
+
+        ITENS_MENU_DISPONIVEIS.forEach((item) => {
+            const linha = document.createElement("label");
+            linha.className = "linha-checkbox-permissao";
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.value = item.id;
+            checkbox.checked = permissoesAtuais.includes(item.id);
+            linha.appendChild(checkbox);
+            linha.appendChild(document.createTextNode(item.rotulo));
+            lista.appendChild(linha);
+        });
+
+        document.getElementById("modalPermissaoSetor").classList.add("active");
+    }
+
+    function fecharModalPermissaoFn() {
+        document.getElementById("modalPermissaoSetor").classList.remove("active");
+        setorEmEdicaoPermissao = null;
+    }
+
+    document.getElementById("fecharModalPermissao").addEventListener("click", fecharModalPermissaoFn);
+    document.getElementById("modalPermissaoSetor").addEventListener("click", (e) => {
+        if (e.target.id === "modalPermissaoSetor") fecharModalPermissaoFn();
+    });
+
+    document.getElementById("btnMarcarTudoPermissao").addEventListener("click", () => {
+        document.querySelectorAll("#listaCheckboxPermissao input[type=checkbox]").forEach((cb) => cb.checked = true);
+    });
+    document.getElementById("btnDesmarcarTudoPermissao").addEventListener("click", () => {
+        document.querySelectorAll("#listaCheckboxPermissao input[type=checkbox]").forEach((cb) => cb.checked = false);
+    });
+
+    document.getElementById("btnSalvarPermissaoSetor").addEventListener("click", async () => {
+        if (!setorEmEdicaoPermissao) return;
+        const marcados = [...document.querySelectorAll("#listaCheckboxPermissao input[type=checkbox]:checked")].map((cb) => cb.value);
+        if (document.getElementById("checkAcessoTotal").checked && !ehSetorAdministradorFixo(setorEmEdicaoPermissao)) {
+            marcados.push(PERMISSAO_ACESSO_TOTAL);
+            // Acesso total já mostra o menu inteiro
+            ITENS_MENU_DISPONIVEIS.forEach((i) => { if (!marcados.includes(i.id)) marcados.push(i.id); });
+        }
+        const salvou = await salvarPermissoesDoSetor(setorEmEdicaoPermissao, marcados);
+        if (!salvou) return; // o aviso de erro já apareceu
+        mostrarToast(`Permissões de "${setorEmEdicaoPermissao}" atualizadas. Quem é desse setor precisa sair e entrar de novo.`);
+        fecharModalPermissaoFn();
+        carregarSetores();
+    });
+
+    async function salvarNovoSetor(novoSetor) {
+        let setores = JSON.parse(localStorage.getItem("setores")) || [];
+        if (setores.includes(novoSetor)) {
+            marcarCampoComErro(document.getElementById("novoSetorInput"), "Este setor já existe.");
+            return false;
+        }
+        setores.push(novoSetor);
+        localStorage.setItem("setores", JSON.stringify(setores));
+        await apiDataSet("setores", setores);
+        // Novo setor começa sem nenhuma permissão marcada — o usuário
+        // deve configurar manualmente pelo botão de permissões.
+        salvarPermissoesDoSetor(novoSetor, []);
+        carregarSetores();
+        return true;
+    }
+
+    async function excluirSetor(index) {
+        let setores = JSON.parse(localStorage.getItem("setores")) || [];
+        const nomeSetor = setores[index];
+        setores.splice(index, 1);
+        localStorage.setItem("setores", JSON.stringify(setores));
+        await apiDataSet("setores", setores);
+        excluirSetorDasPermissoes(nomeSetor);
+        carregarSetores();
+    }
+
+    document.getElementById("formSetor").addEventListener("submit", async function(e) {
+        e.preventDefault();
+        limparErroCampo(document.getElementById("novoSetorInput"));
+        const novoSetor = document.getElementById("novoSetorInput").value.trim();
+        if (novoSetor) {
+            if (await salvarNovoSetor(novoSetor)) {
+                document.getElementById("novoSetorInput").value = "";
+            }
+        }
+    });
+    limparErroAoEditar(document.getElementById("novoSetorInput"));
+
+    // Máscaras (mantidas iguais)
+    function mascaraTelefone(event) {
+        let input = event.target;
+        let valor = input.value.replace(/\D/g, '');
+        if (valor.length > 11) valor = valor.slice(0, 11);
+
+        if (valor.length > 10) {
+            valor = valor.replace(/^(\d{2})(\d{5})(\d{4}).*/, '($1) $2-$3');
+        } else if (valor.length > 5) {
+            valor = valor.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, '($1) $2-$3');
+        } else if (valor.length > 2) {
+            valor = valor.replace(/^(\d{2})(\d{0,5})/, '($1) $2');
+        } else if (valor.length > 0) {
+            valor = valor.replace(/^(\d{0,2})/, '($1');
+        }
+        input.value = valor;
+    }
+    document.getElementById("telefone").addEventListener("input", mascaraTelefone);
+
+    function mascaraCPF(event) {
+        let input = event.target;
+        let valor = input.value.replace(/\D/g, '');
+        if (valor.length > 11) valor = valor.slice(0, 11);
+        valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
+        valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
+        valor = valor.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+        input.value = valor;
+    }
+    document.getElementById("cpf").addEventListener("input", mascaraCPF);
+
+    function mascaraRG(event) {
+        let input = event.target;
+        let valor = input.value.replace(/\D/g, '');
+        if (valor.length > 9) valor = valor.slice(0, 9);
+        valor = valor.replace(/(\d{2})(\d)/, '$1.$2');
+        valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
+        valor = valor.replace(/(\d{3})(\d{1})$/, '$1-$2');
+        input.value = valor;
+    }
+    document.getElementById("rg").addEventListener("input", mascaraRG);
+
+    // Usuários
+
+    async function carregarUsuarios() {
+        const resposta = await apiListarUsuarios();
+        const tbody = document.querySelector("#tabelaUsuarios tbody");
+        tbody.innerHTML = "";
+
+        if (!resposta.ok) {
+            mostrarToast(resposta.erro || "Não foi possível carregar os usuários.", "erro");
+            return;
+        }
+
+        resposta.usuarios.forEach((user) => {
+            const tr = document.createElement("tr");
+
+            const tdNome = document.createElement("td");
+            tdNome.textContent = user.nome;
+            tr.appendChild(tdNome);
+
+            const tdRegistro = document.createElement("td");
+            tdRegistro.textContent = user.registro;
+            tr.appendChild(tdRegistro);
+
+            const tdSetor = document.createElement("td");
+            tdSetor.textContent = user.setor || "—";
+            if (user.acessoAte) {
+                const [a, m, d] = user.acessoAte.split("-");
+                const vencido = new Date(user.acessoAte + "T23:59:59-03:00").getTime() < Date.now();
+                const tag = document.createElement("span");
+                tag.className = "tag-temporario" + (vencido ? " vencido" : "");
+                tag.textContent = vencido ? `⏳ temporário — venceu ${d}/${m}` : `⏳ temporário até ${d}/${m}/${a}`;
+                tdSetor.appendChild(document.createElement("br"));
+                tdSetor.appendChild(tag);
+            }
+            tr.appendChild(tdSetor);
+
+            const tdEditar = document.createElement("td");
+            const btnEditar = document.createElement("button");
+            btnEditar.textContent = "Editar";
+            btnEditar.className = "btn-editar";
+            btnEditar.addEventListener("click", () => {
+                window.location.href = `editar.html?registro=${encodeURIComponent(user.registro)}`;
+            });
+            tdEditar.appendChild(btnEditar);
+            tr.appendChild(tdEditar);
+
+            tbody.appendChild(tr);
+        });
+    }
+
+    // ── Salas de reunião fixas ────────────────────────────────
+    function popularSelectSetoresSala() {
+        const setores = JSON.parse(localStorage.getItem("setores")) || [];
+        const lista = document.getElementById("listaCheckboxSalaSetor");
+        lista.innerHTML = "";
+        if (setores.length === 0) {
+            lista.innerHTML = '<p style="font-size:12px;color:#999;padding:4px;">Nenhum setor cadastrado ainda.</p>';
+            return;
+        }
+        setores.forEach((s) => {
+            const chip = document.createElement("label");
+            chip.className = "chip-setor";
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.value = s;
+            checkbox.addEventListener("change", () => {
+                chip.classList.toggle("marcado", checkbox.checked);
+            });
+            chip.appendChild(checkbox);
+            chip.appendChild(document.createTextNode(s));
+            lista.appendChild(chip);
+        });
+    }
+
+    async function carregarSalasFixasAdmin() {
+        const resposta = await apiDataGet("salasReuniao");
+        const salas = (resposta.ok && resposta.valor) ? resposta.valor : [];
+        const tbody = document.querySelector("#tabelaSalasFixas tbody");
+        tbody.innerHTML = "";
+
+        if (salas.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="3" style="color:#999; background-color:#fff;">Nenhuma sala fixa criada ainda.</td></tr>';
+            return;
+        }
+
+        salas.forEach((sala) => {
+            // Cada linha é isolada num try/catch — se uma sala tiver dados
+            // malformados por algum motivo, ela não trava a exibição (nem
+            // os botões de excluir) das outras salas da lista.
+            try {
+                const tr = document.createElement("tr");
+
+                const tdNome = document.createElement("td");
+                tdNome.textContent = sala.nome || "(sem nome)";
+                tr.appendChild(tdNome);
+
+                const tdSetores = document.createElement("td");
+                tdSetores.textContent = (sala.setoresPermitidos === "todos" || !sala.setoresPermitidos)
+                    ? "Todos"
+                    : (Array.isArray(sala.setoresPermitidos) ? sala.setoresPermitidos.join(", ") : String(sala.setoresPermitidos));
+                tr.appendChild(tdSetores);
+
+                const tdAcao = document.createElement("td");
+                const btnExcluir = document.createElement("button");
+                btnExcluir.textContent = "Excluir";
+                btnExcluir.className = "btn-excluir-setor";
+                btnExcluir.addEventListener("click", async () => {
+                    const ok = await confirmarAcao(`Excluir a sala "${sala.nome}"?`, "");
+                    if (!ok) return;
+                    // Relê do servidor antes de excluir, em vez de usar a
+                    // lista "salas" antiga guardada no closure — evita
+                    // apagar uma sala criada por outra pessoa/aba entre o
+                    // momento em que a tabela carregou e o clique em excluir.
+                    const respostaAtual = await apiDataGet("salasReuniao");
+                    const salasAtuais = (respostaAtual.ok && respostaAtual.valor) ? respostaAtual.valor : [];
+                    const novasSalas = salasAtuais.filter((s) => s.id !== sala.id);
+                    const salvou = await apiDataSet("salasReuniao", novasSalas);
+                    if (!salvou.ok) { mostrarToast(salvou.erro || "Erro ao excluir a sala.", "erro"); return; }
+                    mostrarToast("Sala excluída.");
+                    carregarSalasFixasAdmin();
+                });
+                tdAcao.appendChild(btnExcluir);
+                tr.appendChild(tdAcao);
+
+                tbody.appendChild(tr);
+            } catch (e) {
+                console.warn("Sala com dados inválidos, pulando essa linha:", sala, e);
+            }
+        });
+    }
+
+    document.getElementById("btnCriarSalaFixa").addEventListener("click", async () => {
+        const campoNome = document.getElementById("novaSalaNome");
+        const nome = campoNome.value.trim();
+        if (!nome) { mostrarToast("Informe o nome da sala.", "erro"); return; }
+
+        const checkboxesMarcados = document.querySelectorAll("#listaCheckboxSalaSetor input:checked");
+        const setoresMarcados = [...checkboxesMarcados].map((c) => c.value);
+        const setoresPermitidos = setoresMarcados.length === 0 ? "todos" : setoresMarcados;
+
+        // slug: versão simplificada do nome, só letras/números/hífen —
+        // usado como identificador técnico da sala (o Jitsi não aceita
+        // qualquer caractere no nome da sala).
+        const slug = nome.trim().toLowerCase()
+            .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+            .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        if (!slug) { mostrarToast("Nome de sala inválido.", "erro"); return; }
+
+        const botao = document.getElementById("btnCriarSalaFixa");
+        const textoOriginal = botao.textContent;
+        botao.disabled = true;
+        botao.textContent = "Criando...";
+
+        try {
+            const resposta = await apiDataGet("salasReuniao");
+            const salas = (resposta.ok && resposta.valor) ? resposta.valor : [];
+            if (salas.some((s) => s.slug === slug)) {
+                mostrarToast("Já existe uma sala com esse nome.", "erro");
+                return;
+            }
+
+            salas.push({ id: String(Date.now()), nome, slug, setoresPermitidos });
+            const salvou = await apiDataSet("salasReuniao", salas);
+            if (!salvou.ok) { mostrarToast(salvou.erro || "Erro ao criar sala.", "erro"); return; }
+
+            campoNome.value = "";
+            document.querySelectorAll("#listaCheckboxSalaSetor .chip-setor").forEach((chip) => {
+                chip.classList.remove("marcado");
+                chip.querySelector("input").checked = false;
+            });
+            mostrarToast("Sala criada.");
+            carregarSalasFixasAdmin();
+        } finally {
+            botao.disabled = false;
+            botao.textContent = textoOriginal;
+        }
+    });
+
+    // ── Solicitações de redefinição de senha pendentes ──────────
+    async function carregarResetsPendentes() {
+        const resposta = await apiListarResetsPendentes();
+        const tbody = document.querySelector("#tabelaResets tbody");
+        tbody.innerHTML = "";
+        if (!resposta.ok) return;
+
+        if (resposta.pendentes.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="3" style="color:#999; background-color:#fff;">Nenhuma solicitação pendente.</td></tr>';
+            return;
+        }
+
+        resposta.pendentes.forEach((item) => {
+            const tr = document.createElement("tr");
+
+            const tdRegistro = document.createElement("td");
+            tdRegistro.textContent = item.registro;
+            tr.appendChild(tdRegistro);
+
+            const tdData = document.createElement("td");
+            tdData.textContent = new Date(item.criadoEm).toLocaleString("pt-BR");
+            tr.appendChild(tdData);
+
+            const tdAcao = document.createElement("td");
+            const btnDefinir = document.createElement("button");
+            btnDefinir.textContent = "Definir nova senha";
+            btnDefinir.className = "btn-editar";
+            btnDefinir.addEventListener("click", async () => {
+                const novaSenha = prompt(`Nova senha para o registro ${item.registro} (mínimo 6 caracteres):`);
+                if (!novaSenha) return;
+                if (novaSenha.length < 6) { mostrarToast("A senha precisa ter pelo menos 6 caracteres.", "erro"); return; }
+                const r = await apiAprovarReset(item.token, novaSenha);
+                if (r.ok) {
+                    mostrarToast("Senha redefinida. Repasse a nova senha ao usuário.");
+                    carregarResetsPendentes();
+                } else {
+                    mostrarToast(r.erro || "Erro ao redefinir senha.", "erro");
+                }
+            });
+            const btnDescartar = document.createElement("button");
+            btnDescartar.textContent = "Descartar";
+            btnDescartar.className = "btn-excluir-setor";
+            btnDescartar.style.marginLeft = "8px";
+            btnDescartar.addEventListener("click", async () => {
+                await apiDescartarReset(item.token);
+                carregarResetsPendentes();
+            });
+            tdAcao.appendChild(btnDefinir);
+            tdAcao.appendChild(btnDescartar);
+            tr.appendChild(tdAcao);
+
+            tbody.appendChild(tr);
+        });
+    }
+
+    document.getElementById("formUsuario").addEventListener("submit", async function(event) {
+        event.preventDefault();
+
+        const campoNome = document.getElementById("nome");
+        const campoRegistro = document.getElementById("registro");
+        const campoSexo = document.getElementById("sexo");
+        const campoSenha = document.getElementById("senha");
+        const campoSetor = document.getElementById("setor");
+        const campoTelefone = document.getElementById("telefone");
+
+        limparErrosDoFormulario(this);
+
+        const nome = campoNome.value.trim();
+        const registro = campoRegistro.value.trim();
+        const email = document.getElementById("email").value.trim();
+        const telefone = campoTelefone.value.trim();
+        const sexo = campoSexo.value;
+        const cpf = document.getElementById("cpf").value.trim();
+        const rg = document.getElementById("rg").value.trim();
+        const endereco = document.getElementById("endereco").value.trim();
+        const senha = campoSenha.value;
+        const setor = campoSetor.value;
+        const nivelAcessoObra = document.getElementById("nivelAcessoObra").value;
+        const acessoAte = document.getElementById("acessoTemporario").checked ? document.getElementById("acessoAte").value : "";
+        if (document.getElementById("acessoTemporario").checked && !acessoAte) {
+            mostrarToast("Escolha até quando o cadastro temporário vale.", "erro");
+            return;
+        }
+
+        // Campos obrigatórios: Nome, Registro, Sexo, Senha e Setor.
+        // Email, Telefone, CPF e Endereço agora são opcionais.
+        let temErro = false;
+        if (!nome) { marcarCampoComErro(campoNome, "Informe o nome completo."); temErro = true; }
+        if (!registro) { marcarCampoComErro(campoRegistro, "Informe o registro."); temErro = true; }
+        if (!sexo) { marcarCampoComErro(campoSexo, "Selecione o sexo."); temErro = true; }
+        if (!senha) { marcarCampoComErro(campoSenha, "Informe uma senha."); temErro = true; }
+        else if (senha.length < 6) { marcarCampoComErro(campoSenha, "A senha precisa ter pelo menos 6 caracteres."); temErro = true; }
+        if (!setor) { marcarCampoComErro(campoSetor, "Selecione o setor."); temErro = true; }
+
+        // Telefone é opcional, mas se for preenchido, precisa ter um formato válido.
+        const telefoneRegex = /^\(\d{2}\)\s?\d{4,5}-\d{4}$/;
+        if (telefone && !telefoneRegex.test(telefone)) {
+            marcarCampoComErro(campoTelefone, "Telefone inválido. Use (99) 99999-9999, ou deixe em branco.");
+            temErro = true;
+        }
+
+        if (temErro) {
+            focarPrimeiroErro(this);
+            return;
+        }
+
+        const botaoSalvar = this.querySelector("button[type=submit]");
+        const textoOriginal = botaoSalvar.textContent;
+        botaoSalvar.disabled = true;
+        botaoSalvar.textContent = "Salvando...";
+
+        try {
+            // O servidor (Worker) valida duplicidade de registro e faz o
+            // hash da senha — nada de senha em texto puro chega a ficar
+            // salvo em lugar nenhum, nem local nem remoto.
+            const resposta = await apiSalvarUsuario({ nome, registro, email, telefone, sexo, cpf, rg, endereco, senha, setor, nivelAcessoObra, acessoAte });
+
+            if (!resposta.ok) {
+                if ((resposta.erro || "").toLowerCase().includes("registro")) {
+                    marcarCampoComErro(campoRegistro, resposta.erro);
+                } else {
+                    mostrarToast(resposta.erro || "Não foi possível salvar o usuário.", "erro");
+                }
+                focarPrimeiroErro(this);
+                return;
+            }
+
+            this.reset();
+            carregarUsuarios();
+            mostrarToast("Usuário cadastrado com sucesso!");
+        } catch (err) {
+            console.error("Erro ao salvar usuário:", err);
+            mostrarToast("Não foi possível conectar ao servidor. Verifique sua internet e tente novamente.", "erro");
+        } finally {
+            botaoSalvar.disabled = false;
+            botaoSalvar.textContent = textoOriginal;
+        }
+    });
+
+
+    document.getElementById("acessoTemporario").addEventListener("change", (e) => {
+        document.getElementById("rotuloAcessoAte").style.display = e.target.checked ? "" : "none";
+    });
+
+    // Mostra no topo se ESTA conta tem acesso de administrador no
+    // servidor — e, se não tiver, o que fazer pra liberar.
+    async function verificarAcessoAdmin() {
+        const aviso = document.getElementById("avisoAcessoAdmin");
+        if (!aviso) return;
+        const r = await chamarWorker("auth-session-check");
+        if (!r.ok) return;
+        const setor = r.setor || "(sem setor)";
+        if (r.acessoTotal === undefined) {
+            aviso.innerHTML = `<b>⚠ O Worker da Cloudflare ainda é o antigo.</b> O site novo já está no ar, mas o servidor não. Cole o arquivo <b>worker-storage-COMPLETO.txt</b> inteiro na Cloudflare e clique em <b>Deploy</b>. Enquanto isso, só CEO e Diretoria conseguem mexer no Cadastro.`;
+            aviso.style.display = "block";
+        } else if (!r.acessoTotal) {
+            aviso.innerHTML = `<b>⚠ Sua conta (${escaparHtml(r.nome)} — setor ${escaparHtml(setor)}) não tem acesso de administrador.</b>
+                Você vê esta tela, mas o servidor não deixa criar, editar ou excluir contas nem salvar permissões.<br>
+                <b>Para liberar:</b> entre com uma conta do <b>CEO</b> ou da <b>Diretoria</b> → em "Setores Cadastrados" clique nas permissões do setor <b>${escaparHtml(setor)}</b> →
+                marque <b>⭐ Acesso total ao site</b> → Salvar. Depois saia e entre de novo nesta conta.
+                <br><small>Marcar todos os itens do menu não basta — eles só mostram o menu.</small>`;
+            aviso.style.display = "block";
+        } else {
+            aviso.style.display = "none";
+        }
+    }
+
+    window.addEventListener("load", async () => {
+        verificarAcessoAdmin();
+        // Garante que existe uma configuração padrão de setores no
+        // servidor (só faz algo na primeira vez que um admin acessa,
+        // se ainda não houver nada configurado).
+        await seedPermissoesPadraoSeVazio();
+        await sincronizarDadosCompartilhados();
+
+        // Setor "Supervisor TI" (acesso total ao site) sempre existe
+        try {
+            const setoresAtuais = JSON.parse(localStorage.getItem("setores")) || [];
+            if (!setoresAtuais.some((s) => String(s).trim().toUpperCase() === "SUPERVISOR TI")) {
+                setoresAtuais.push("Supervisor TI");
+                localStorage.setItem("setores", JSON.stringify(setoresAtuais));
+                await apiDataSet("setores", setoresAtuais);
+            }
+        } catch (e) { console.warn("Não foi possível criar o setor Supervisor TI:", e); }
+
+        carregarSetores();
+        carregarUsuarios();
+        carregarResetsPendentes();
+        popularSelectSetoresSala();
+        carregarSalasFixasAdmin();
+
+        // Trata avisos vindos de outras páginas (ex: editar.html
+        // redirecionando quando o usuário não é encontrado).
+        const paramsUrl = new URLSearchParams(window.location.search);
+        const erro = paramsUrl.get("erro");
+        if (erro === "usuario_nao_especificado") {
+            mostrarToast("Usuário não especificado.", "erro");
+            window.history.replaceState({}, "", "gerenciarcontas.html");
+        } else if (erro === "usuario_nao_encontrado") {
+            mostrarToast("Usuário não encontrado.", "erro");
+            window.history.replaceState({}, "", "gerenciarcontas.html");
+        }
+    });
+</script>
+  <script src="modal-expandir.js?v=1"></script>
+  <footer class="fnx-rodape">Created by Yan Victor · <a href="https://www.instagram.com/yanszaida/" target="_blank" rel="noopener">@yanszaida</a></footer>
+</body>
+</html>
