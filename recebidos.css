@@ -1,0 +1,258 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap');
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --laranja:     #FF6A00;
+  --laranja-dark:#D45500;
+  --laranja-pale:#FFF1E6;
+  --fundo:       #DDDCDC;
+  --card:        #FFFFFF;
+  --card-alt:    #F7F7F7;
+  --texto:       #1A1A1A;
+  --texto-2:     #555555;
+  --texto-3:     #999999;
+  --borda:       #E8E8E8;
+  --verde:       #1C8A4B;
+  --vermelho:    #E5141B;
+  --sombra-sm:   0 1px 4px rgba(0,0,0,.07);
+  --radius:      12px;
+  --radius-sm:   8px;
+  --radius-pill: 100px;
+}
+
+body {
+  font-family: "Montserrat", sans-serif;
+  background: var(--fundo);
+  color: var(--texto);
+  min-height: 100vh;
+  padding: 32px 16px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container { width: 100%; max-width: 1100px; }
+
+.topo-pagina {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.topo-pagina h1 { font-size: 26px; font-weight: 800; }
+.topo-pagina p { color: var(--texto-2); font-size: 13px; margin-top: 2px; }
+
+.btn-voltar {
+  background: var(--card);
+  border: 1px solid var(--borda);
+  border-radius: var(--radius-pill);
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--texto);
+  text-decoration: none;
+  transition: background .15s;
+}
+.btn-voltar:hover { background: var(--card-alt); }
+
+/* ── Formulário ─────────────────────────────────────────────── */
+.card-form {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--sombra-sm);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+.card-form h2 { font-size: 16px; font-weight: 700; margin-bottom: 16px; }
+
+.grid-campos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.campo label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  color: var(--texto-3);
+  margin-bottom: 6px;
+}
+.campo input, .campo select, .campo textarea {
+  width: 100%;
+  border: 1px solid var(--borda);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 13.5px;
+  background: var(--card-alt);
+  color: var(--texto);
+}
+.campo input:focus, .campo select:focus, .campo textarea:focus { outline: 2px solid var(--laranja); outline-offset: -1px; }
+.campo.full { grid-column: 1 / -1; }
+.campo textarea { resize: vertical; min-height: 60px; }
+
+.area-arquivo {
+  border: 1.5px dashed var(--borda);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  text-align: center;
+  background: var(--card-alt);
+  margin-bottom: 16px;
+  font-size: 13px;
+  color: var(--texto-2);
+}
+.area-arquivo input[type=file] { margin-top: 8px; }
+.area-arquivo .nome-arquivo-escolhido { font-weight: 600; color: var(--texto); margin-top: 6px; }
+
+.btn-salvar-recebido {
+  background: var(--laranja);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 12px 24px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .15s;
+}
+.btn-salvar-recebido:hover { background: var(--laranja-dark); }
+.btn-salvar-recebido:disabled { opacity: .6; cursor: not-allowed; }
+
+/* ── Lista ──────────────────────────────────────────────────── */
+.barra-busca {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.barra-busca input, .barra-busca select {
+  border: 1px solid var(--borda);
+  border-radius: var(--radius-sm);
+  padding: 9px 12px;
+  font-family: inherit;
+  font-size: 13px;
+  background: var(--card);
+}
+.barra-busca input { flex: 1; min-width: 200px; }
+
+.lista-recebidos { display: flex; flex-direction: column; gap: 10px; }
+
+.item-recebido {
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--sombra-sm);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.item-recebido .info-principal { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 220px; }
+.item-recebido .icone-tipo {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--laranja-pale);
+  color: var(--laranja-dark);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+.item-recebido .nome-fornecedor { font-weight: 700; font-size: 14px; }
+.item-recebido .meta { font-size: 12px; color: var(--texto-3); margin-top: 2px; }
+.item-recebido .valor { font-weight: 700; font-size: 14px; color: var(--texto); white-space: nowrap; }
+.item-recebido .acoes { display: flex; gap: 8px; align-items: center; }
+.item-recebido .acoes a, .item-recebido .acoes button {
+  border: 1px solid var(--borda);
+  background: var(--card-alt);
+  border-radius: var(--radius-pill);
+  padding: 7px 14px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--texto);
+  transition: background .15s;
+}
+.item-recebido .acoes a:hover, .item-recebido .acoes button:hover { background: var(--borda); }
+.item-recebido .acoes .btn-excluir-recebido { color: var(--vermelho); border-color: #F5C2C0; }
+.item-recebido .acoes .btn-excluir-recebido:hover { background: #FDECEA; }
+
+.vazio { text-align: center; padding: 40px; color: var(--texto-3); font-size: 13.5px; }
+
+/* ── Abas: Arquivos / Lixeira ────────────────────────────────── */
+.abas-recebidos {
+  display: inline-flex;
+  background: #e2e2e2;
+  border-radius: 14px;
+  padding: 4px;
+  gap: 4px;
+  margin-bottom: 20px;
+}
+.aba-recebidos {
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+  background: transparent;
+  color: #666;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.aba-recebidos.active {
+  background: var(--laranja);
+  color: #fff;
+}
+
+.aviso-lixeira {
+  font-size: 12.5px;
+  color: var(--texto-3);
+  background: var(--card-alt);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin-bottom: 14px;
+}
+
+.item-recebido .acoes .btn-restaurar-recebido { color: var(--verde); border-color: #B7E2C4; }
+.item-recebido .acoes .btn-restaurar-recebido:hover { background: #E7F6EC; }
+
+/* ── Atalhos rápidos entre as telas de Notas ── */
+.atalhos-fluxo {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+.atalhos-fluxo a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 100px;
+    padding: 8px 16px;
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #666;
+    text-decoration: none;
+    transition: 0.15s;
+}
+.atalhos-fluxo a:hover { background: #f7f7f7; border-color: #ccc; }
+.atalhos-fluxo a.atalho-atual {
+    background: rgb(255, 106, 0);
+    border-color: rgb(255, 106, 0);
+    color: #fff;
+    cursor: default;
+    pointer-events: none;
+}

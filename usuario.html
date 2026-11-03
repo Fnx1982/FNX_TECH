@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <script src="config.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet' />
+    <link rel="stylesheet" href="usuario.css">
+    <script src="auth-worker.js?v=6"></script>
+    <title>Recuperar Senha</title>
+  <link rel="stylesheet" href="mobile.css?v=3" />
+  <link rel="stylesheet" href="fnx-tema.css?v=1" />
+</head>
+<body>
+    <main class="container">
+        <h1>Recuperar Senha</h1>
+        <p style="font-size: 13px; color: #666; margin-bottom: 16px;">
+            Informe seu registro. Um administrador vai receber sua solicitação
+            e definir uma nova senha, que será repassada a você.
+        </p>
+        <div class="input-box">
+            <input type="text" id="registroRecuperar" placeholder="Seu registro" inputmode="numeric" required />
+            <i class="bx bxs-id-card"></i>
+        </div>
+        <button onclick="recuperarSenha()">Solicitar recuperação</button>
+        <button onclick="window.location.href='login.html'" class="btn-voltar">Voltar</button>
+        <p id="resultadoRecuperar"></p>
+    </main>
+
+    <script>
+        async function recuperarSenha() {
+            const registro = document.getElementById("registroRecuperar").value.trim();
+            const resultado = document.getElementById("resultadoRecuperar");
+            if (!registro) {
+                resultado.style.color = "red";
+                resultado.textContent = "Por favor, informe o registro.";
+                return;
+            }
+
+            const botao = document.querySelector("main button:not(.btn-voltar)");
+            const textoOriginal = botao.textContent;
+            botao.disabled = true;
+            botao.textContent = "Enviando...";
+
+            try {
+                const resposta = await apiSolicitarReset(registro);
+                resultado.style.color = "green";
+                resultado.textContent = resposta.mensagem || "Solicitação enviada. Aguarde contato do administrador.";
+            } catch (e) {
+                resultado.style.color = "red";
+                resultado.textContent = "Não foi possível conectar ao servidor. Tente novamente.";
+            } finally {
+                botao.disabled = false;
+                botao.textContent = textoOriginal;
+            }
+        }
+    </script>
+  <script src="modal-expandir.js?v=1"></script>
+  <footer class="fnx-rodape">Created by Yan Victor · <a href="https://www.instagram.com/yanszaida/" target="_blank" rel="noopener">@yanszaida</a></footer>
+</body>
+</html>

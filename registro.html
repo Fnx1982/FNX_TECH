@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <script src="config.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="login.css" />
+    <script src="auth-worker.js?v=6"></script>
+    <title>FNX TECH - registro</title>
+  <link rel="stylesheet" href="mobile.css?v=3" />
+  <link rel="stylesheet" href="fnx-tema.css?v=1" />
+</head>
+<body>
+    <main class="container">
+        <form onsubmit="event.preventDefault(); registrar();">
+            <h1>Cadastre-se</h1>
+            <div class="input-box">
+                <input id="nome" placeholder="Nome completo" type="text" required />
+                <i class="bx bxs-user"></i>
+            </div>
+            <div class="input-box">
+                <input id="registro" placeholder="Registro (matrícula)" type="text" inputmode="numeric" required />
+                <i class="bx bxs-id-card"></i>
+            </div>
+            <div class="input-box">
+                <input id="email" placeholder="Email" type="email" />
+                <i class="bx bxs-envelope"></i>
+            </div>
+            <div class="input-box">
+                <input id="senha" placeholder="Senha (mínimo 6 caracteres)" type="password" required minlength="6" />
+                <i class="bx bxs-lock-alt"></i>
+            </div>
+
+            <button type="submit" class="register">Registrar</button>
+            <p id="mensagemErroRegistro" style="color: crimson; text-align: center; margin-top: 10px; font-size: 13px; display: none;"></p>
+
+            <div class="register-link">
+                <p>Já tem uma conta? <a href="login.html">Login</a></p>
+            </div>
+        </form>
+    </main>
+
+    <script>
+        async function registrar() {
+            var nome = document.getElementById("nome").value.trim();
+            var registro = document.getElementById("registro").value.trim();
+            var email = document.getElementById("email").value.trim();
+            var senha = document.getElementById("senha").value;
+            var mensagemErro = document.getElementById("mensagemErroRegistro");
+            mensagemErro.style.display = "none";
+
+            if (!nome || !registro || !senha) {
+                mensagemErro.textContent = "Preencha nome, registro e senha.";
+                mensagemErro.style.display = "block";
+                return;
+            }
+            if (senha.length < 6) {
+                mensagemErro.textContent = "A senha precisa ter pelo menos 6 caracteres.";
+                mensagemErro.style.display = "block";
+                return;
+            }
+
+            var botao = document.querySelector("button.register");
+            var textoOriginal = botao.textContent;
+            botao.disabled = true;
+            botao.textContent = "Enviando...";
+
+            try {
+                var resposta = await apiRegistrar({ nome: nome, registro: registro, email: email, senha: senha });
+                if (!resposta.ok) {
+                    mensagemErro.textContent = resposta.erro || "Não foi possível concluir o cadastro.";
+                    mensagemErro.style.display = "block";
+                    return;
+                }
+                // Cadastro concluído -> volta para a tela de login (não para "index.html", que não existe)
+                window.location.href = "login.html";
+            } catch (e) {
+                mensagemErro.textContent = "Não foi possível conectar ao servidor. Verifique sua internet e tente novamente.";
+                mensagemErro.style.display = "block";
+            } finally {
+                botao.disabled = false;
+                botao.textContent = textoOriginal;
+            }
+        }
+    </script>
+  <script src="modal-expandir.js?v=1"></script>
+  <footer class="fnx-rodape">Created by Yan Victor · <a href="https://www.instagram.com/yanszaida/" target="_blank" rel="noopener">@yanszaida</a></footer>
+</body>
+</html>

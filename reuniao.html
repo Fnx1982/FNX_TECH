@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script src="config.js"></script>
+  <script src="auth-worker.js?v=6"></script>
+  <script src="auth-guard.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reunião — FNX TECH</title>
+  <link rel="stylesheet" href="reuniao.css" />
+  <link rel="stylesheet" href="mobile.css?v=3" />
+  <link rel="stylesheet" href="fnx-tema.css?v=1" />
+</head>
+<body>
+
+  <main class="container">
+
+    <div class="topo-pagina">
+      <div>
+        <h1>Reunião</h1>
+        <p>Chamada de vídeo para a equipe</p>
+      </div>
+      <a href="home.html" class="btn-voltar">← Voltar</a>
+    </div>
+
+    <!-- Tela de entrada: escolher/criar a sala -->
+    <div class="card-entrada" id="telaEntrada">
+      <div class="icone-topo">🎥</div>
+      <h2>Entrar em uma reunião</h2>
+      <p class="sub">
+        Escolha uma sala fixa da equipe, ou crie uma sala avulsa pra uma
+        conversa rápida.
+      </p>
+
+      <!-- Salas fixas — carregadas do servidor, já filtradas: só aparece
+           aqui quem você tem permissão pra ver. -->
+      <div id="blocoSalasFixas" style="display:none; text-align:left; margin-bottom: 28px;">
+        <label style="display:block; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--texto-3); margin-bottom:10px;">
+          Salas da equipe
+        </label>
+        <div id="listaSalasFixas" class="lista-salas-fixas"></div>
+      </div>
+
+      <div class="separador-ou" id="separadorOu" style="display:none;">
+        <span>ou crie uma sala avulsa</span>
+      </div>
+
+      <div class="campo-sala">
+        <label for="campoNomeSala">Nome da sala</label>
+        <div class="input-com-botao">
+          <input type="text" id="campoNomeSala" placeholder="ex: reuniao-obra-centro" autocomplete="off" />
+          <button type="button" class="btn-gerar-nome" id="btnGerarNome" title="Gerar um nome novo">🔀</button>
+        </div>
+      </div>
+
+      <button type="button" class="btn-entrar" id="btnEntrarSala">Entrar na reunião</button>
+
+      <div class="aviso-publico">
+        <b>Importante:</b> esta sala roda no servidor público do Jitsi Meet.
+        Qualquer pessoa que souber o nome da sala pode entrar. Salas
+        restritas ficam com "Aguardar aprovação" (lobby) ligado
+        automaticamente — quem tentar entrar precisa ser aceito por
+        alguém que já está na chamada.
+      </div>
+    </div>
+
+    <!-- Tela da chamada em si -->
+    <div class="tela-chamada" id="telaChamada">
+      <div class="barra-sala">
+        <div class="nome-sala"><span class="bolinha"></span><span id="nomeSalaAtual"></span></div>
+        <div class="acoes">
+          <button type="button" class="btn-copiar-link" id="btnCopiarLink">🔗 Copiar link da sala</button>
+          <button type="button" class="btn-sair" id="btnSairSala">Sair</button>
+        </div>
+      </div>
+      <div class="moldura-jitsi" id="molduraJitsi"></div>
+    </div>
+
+  </main>
+
+  <script src="reuniao.js"></script>
+  <script src="modal-expandir.js?v=1"></script>
+  <footer class="fnx-rodape">Created by Yan Victor · <a href="https://www.instagram.com/yanszaida/" target="_blank" rel="noopener">@yanszaida</a></footer>
+</body>
+</html>

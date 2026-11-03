@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script src="config.js"></script>
+  <script src="auth-worker.js?v=6"></script>
+<script src="auth-guard.js"></script>
+<meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Relatórios</title>
+  <link rel="stylesheet" href="relatorios.css" />
+  <script src="confirm-modal.js"></script>
+  <script src="validacao.js"></script>
+
+  <!-- Geração de PDF no navegador -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js" integrity="sha384-vxxMdt1K6XlME6zkLsgFrrHIeC7XIdAo1GW/uhhObjJXnymxiIi/eoMXsKJA13ZJ" crossorigin="anonymous"></script>
+  <script src="permissoes-setor.js?v=7"></script>
+  <script src="logo-empresa.js"></script>
+  <script src="propostas-core.js?v=8"></script>
+  <script src="pontos-core.js?v=5"></script>
+  <link rel="stylesheet" href="mobile.css?v=3" />
+  <link rel="stylesheet" href="fnx-tema.css?v=1" />
+</head>
+<body>
+  <main class="container">
+    <div class="topo-pagina">
+      <div>
+        <h1>Relatórios</h1>
+        <p>Funcionários, Extrato bancário ou os dois combinados — gere em PDF e mantenha um histórico editável.</p>
+      </div>
+      <a href="home.html" class="btn-voltar">Voltar</a>
+    </div>
+
+    <div class="barra-acoes">
+      <button type="button" class="btn-laranja" id="btnNovoRelatorio">+ Novo Relatório</button>
+    </div>
+
+    <div class="lista-relatorios" id="listaRelatorios"></div>
+    <div class="sem-resultados" id="semRelatorios" style="display:none;">
+      Nenhum relatório criado ainda. Clique em "+ Novo Relatório" para começar.
+    </div>
+  </main>
+
+  <!-- Modal: Criar / Editar Relatório -->
+  <div class="modal-overlay" id="modalRelatorio">
+    <div class="modal-caixa">
+      <div class="modal-cabecalho">
+        <h2 id="tituloModalRelatorio">Novo Relatório</h2>
+        <button type="button" class="modal-fechar" id="fecharModalRelatorio">&times;</button>
+      </div>
+
+      <div class="campo-bloco">
+        <label for="nomeRelatorio">Nome do relatório</label>
+        <input type="text" id="nomeRelatorio" placeholder="Ex: Fechamento de Junho - Obra Centro" />
+      </div>
+
+      <div class="campo-bloco">
+        <label>O que este relatório inclui?</label>
+        <div class="tipo-relatorio-toggle">
+          <button type="button" data-tipo="funcionarios" id="btnTipoFuncionarios">Funcionários</button>
+          <button type="button" data-tipo="extrato" id="btnTipoExtrato">Extrato</button>
+          <button type="button" data-tipo="materiais" id="btnTipoMateriais">Materiais</button>
+          <button type="button" data-tipo="obras" id="btnTipoObras">Obras</button>
+          <button type="button" data-tipo="combinado" id="btnTipoCombinado">Combinado</button>
+          <button type="button" data-tipo="apresentacao" id="btnTipoApresentacao">📊 Apresentação</button>
+        </div>
+        <p class="banco-aviso">"Combinado" reúne Funcionários + Extrato no mesmo PDF. Materiais e Obras são gerados separadamente por enquanto.</p>
+      </div>
+
+      <!-- Seção: filtros de Funcionários -->
+      <div class="secao-filtro" id="secaoFuncionarios">
+        <h3>Filtros — Financeiro de Funcionários</h3>
+        <div class="linha-campos">
+          <div class="multi-select" id="multiMesFunc">
+            <button type="button" class="multi-select-toggle" id="toggleMesFunc">
+              <span class="filtro-label-mini">Mês</span>
+              <span class="filtro-valor" id="resumoMesFunc">Todos</span>
+            </button>
+            <div class="multi-select-painel" id="painelMesFunc"></div>
+          </div>
+          <div class="multi-select" id="multiObraFunc">
+            <button type="button" class="multi-select-toggle" id="toggleObraFunc">
+              <span class="filtro-label-mini">Obra</span>
+              <span class="filtro-valor" id="resumoObraFunc">Todas</span>
+            </button>
+            <div class="multi-select-painel" id="painelObraFunc"></div>
+          </div>
+          <div class="multi-select" id="multiNomeFunc">
+            <button type="button" class="multi-select-toggle" id="toggleNomeFunc">
+              <span class="filtro-label-mini">Funcionário</span>
+              <span class="filtro-valor" id="resumoNomeFunc">Todos</span>
+            </button>
+            <div class="multi-select-painel" id="painelNomeFunc"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Seção: filtros de Extrato -->
+      <div class="secao-filtro" id="secaoExtrato">
+        <h3>Filtros — Extrato Bancário</h3>
+        <p class="banco-aviso">Selecione um ou mais bancos. Cada banco selecionado aparece em sua própria tabela no PDF, com subtotal próprio.</p>
+        <div class="linha-campos">
+          <div class="multi-select" id="multiBancoExtrato">
+            <button type="button" class="multi-select-toggle" id="toggleBancoExtrato">
+              <span class="filtro-label-mini">Banco(s)</span>
+              <span class="filtro-valor" id="resumoBancoExtrato">Selecione</span>
+            </button>
+            <div class="multi-select-painel" id="painelBancoExtrato"></div>
+          </div>
+          <div class="select-simples-relatorio">
+            <label class="filtro-label-mini" for="tipoLancamentoExtrato">Tipo</label>
+            <select id="tipoLancamentoExtrato">
+              <option value="todos">Entradas e Saídas</option>
+              <option value="entrada">Somente Entradas</option>
+              <option value="saida">Somente Saídas</option>
+            </select>
+          </div>
+          <div class="multi-select" id="multiClassificacaoExtrato">
+            <button type="button" class="multi-select-toggle" id="toggleClassificacaoExtrato">
+              <span class="filtro-label-mini">Classificação</span>
+              <span class="filtro-valor" id="resumoClassificacaoExtrato">Todas</span>
+            </button>
+            <div class="multi-select-painel" id="painelClassificacaoExtrato"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Seção: filtros de Materiais -->
+      <div class="secao-filtro" id="secaoMateriais">
+        <h3>Filtros — Gestão de Materiais</h3>
+        <div class="linha-campos">
+          <div class="multi-select" id="multiSetorMaterial">
+            <button type="button" class="multi-select-toggle" id="toggleSetorMaterial">
+              <span class="filtro-label-mini">Setor</span>
+              <span class="filtro-valor" id="resumoSetorMaterial">Todos</span>
+            </button>
+            <div class="multi-select-painel" id="painelSetorMaterial"></div>
+          </div>
+          <div>
+            <input type="text" id="buscaMaterial" class="input-busca-relatorio" placeholder="Buscar por nome ou código..." />
+          </div>
+        </div>
+      </div>
+
+      <!-- Seção: filtros de Obras -->
+      <div class="secao-filtro" id="secaoObras">
+        <h3>Filtros — Obras</h3>
+        <p class="banco-aviso">Selecione uma ou mais obras. Cada obra aparece em sua própria seção no PDF, com funcionários e materiais detalhados.</p>
+        <div class="linha-campos">
+          <div class="multi-select" id="multiObrasRelatorio">
+            <button type="button" class="multi-select-toggle" id="toggleObrasRelatorio">
+              <span class="filtro-label-mini">Obra(s)</span>
+              <span class="filtro-valor" id="resumoObrasRelatorio">Todas</span>
+            </button>
+            <div class="multi-select-painel" id="painelObrasRelatorio"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Seção: Apresentação -->
+      <div class="secao-filtro" id="secaoApresentacao">
+        <h3>Configurar Apresentação</h3>
+        <p class="banco-aviso">Gera um arquivo <strong>.pptx</strong> com os dados reais do sistema, pronto para abrir no PowerPoint ou Google Slides.</p>
+
+        <!-- Período -->
+        <div style="margin-bottom:18px;">
+          <p style="font-weight:600;font-size:13px;margin-bottom:10px;">Período</p>
+          <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">
+            <div class="select-simples" style="flex:1;min-width:130px;">
+              <label class="filtro-label-mini" for="apresentacaoAno">Ano</label>
+              <select id="apresentacaoAno"></select>
+            </div>
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;padding:10px 0;cursor:pointer;">
+              <input type="checkbox" id="apresentacaoAnual" style="width:16px;height:16px;accent-color:#FF6A00;" />
+              Resumo anual (todos os meses do ano)
+            </label>
+          </div>
+
+          <!-- Meses (oculto quando anual marcado) -->
+          <div id="seletorMeses" style="margin-top:12px;">
+            <p style="font-size:12px;color:#777;margin-bottom:8px;">Selecione o(s) mês(es):</p>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;" id="gridMeses">
+              <!-- gerado via JS -->
+            </div>
+            <div style="display:flex;gap:10px;margin-top:8px;">
+              <button type="button" id="btnMarcarTodosMeses" style="background:none;border:none;font-size:12px;color:#2B6CB0;cursor:pointer;font-family:inherit;font-weight:600;padding:0;">Marcar todos</button>
+              <button type="button" id="btnDesmarcarTodosMeses" style="background:none;border:none;font-size:12px;color:#999;cursor:pointer;font-family:inherit;font-weight:600;padding:0;">Desmarcar todos</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slides -->
+        <p style="font-weight:600;font-size:13px;margin-bottom:10px;">Slides a incluir</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;" id="checkboxesApresentacao">
+          <label style="display:flex;align-items:center;gap:9px;padding:10px 12px;background:#F7F7F7;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;">
+            <input type="checkbox" value="capa" checked style="width:15px;height:15px;accent-color:#FF6A00;" /> Capa
+          </label>
+          <label style="display:flex;align-items:center;gap:9px;padding:10px 12px;background:#F7F7F7;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;">
+            <input type="checkbox" value="resumo_financeiro" checked style="width:15px;height:15px;accent-color:#FF6A00;" /> Fluxo de Caixa
+          </label>
+          <label style="display:flex;align-items:center;gap:9px;padding:10px 12px;background:#F7F7F7;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;">
+            <input type="checkbox" value="obras" checked style="width:15px;height:15px;accent-color:#FF6A00;" /> Obras
+          </label>
+          <label style="display:flex;align-items:center;gap:9px;padding:10px 12px;background:#F7F7F7;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;">
+            <input type="checkbox" value="propostas" checked style="width:15px;height:15px;accent-color:#FF6A00;" /> Propostas
+          </label>
+          <label style="display:flex;align-items:center;gap:9px;padding:10px 12px;background:#F7F7F7;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;">
+            <input type="checkbox" value="funcionarios" checked style="width:15px;height:15px;accent-color:#FF6A00;" /> Funcionários
+          </label>
+          <label style="display:flex;align-items:center;gap:9px;padding:10px 12px;background:#F7F7F7;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;">
+            <input type="checkbox" value="boletos" checked style="width:15px;height:15px;accent-color:#FF6A00;" /> Boletos
+          </label>
+          <label style="display:flex;align-items:center;gap:9px;padding:10px 12px;background:#F7F7F7;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;">
+            <input type="checkbox" value="pontos" checked style="width:15px;height:15px;accent-color:#FF6A00;" /> Banco de Horas
+          </label>
+          <label style="display:flex;align-items:center;gap:9px;padding:10px 12px;background:#F7F7F7;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;">
+            <input type="checkbox" value="materiais" checked style="width:15px;height:15px;accent-color:#FF6A00;" /> Materiais
+          </label>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:10px;">
+          <button type="button" id="btnMarcarTudoApresentacao" style="background:none;border:none;font-size:12px;color:#2B6CB0;cursor:pointer;font-family:inherit;font-weight:600;padding:0;">Marcar tudo</button>
+          <button type="button" id="btnDesmarcarTudoApresentacao" style="background:none;border:none;font-size:12px;color:#999;cursor:pointer;font-family:inherit;font-weight:600;padding:0;">Desmarcar tudo</button>
+        </div>
+      </div>
+
+      <div class="modal-rodape">
+        <button type="button" class="btn-secundario" id="btnCancelarRelatorio">Cancelar</button>
+        <button type="button" class="btn-laranja" id="btnSalvarRelatorio">Salvar e Gerar PDF</button>
+        <button type="button" class="btn-laranja" id="btnGerarApresentacaoDemanda" style="display:none;">📊 Apresentação Demanda</button>
+        <button type="button" class="btn-laranja" id="btnGerarApresentacaoFinanceiro" style="display:none;">📊 Apresentação Financeiro</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js" integrity="sha384-Cck14aA9cifjYolcnjebXRfWGkz5ltHMBiG4px/j8GS+xQcb7OhNQWZYyWjQ+UwQ" crossorigin="anonymous"></script>
+  <script src="apresentacao.js?v=20261007"></script>
+  <script src="relatorios.js?v=3"></script>
+  <script src="modal-expandir.js?v=1"></script>
+  <footer class="fnx-rodape">Created by Yan Victor · <a href="https://www.instagram.com/yanszaida/" target="_blank" rel="noopener">@yanszaida</a></footer>
+</body>
+</html>

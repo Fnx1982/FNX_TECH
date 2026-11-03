@@ -1,0 +1,261 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap');
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --laranja:     #FF6A00;
+  --laranja-dark:#D45500;
+  --laranja-pale:#FFF1E6;
+  --fundo:       #DDDCDC;
+  --card:        #FFFFFF;
+  --card-alt:    #F7F7F7;
+  --texto:       #1A1A1A;
+  --texto-2:     #555555;
+  --texto-3:     #999999;
+  --borda:       #E8E8E8;
+  --verde:       #1C8A4B;
+  --vermelho:    #E5141B;
+  --sombra-sm:   0 1px 4px rgba(0,0,0,.07);
+  --sombra:      0 4px 16px rgba(0,0,0,.08);
+  --radius:      12px;
+  --radius-sm:   8px;
+  --radius-pill: 100px;
+}
+
+body {
+  font-family: "Montserrat", sans-serif;
+  background: var(--fundo);
+  color: var(--texto);
+  min-height: 100vh;
+  padding: 32px 16px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container { width: 100%; max-width: 1100px; }
+
+.topo-pagina {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.topo-pagina h1 { font-size: 26px; font-weight: 800; }
+.topo-pagina p { color: var(--texto-2); font-size: 13px; margin-top: 2px; }
+
+.btn-voltar {
+  background: var(--card);
+  border: 1px solid var(--borda);
+  border-radius: var(--radius-pill);
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--texto);
+  text-decoration: none;
+  transition: background .15s;
+}
+.btn-voltar:hover { background: var(--card-alt); }
+
+/* ── Tela de entrada (antes de conectar) ─────────────────────── */
+.card-entrada {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--sombra-sm);
+  padding: 40px 32px;
+  max-width: 520px;
+  margin: 0 auto;
+  text-align: center;
+}
+.card-entrada .icone-topo {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: var(--laranja-pale);
+  color: var(--laranja-dark);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+  margin: 0 auto 20px;
+}
+.card-entrada h2 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+.card-entrada .sub { color: var(--texto-2); font-size: 13.5px; line-height: 1.5; margin-bottom: 28px; }
+
+.campo-sala { text-align: left; margin-bottom: 20px; }
+.campo-sala label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--texto-3);
+  margin-bottom: 8px;
+}
+.campo-sala .input-com-botao {
+  display: flex;
+  gap: 8px;
+}
+.campo-sala input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--borda);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  font-family: inherit;
+  font-size: 14px;
+  background: var(--card-alt);
+  color: var(--texto);
+}
+.campo-sala input:focus { outline: 2px solid var(--laranja); outline-offset: -1px; }
+
+.btn-gerar-nome {
+  border: 1px solid var(--borda);
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  padding: 0 14px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background .15s;
+  flex-shrink: 0;
+}
+.btn-gerar-nome:hover { background: var(--card-alt); }
+
+.btn-entrar {
+  width: 100%;
+  background: var(--laranja);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 14px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .15s;
+}
+.btn-entrar:hover { background: var(--laranja-dark); }
+.btn-entrar:disabled { opacity: .6; cursor: not-allowed; }
+
+.aviso-publico {
+  margin-top: 20px;
+  font-size: 12px;
+  color: var(--texto-3);
+  line-height: 1.5;
+  text-align: left;
+  background: var(--card-alt);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+}
+.aviso-publico b { color: var(--texto-2); }
+
+.lista-salas-fixas { display: flex; flex-direction: column; gap: 8px; }
+.item-sala-fixa {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border: 1px solid var(--borda);
+  background: var(--card-alt);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+  font-family: inherit;
+  width: 100%;
+  text-align: left;
+}
+.item-sala-fixa:hover { background: var(--laranja-pale); border-color: var(--laranja); }
+.item-sala-fixa .nome {
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.item-sala-fixa .seta { color: var(--texto-3); font-size: 14px; }
+.badge-restrita {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  background: var(--laranja-pale);
+  color: var(--laranja-dark);
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.separador-ou {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  color: var(--texto-3);
+  font-size: 12px;
+  font-weight: 600;
+}
+.separador-ou::before, .separador-ou::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--borda);
+}
+
+/* ── Tela da chamada (depois de conectar) ─────────────────────── */
+.tela-chamada { display: none; }
+.tela-chamada.ativa { display: block; }
+.card-entrada.escondido { display: none; }
+
+.barra-sala {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--sombra-sm);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.barra-sala .nome-sala {
+  font-size: 14px;
+  font-weight: 700;
+}
+.barra-sala .nome-sala .bolinha {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--verde);
+  margin-right: 8px;
+}
+.barra-sala .acoes { display: flex; gap: 8px; }
+
+.btn-copiar-link, .btn-sair {
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 9px 16px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s;
+}
+.btn-copiar-link { background: var(--card-alt); color: var(--texto); border: 1px solid var(--borda); }
+.btn-copiar-link:hover { background: var(--borda); }
+.btn-sair { background: var(--vermelho); color: #fff; }
+.btn-sair:hover { background: #b8102f; }
+
+.moldura-jitsi {
+  background: #000;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--sombra);
+  aspect-ratio: 16 / 9;
+  width: 100%;
+}
+.moldura-jitsi iframe { width: 100%; height: 100%; border: none; }
+
+@media (max-width: 640px) {
+  .card-entrada { padding: 28px 20px; }
+  .moldura-jitsi { aspect-ratio: 9 / 13; }
+}

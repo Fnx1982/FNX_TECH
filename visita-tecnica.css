@@ -1,0 +1,94 @@
+/* ============================================================
+   visita-tecnica.css — agenda do Google, origem da visita e medidas
+   (usa as mesmas variáveis de cor do contatos.css)
+   ============================================================ */
+
+/* ---- Agendadas no calendário ---- */
+.topo-agenda { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+.topo-agenda h2 { margin-bottom: 0 !important; }
+.filtros-agenda { display: flex; gap: 8px; flex-wrap: wrap; }
+.filtros-agenda select, .filtros-agenda input {
+  border: 1px solid var(--borda); border-radius: var(--radius-sm); padding: 8px 10px;
+  font-family: inherit; font-size: 13px; background: var(--card-alt); color: var(--texto);
+}
+.texto-ajuda-agenda { font-size: 12px; color: var(--texto-3); margin: 4px 0 12px; }
+.lista-agenda { display: flex; flex-direction: column; gap: 8px; max-height: 380px; overflow-y: auto; }
+.vazio-agenda { font-size: 13px; color: var(--texto-3); text-align: center; padding: 18px 0; }
+.vazio-agenda a { color: var(--laranja); font-weight: 700; }
+.item-agenda {
+  display: flex; gap: 12px; align-items: flex-start; justify-content: space-between;
+  border: 1px solid var(--borda); border-left: 4px solid var(--laranja);
+  border-radius: var(--radius-sm); padding: 10px 12px; background: var(--card-alt);
+}
+.item-agenda.registrada { border-left-color: #1C8A4B; opacity: .85; }
+.data-agenda { font-size: 11.5px; font-weight: 700; color: var(--laranja); text-transform: uppercase; }
+.item-agenda.registrada .data-agenda { color: #1C8A4B; }
+.titulo-agenda { font-weight: 700; font-size: 14px; margin: 2px 0; }
+.info-agenda { font-size: 12px; color: var(--texto-3); }
+.desc-agenda { font-size: 12px; color: var(--texto-2, #555); margin-top: 4px; white-space: pre-wrap; max-height: 3.6em; overflow: hidden; }
+.btn-registrar-agenda {
+  flex-shrink: 0; border: none; border-radius: 20px; padding: 8px 14px; cursor: pointer;
+  background: var(--laranja); color: #fff; font-weight: 700; font-size: 12.5px; font-family: inherit;
+}
+.tag-registrada { flex-shrink: 0; font-size: 11.5px; font-weight: 700; color: #1C8A4B; background: #E7F6EC; border-radius: 12px; padding: 5px 10px; }
+
+/* ---- De onde veio a visita ---- */
+.origem-visita { margin: -6px 0 12px; }
+.tag-origem { display: inline-block; font-size: 11.5px; font-weight: 700; border-radius: 12px; padding: 3px 10px; }
+.tag-origem.avulsa { background: #EEF0F3; color: #555; }
+.tag-origem.calendario { background: #FFF1E6; color: #8A3300; }
+
+/* ---- Medidas ---- */
+.bloco-medidas { margin-top: 6px; border-top: 1px dashed var(--borda); padding-top: 12px; }
+.topo-medidas { display: flex; justify-content: space-between; align-items: center; }
+.topo-medidas label { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; color: var(--texto-3); }
+.total-medidas { font-size: 13px; font-weight: 700; color: var(--laranja); }
+.linha-medida {
+  display: grid; grid-template-columns: minmax(140px, 2fr) 90px 16px 90px 80px 90px minmax(70px, auto) 28px;
+  gap: 6px; align-items: center; margin-bottom: 6px;
+}
+.linha-medida input, .linha-medida select {
+  width: 100%; border: 1px solid var(--borda); border-radius: var(--radius-sm); padding: 8px 8px;
+  font-family: inherit; font-size: 13px; background: var(--card-alt); color: var(--texto); min-width: 0;
+}
+.linha-medida .vezes { text-align: center; color: var(--texto-3); font-weight: 700; }
+.linha-medida .resultado-medida { font-weight: 700; font-size: 13px; white-space: nowrap; text-align: right; }
+.btn-remover-medida { border: none; background: none; color: #E5141B; font-size: 18px; cursor: pointer; }
+.btn-add-medida {
+  width: 100%; margin-top: 4px; padding: 9px; border: 1px dashed var(--laranja); border-radius: var(--radius-sm);
+  background: rgba(255, 106, 0, .08); color: #B34700; font-weight: 700; cursor: pointer; font-family: inherit;
+}
+.cab-medidas { font-size: 10.5px; font-weight: 700; color: var(--texto-3); text-transform: uppercase; }
+
+@media (max-width: 768px) {
+  .lista-agenda { max-height: none; }
+  .item-agenda { flex-direction: column; }
+  .btn-registrar-agenda { width: 100%; }
+  /* Celular: 3 linhas por medida —
+     [descrição]
+     [medida 1] × [medida 2] [qtd] [x]
+     [unidade]              [resultado] */
+  .linha-medida {
+    grid-template-columns: 1fr 14px 1fr 1fr 28px;
+    grid-auto-flow: row dense;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--borda);
+    margin-bottom: 10px;
+  }
+  .linha-medida .med-desc { grid-column: 1 / -1; }
+  .linha-medida .btn-remover-medida { grid-column: 5; grid-row: 2; }
+  .linha-medida .med-unid { grid-column: 1 / 4; }
+  .linha-medida .resultado-medida { grid-column: 4 / 6; text-align: right; }
+  .cab-medidas { display: none; }
+}
+
+/* Anotações feitas durante a visita (uso interno) */
+.dica-anotacoes { font-weight: normal; font-size: 12px; color: #888; }
+#campoAnotacoes { min-height: 140px; resize: vertical; font-size: 15px; line-height: 1.4; }
+
+.filtro-tipo-agenda { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; font-size: 12.5px; color: #666; margin: -4px 0 10px; }
+.filtro-tipo-agenda label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+.filtro-tipo-agenda input { width: 16px; height: 16px; accent-color: #FF6A00; }
+.tag-tipo-agenda { display: inline-block; font-size: 10.5px; font-weight: 700; border-radius: 10px; padding: 1px 8px; margin-left: 6px; vertical-align: middle; }
+.tag-tipo-agenda.pagamento { color: #b03a2e; background: #fbe8e6; }
+.tag-tipo-agenda.outro { color: #1D5FB4; background: #E3EEFB; }

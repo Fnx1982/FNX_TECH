@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script src="config.js"></script>
+  <script src="auth-worker.js?v=6"></script>
+  <script src="auth-guard.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notas Recebidas — FNX TECH</title>
+  <link rel="stylesheet" href="recebidos.css" />
+  <script src="confirm-modal.js"></script>
+  <link rel="stylesheet" href="mobile.css?v=3" />
+  <link rel="stylesheet" href="fnx-tema.css?v=1" />
+</head>
+<body>
+
+  <main class="container">
+
+    <div class="topo-pagina">
+      <div>
+        <h1>Notas Recebidas</h1>
+        <p>Documentos fiscais que fornecedores emitiram para o CNPJ da FNX TECH</p>
+      </div>
+
+      <a href="home.html" class="btn-voltar">← Voltar</a>
+    </div>
+    <div class="atalhos-fluxo">
+      <a href="nfe.html" class="atalho-fluxo">📦 Material</a>
+      <a href="nfse.html" class="atalho-fluxo">🔧 Mão de Obra</a>
+      <a href="consulta-notas.html" class="atalho-fluxo">🔍 Consulta</a>
+      <a href="recebidos.html" class="atalho-fluxo atalho-atual">📥 Recebidos</a>
+      <a href="contatos.html" class="atalho-fluxo">👤 Clientes/Fornecedores</a>
+    </div>
+
+
+    <!-- Abas: Arquivos / Lixeira -->
+    <div class="abas-recebidos">
+      <button type="button" class="aba-recebidos active" id="btnAbaArquivos">Arquivos</button>
+      <button type="button" class="aba-recebidos" id="btnAbaLixeira">🗑 Lixeira</button>
+    </div>
+
+    <div id="painelArquivos">
+
+    <!-- Formulário de registro -->
+    <div class="card-form">
+      <h2>Registrar nota recebida</h2>
+      <form id="formRecebido">
+        <div class="grid-campos">
+          <div class="campo">
+            <label for="campoTipo">Tipo de documento</label>
+            <select id="campoTipo" required>
+              <option value="NF-e">NF-e (Material)</option>
+              <option value="NFS-e">NFS-e (Serviço)</option>
+              <option value="Outro">Outro</option>
+            </select>
+          </div>
+          <div class="campo">
+            <label for="campoFornecedor">Fornecedor</label>
+            <input type="text" id="campoFornecedor" placeholder="Nome ou razão social" required />
+          </div>
+          <div class="campo">
+            <label for="campoCnpj">CNPJ do fornecedor</label>
+            <input type="text" id="campoCnpj" placeholder="00.000.000/0000-00" />
+          </div>
+          <div class="campo">
+            <label for="campoNumero">Número da nota</label>
+            <input type="text" id="campoNumero" placeholder="ex: 4521" />
+          </div>
+          <div class="campo">
+            <label for="campoValor">Valor (R$)</label>
+            <input type="number" id="campoValor" step="0.01" min="0" placeholder="0,00" />
+          </div>
+          <div class="campo">
+            <label for="campoData">Data de emissão</label>
+            <input type="date" id="campoData" />
+          </div>
+          <div class="campo full">
+            <label for="campoDescricao">Descrição</label>
+            <textarea id="campoDescricao" placeholder="Ex: Cimento e areia para a obra do Centro"></textarea>
+          </div>
+        </div>
+
+        <div class="area-arquivo">
+          📎 Anexar o arquivo da nota (PDF ou XML) — opcional, mas recomendado
+          <br />
+          <input type="file" id="campoArquivo" accept=".pdf,.xml" />
+          <div class="nome-arquivo-escolhido" id="nomeArquivoEscolhido"></div>
+        </div>
+
+        <button type="submit" class="btn-salvar-recebido" id="btnSalvarRecebido">Registrar nota</button>
+      </form>
+    </div>
+
+    <!-- Busca -->
+    <div class="barra-busca">
+      <input type="text" id="buscaRecebidos" placeholder="Buscar por fornecedor, número ou descrição..." />
+      <select id="filtroTipo">
+        <option value="">Todos os tipos</option>
+        <option value="NF-e">NF-e</option>
+        <option value="NFS-e">NFS-e</option>
+        <option value="Outro">Outro</option>
+      </select>
+    </div>
+
+    <div class="lista-recebidos" id="listaRecebidos"></div>
+    <div class="vazio" id="vazioRecebidos" style="display:none;">Nenhuma nota registrada ainda.</div>
+
+    </div><!-- /painelArquivos -->
+
+    <div id="painelLixeira" style="display:none;">
+      <p class="aviso-lixeira">
+        Os arquivos aqui ficam guardados junto com a lixeira do Armazenamento —
+        depois de 30 dias sem restaurar, são apagados automaticamente.
+      </p>
+      <div class="lista-recebidos" id="listaLixeira"></div>
+      <div class="vazio" id="vazioLixeira" style="display:none;">A lixeira está vazia.</div>
+    </div>
+
+  </main>
+
+  <script src="recebidos.js"></script>
+  <script src="modal-expandir.js?v=1"></script>
+  <footer class="fnx-rodape">Created by Yan Victor · <a href="https://www.instagram.com/yanszaida/" target="_blank" rel="noopener">@yanszaida</a></footer>
+</body>
+</html>

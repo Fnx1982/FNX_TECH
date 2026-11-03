@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script src="config.js"></script>
+  <script src="auth-worker.js?v=6"></script>
+  <script src="auth-guard.js"></script>
+  <script src="confirm-modal.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Visita Técnica — FNX TECH</title>
+  <link rel="stylesheet" href="contatos.css" />
+  <link rel="stylesheet" href="extrato.css" />
+  <link rel="stylesheet" href="visita-tecnica.css?v=3" />
+  <link rel="stylesheet" href="mobile.css?v=3" />
+
+  <!-- Google Agenda: pra puxar os agendamentos de visita -->
+  <script src="google-auth.js?v=3"></script>
+  <script async defer src="https://apis.google.com/js/api.js" onload="initGoogleAPI()"></script>
+  <link rel="stylesheet" href="fnx-tema.css?v=1" />
+</head>
+<body>
+
+  <main class="container">
+
+    <div class="topo-pagina">
+      <div>
+        <h1>Visita Técnica</h1>
+        <p>Registre a visita ao local — fotos, descritivo e endereço — pra gerar o orçamento depois</p>
+      </div>
+      <a href="home.html" class="btn-voltar">← Voltar</a>
+    </div>
+    <div class="atalhos-fluxo">
+      <a href="visita-tecnica.html" class="atalho-fluxo atalho-atual">🔍 Visita</a>
+      <a href="orcamento.html" class="atalho-fluxo">📝 Orçamento</a>
+      <a href="propostas.html" class="atalho-fluxo">📋 Análise</a>
+      <a href="andamento.html" class="atalho-fluxo">⚙ Em Andamento</a>
+      <a href="obras.html" class="atalho-fluxo">🏗 Obras</a>
+    </div>
+
+    <!-- Agendamentos do Google Agenda -->
+    <div class="card-secao" id="blocoAgenda">
+      <div class="topo-agenda">
+        <h2>📅 Agendadas no calendário</h2>
+        <div class="filtros-agenda">
+          <select id="periodoAgenda">
+            <option value="proximas">Próximos 30 dias</option>
+            <option value="recentes" selected>Últimos 30 dias + próximos 30</option>
+            <option value="passadas">Últimos 60 dias</option>
+          </select>
+          <input type="text" id="buscaAgenda" placeholder="Buscar no calendário..." />
+        </div>
+      </div>
+      <p class="texto-ajuda-agenda">Aqui aparecem só os eventos marcados como <b>📍 Visita técnica</b> no Calendário. Toque em <b>Registrar visita</b> para trazer para o formulário — nome do local, cliente, telefone, endereço e o descritivo já vêm preenchidos.</p>
+      <div class="filtro-tipo-agenda">
+        <label><input type="checkbox" id="mostrarTodosEventosAgenda" /> Mostrar também os outros eventos (pagamentos, reuniões...)</label>
+        <span id="contagemOutrosAgenda"></span>
+      </div>
+      <div id="listaAgenda" class="lista-agenda"><div class="vazio-agenda">Carregando o calendário…</div></div>
+    </div>
+
+    <div class="card-secao">
+      <h2 id="tituloFormulario">Nova visita</h2>
+      <div class="origem-visita" id="origemVisita">
+        <span class="tag-origem avulsa">Visita avulsa (sem agendamento)</span>
+      </div>
+      <input type="hidden" id="campoId" />
+
+      <div class="grid-campos">
+        <div class="campo">
+          <label for="campoClienteNome">Cliente</label>
+          <input type="text" id="campoClienteNome" placeholder="Nome ou razão social" />
+        </div>
+        <div class="campo">
+          <label for="campoDataVisita">Data da visita</label>
+          <input type="date" id="campoDataVisita" />
+        </div>
+        <div class="campo">
+          <label for="campoTelefone">Telefone</label>
+          <input type="text" id="campoTelefone" placeholder="(41) 99999-9999" />
+        </div>
+        <div class="campo">
+          <label for="campoLocal">Nome do local</label>
+          <input type="text" id="campoLocal" placeholder="Ex.: Ed. L'Espace Alameda, Condomínio Sol — bloco B" />
+        </div>
+        <div class="campo">
+          <label for="campoEndereco">Endereço</label>
+          <input type="text" id="campoEndereco" placeholder="Rua, número" />
+        </div>
+        <div class="campo">
+          <label for="campoBairro">Bairro</label>
+          <input type="text" id="campoBairro" />
+        </div>
+        <div class="campo">
+          <label for="campoCidade">Cidade</label>
+          <input type="text" id="campoCidade" placeholder="Curitiba" />
+        </div>
+        <div class="campo full">
+          <label for="campoDescricao">Descritivo da visita</label>
+          <textarea id="campoDescricao" placeholder="O que foi observado, o que precisa ser feito..." rows="3"></textarea>
+        </div>
+        <div class="campo full">
+          <label for="campoAnotacoes">📝 Anotações da visita <span class="dica-anotacoes">(só para a empresa — não vai para o cliente)</span></label>
+          <textarea id="campoAnotacoes" placeholder="Anote aqui durante a visita: o que o cliente pediu, problemas que viu, acesso, horários, contato do síndico, materiais que vai precisar..." rows="6"></textarea>
+        </div>
+      </div>
+
+      <!-- Botões do mapa pro endereço digitado acima -->
+      <div class="endereco-com-mapa" id="mapaFormVisita"></div>
+
+      <!-- Medidas tiradas no local -->
+      <div class="bloco-medidas">
+        <div class="topo-medidas">
+          <label>Medidas</label>
+          <span class="total-medidas" id="totalMedidas"></span>
+        </div>
+        <p class="texto-ajuda-agenda">Ex.: "Fachada frente" 12 × 8,5 m = 102 m². Para metro linear ou unidade, preencha só a primeira medida.</p>
+        <div id="listaMedidas"></div>
+        <button type="button" class="btn-add-medida" id="btnAddMedida">+ Adicionar medida</button>
+      </div>
+
+      <div style="margin-top:14px;">
+        <label style="display:block; font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:.03em; color:var(--texto-3); margin-bottom:8px;">
+          Fotos <span style="text-transform:none;font-weight:400;">(pode escolher várias de uma vez)</span>
+        </label>
+        <input type="file" id="campoFotos" accept="image/*" multiple />
+        <div id="previaFotos" style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;"></div>
+      </div>
+
+      <div class="barra-acoes">
+        <button type="button" class="btn-salvar" id="btnSalvarVisita">Salvar visita</button>
+        <button type="button" class="btn-cancelar-edicao" id="btnCancelarEdicao" style="display:none;">Cancelar edição</button>
+      </div>
+    </div>
+
+    <div class="barra-busca">
+      <input type="text" id="buscaVisitas" placeholder="Buscar por cliente ou local..." />
+    </div>
+
+    <div class="card-secao" id="blocoPendentes" style="display:none;">
+      <h2>Pendentes <span style="font-weight:normal; font-size:12px; color:#888;">(rascunhos salvos automaticamente, ainda não finalizados)</span></h2>
+      <div class="lista-contatos" id="listaPendentes"></div>
+    </div>
+
+    <div class="lista-contatos" id="listaVisitas"></div>
+    <div class="vazio" id="vazioVisitas" style="display:none;">Nenhuma visita registrada ainda.</div>
+
+  </main>
+
+  <script src="mapas.js?v=1"></script>
+  <script src="visita-para-orcamento.js?v=2"></script>
+  <script src="visita-tecnica.js?v=7"></script>
+  <script>onGoogleAuthChange(carregarAgendaVisitas);</script>
+  <script src="camera.js?v=1"></script>
+  <script src="modal-expandir.js?v=1"></script>
+  <footer class="fnx-rodape">Created by Yan Victor · <a href="https://www.instagram.com/yanszaida/" target="_blank" rel="noopener">@yanszaida</a></footer>
+</body>
+</html>
