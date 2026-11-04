@@ -1,9 +1,9 @@
 // Regras dos campos de acesso (iguais às do servidor):
-// - Registro: só letras (com acento) e números.
+// - Registro: letras (com acento), números e . , - _ ; :
 // - Senha: letras, números e símbolos; sem emoji e sem espaço.
 // O que não pode é removido na hora da digitação/colagem, com um aviso curto.
 (function () {
-  const RE_FORA_REGISTRO = /[^\p{L}\p{N}]/gu;
+  const RE_FORA_REGISTRO = /[^\p{L}\p{N}.,\-_;:]/gu;
   const RE_FORA_SENHA = /[\p{Extended_Pictographic}\p{Emoji_Presentation}\p{Emoji_Modifier}\p{Regional_Indicator}‍️\s\p{C}]/gu;
   const SELETOR_REGISTRO = "#registro, #campoRegistroRecuperar, #registroRecuperar";
 
@@ -47,7 +47,7 @@
       c.setAttribute("autocapitalize", "off");
       c.setAttribute("autocomplete", c.getAttribute("autocomplete") || "username");
       c.maxLength = 40;
-      c.addEventListener("input", () => limpar(c, RE_FORA_REGISTRO, "Registro: só letras e números (sem espaço, símbolo ou emoji)."));
+      c.addEventListener("input", () => limpar(c, RE_FORA_REGISTRO, "Registro: letras, números e . , - _ ; : (sem espaço, outros símbolos ou emoji)."));
     });
     // marca as senhas pelo tipo inicial (o botão de "ver senha" troca o tipo para text)
     document.querySelectorAll('input[type="password"]').forEach((c) => {
