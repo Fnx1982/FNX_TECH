@@ -8,8 +8,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Boards — FNX TECH</title>
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="quadros.css?v=1" />
-  <script src="confirm-modal.js"></script>
+  <link rel="stylesheet" href="quadros.css?v=2" />
+  <script src="confirm-modal.js?v=2"></script>
   <link rel="stylesheet" href="mobile.css?v=3" />
   <link rel="stylesheet" href="fnx-tema.css?v=3" />
 </head>
@@ -23,6 +23,22 @@
         <p>Organize tarefas e sprints em listas e cartões.</p>
       </div>
       <a href="home.html" class="btn-voltar">← Voltar</a>
+    </div>
+    <div class="barra-filtro-boards">
+      <div class="busca-boards">
+        <i class="bx bx-search"></i>
+        <input type="search" id="buscaBoards" placeholder="Buscar board pelo nome…" aria-label="Buscar board" />
+      </div>
+      <div class="abas-boards" role="tablist" aria-label="Situação dos boards">
+        <button type="button" class="ativo" data-filtro-board="ativos" role="tab">Ativos <span id="contBoardsAtivos"></span></button>
+        <button type="button" data-filtro-board="arquivados" role="tab"><i class="bx bx-archive"></i> Arquivados <span id="contBoardsArquivados"></span></button>
+      </div>
+      <label class="so-meus"><input type="checkbox" id="soMeusBoards" /> Só os que eu criei</label>
+      <select id="ordemBoards" aria-label="Ordenar boards">
+        <option value="recentes">Mais recentes</option>
+        <option value="nome">Nome (A–Z)</option>
+        <option value="cartoes">Mais cartões</option>
+      </select>
     </div>
     <div class="grade-quadros" id="gradeQuadros">
       <div class="carregando">Carregando boards…</div>
@@ -46,6 +62,7 @@
         <select id="filtroEtiqueta" aria-label="Filtrar por etiqueta">
           <option value="">Todas as etiquetas</option>
         </select>
+        <button type="button" class="btn-icone-claro" id="btnArquivadosQuadro" title="Cartões arquivados" aria-label="Cartões arquivados"><i class="bx bx-archive"></i><span class="badge-arq" id="badgeArquivados" hidden></span></button>
         <button type="button" class="btn-icone-claro" id="btnConfigQuadro" title="Configurar board" aria-label="Configurar board"><i class="bx bx-cog"></i></button>
       </div>
     </header>
@@ -111,6 +128,7 @@
 
           <h4>Ações</h4>
           <button type="button" class="btn-lateral" id="btnSalvarCartao"><i class="bx bx-save"></i> Salvar</button>
+          <button type="button" class="btn-lateral" id="btnArquivarCartao"><i class="bx bx-archive-in"></i> Arquivar cartão</button>
           <button type="button" class="btn-lateral perigo" id="btnExcluirCartao"><i class="bx bx-trash"></i> Excluir cartão</button>
           <p class="cartao-autoria" id="cartaoAutoria"></p>
         </aside>
@@ -137,14 +155,31 @@
           <button type="button" class="btn-link" id="btnNovaEtiqueta">+ Nova etiqueta</button>
         </div>
         <div class="rodape-q">
-          <button type="button" class="btn-lateral perigo" id="btnExcluirQuadro" hidden><i class="bx bx-trash"></i> Excluir board</button>
+          <div class="acoes-perigo-q">
+            <button type="button" class="btn-lateral" id="btnArquivarQuadro" hidden><i class="bx bx-archive-in"></i> Arquivar board</button>
+            <button type="button" class="btn-lateral perigo" id="btnExcluirQuadro" hidden><i class="bx bx-trash"></i> Excluir board</button>
+          </div>
           <button type="submit" class="btn-laranja" id="btnSalvarQuadro">Salvar</button>
         </div>
       </form>
     </div>
   </div>
 
-  <script src="quadros.js?v=1"></script>
+  <!-- ===== MODAL: CARTÕES ARQUIVADOS ===== -->
+  <div class="modal-overlay" id="modalArquivados">
+    <div class="modal-caixa-q" role="dialog" aria-modal="true" aria-labelledby="tituloArquivados">
+      <div class="modal-cabecalho-q">
+        <h2 id="tituloArquivados">Cartões arquivados</h2>
+        <button type="button" class="modal-fechar" id="fecharModalArquivados" aria-label="Fechar">&times;</button>
+      </div>
+      <div class="corpo-arquivados">
+        <input type="search" id="buscaArquivados" placeholder="Buscar nos arquivados…" aria-label="Buscar nos arquivados" />
+        <ul class="lista-arquivados" id="listaArquivados"></ul>
+      </div>
+    </div>
+  </div>
+
+  <script src="quadros.js?v=2"></script>
   <script src="notificacoes.js?v=3"></script>
   <footer class="fnx-rodape">Created by Yan Victor · <a href="https://www.instagram.com/yanszaida/" target="_blank" rel="noopener">@yanszaida</a></footer>
 </body>

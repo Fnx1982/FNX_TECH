@@ -160,7 +160,10 @@ document.addEventListener("keydown", (e) => {
 // ====================================================
 function salvarSetores() {
   localStorage.setItem(CHAVE_SETORES, JSON.stringify(setores)); // mantém uma cópia local de segurança
-  apiDataSet("materiaisSetores", setores).catch((e) => console.warn("Falha ao salvar setores de produto na nuvem:", e));
+  const avisar = (msg) => (typeof mostrarToast === "function" ? mostrarToast(msg, "erro") : alert(msg));
+  apiDataSet("materiaisSetores", setores)
+    .then((r) => { if (!r || !r.ok) avisar("Setores NÃO salvos na nuvem: " + ((r && r.erro) || "tente de novo.")); })
+    .catch(() => avisar("Sem conexão: os setores não foram salvos na nuvem."));
 }
 
 function renderSetores() {

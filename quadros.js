@@ -61,7 +61,11 @@
   }
   function etiqueta(id) { return (quadro && quadro.etiquetas || []).find((e) => e.id === id); }
   function cartoesDaLista(listaId) {
-    return cartoes.filter((c) => c.listaId === listaId).sort((a, b) => (a.ordem || 0) - (b.ordem || 0));
+    return cartoes.filter((c) => c.listaId === listaId && !c.arquivado).sort((a, b) => (a.ordem || 0) - (b.ordem || 0));
+  }
+  function manterPermissao(novo) {
+    if (novo && quadro && novo.id === quadro.id && novo.podeExcluir === undefined) novo.podeExcluir = quadro.podeExcluir;
+    return novo;
   }
   async function api(action, body) {
     try {
@@ -82,29 +86,102 @@
     renderGradeQuadros();
   }
 
+  let filtroBoards = "ativos";
+  function boardsFiltrados() {
+    const busca = $("buscaBoards").value.trim().toLowerCase();
+    const soMeus = $("soMeusBoards").checked;
+    const ordem = $("ordemBoards").value;
+    const lista = quadros.filter((q) => (filtroBoards === "arquivados" ? !!q.arquivado : !q.arquivado))
+      .filter((q) => !busca || String(q.nome || "").toLowerCase().includes(busca))
+      .filter((q) => !soMeus || String(q.criadoPor) === meuRegistro());
+    const porData = (a, b) => String(b.atualizadoEm || "").localeCompare(String(a.atualizadoEm || ""));
+    if (ordem === "nome") lista.sort((a, b) => String(a.nome).localeCompare(String(b.nome), "pt-BR"));
+    else if (ordem === "cartoes") lista.sort((a, b) => (b.totalCartoes || 0) - (a.totalCartoes || 0) || porData(a, b));
+    else lista.sort(porData);
+    return lista;
+  }
+
   function renderGradeQuadros() {
     const grade = $("gradeQuadros");
     grade.innerHTML = "";
-    quadros
-      .slice()
-      .sort((a, b) => String(b.atualizadoEm || "").localeCompare(String(a.atualizadoEm || "")))
-      .forEach((q) => {
-        const b = document.createElement("button");
-        b.type = "button";
-        b.className = "card-quadro";
-        b.style.background = `linear-gradient(135deg, ${q.cor || CORES[0]} 0%, ${q.cor || CORES[0]}CC 55%, #111 160%)`;
-        b.innerHTML = `<span class="nome">${esc(q.nome)}</span>
-          <span class="info"><span><i class="bx bx-list-ul"></i> ${(q.listas || []).length} listas</span><span><i class="bx bx-card"></i> ${q.totalCartoes || 0} cartões</span></span>`;
-        b.addEventListener("click", () => abrirQuadro(q.id));
-        grade.appendChild(b);
+    const nAtivos = quadros.filter((q) => !q.arquivado).length;
+    const nArq = quadros.length - nAtivos;
+    $("contBoardsAtivos").textContent = nAtivos ? `(${nAtivos})` : "";
+    $("contBoardsArquivados").textContent = nArq ? `(${nArq})` : "";
+    document.querySelectorAll("[data-filtro-board]").forEach((b) => {
+      const ativo = b.dataset.filtroBoard === filtroBoards;
+      b.classList.toggle("ativo", ativo);
+      b.setAttribute("aria-selected", ativo ? "true" : "false");
+    });
+    const lista = boardsFiltrados();
+    lista.forEach((q) => {
+      const card = document.createElement("div");
+      card.className = "card-quadro" + (q.arquivado ? " arquivado" : "");
+      card.style.background = `linear-gradient(135deg, ${q.cor || CORES[0]} 0%, ${q.cor || CORES[0]}CC 55%, #111 160%)`;
+      card.tabIndex = 0;
+      card.setAttribute("role", "button");
+      card.setAttribute("aria-label", `Abrir board ${q.nome}`);
+      const criador = q.criadoPorNome ? `<span class="criador"><i class="bx bx-user"></i> ${esc(q.criadoPorNome)}</span>` : "";
+      card.innerHTML = `<span class="nome">${esc(q.nome)}</span>
+        ${q.arquivado ? `<span class="selo-arquivado"><i class="bx bx-archive"></i> Arquivado${q.arquivadoEm ? " em " + esc(dataCurta(q.arquivadoEm)) : ""}</span>` : ""}
+        <span class="info"><span><i class="bx bx-list-ul"></i> ${(q.listas || []).length} listas</span><span><i class="bx bx-card"></i> ${q.totalCartoes || 0} cartões</span>${criador}</span>
+        <span class="acoes-card-quadro">
+          ${q.arquivado
+            ? `<button type="button" data-acao="desarquivar" title="Restaurar board" aria-label="Restaurar board"><i class="bx bx-archive-out"></i></button>`
+            : `<button type="button" data-acao="arquivar" title="Arquivar board" aria-label="Arquivar board"><i class="bx bx-archive-in"></i></button>`}
+          ${q.podeExcluir ? `<button type="button" data-acao="excluir" class="perigo" title="Excluir board" aria-label="Excluir board"><i class="bx bx-trash"></i></button>` : ""}
+        </span>`;
+      card.addEventListener("click", (e) => {
+        const btn = e.target.closest("button[data-acao]");
+        if (btn) { e.stopPropagation(); acaoBoard(q, btn.dataset.acao); return; }
+        abrirQuadro(q.id);
       });
-    const novo = document.createElement("button");
-    novo.type = "button";
-    novo.className = "card-quadro-novo";
-    novo.innerHTML = `<i class="bx bx-plus"></i> Criar board`;
-    novo.addEventListener("click", () => abrirModalQuadro(null));
-    grade.appendChild(novo);
+      card.addEventListener("keydown", (e) => { if (e.key === "Enter" && e.target === card) abrirQuadro(q.id); });
+      grade.appendChild(card);
+    });
+    if (filtroBoards === "ativos") {
+      const novo = document.createElement("button");
+      novo.type = "button";
+      novo.className = "card-quadro-novo";
+      novo.innerHTML = `<i class="bx bx-plus"></i> Criar board`;
+      novo.addEventListener("click", () => abrirModalQuadro(null));
+      grade.appendChild(novo);
+    }
+    if (!lista.length && (filtroBoards === "arquivados" || $("buscaBoards").value.trim() || $("soMeusBoards").checked)) {
+      const v = document.createElement("div");
+      v.className = "vazio";
+      v.textContent = filtroBoards === "arquivados" && !$("buscaBoards").value.trim() && !$("soMeusBoards").checked
+        ? "Nenhum board arquivado."
+        : "Nenhum board encontrado com esse filtro.";
+      grade.prepend(v);
+    }
   }
+
+  async function arquivarBoard(q, arquivar) {
+    const r = await api("trello-quadro-salvar", { id: q.id, arquivado: arquivar });
+    if (!r.ok) { toast(r.erro || "Não foi possível atualizar o board.", "erro"); return false; }
+    toast(arquivar ? `Board "${q.nome}" arquivado.` : `Board "${q.nome}" restaurado.`);
+    return true;
+  }
+  async function excluirBoard(q) {
+    const ok = await confirmarAcao(`Excluir o board "${q.nome}"?`, "Todas as listas e cartões dele serão apagados da nuvem. Não dá para desfazer — se quiser só tirar da frente, use Arquivar.");
+    if (!ok) return false;
+    const r = await api("trello-quadro-excluir", { id: q.id });
+    if (!r.ok) { toast(r.erro || "Não foi possível excluir.", "erro"); return false; }
+    toast("Board excluído.");
+    return true;
+  }
+  async function acaoBoard(q, acao) {
+    let feito = false;
+    if (acao === "arquivar") feito = await arquivarBoard(q, true);
+    else if (acao === "desarquivar") feito = await arquivarBoard(q, false);
+    else if (acao === "excluir") feito = await excluirBoard(q);
+    if (feito) carregarQuadros();
+  }
+
+  document.querySelectorAll("[data-filtro-board]").forEach((b) => b.addEventListener("click", () => { filtroBoards = b.dataset.filtroBoard; renderGradeQuadros(); }));
+  ["buscaBoards", "soMeusBoards", "ordemBoards"].forEach((id) => $(id).addEventListener("input", renderGradeQuadros));
+  $("ordemBoards").addEventListener("change", renderGradeQuadros);
 
   // ============================================================
   // QUADRO ABERTO
@@ -129,10 +206,31 @@
     $("telaQuadro").style.setProperty("--cor-quadro", quadro.cor || CORES[0]);
     $("nomeQuadro").textContent = quadro.nome;
     document.title = `${quadro.nome} — Boards — FNX TECH`;
+    atualizarAvisoArquivado();
     preencherFiltros();
     renderListas();
     agendarAtualizacao();
     return true;
+  }
+
+  function atualizarAvisoArquivado() {
+    let aviso = $("avisoBoardArquivado");
+    if (quadro && quadro.arquivado) {
+      if (!aviso) {
+        aviso = document.createElement("div");
+        aviso.id = "avisoBoardArquivado";
+        aviso.className = "aviso-arquivado";
+        $("areaListas").before(aviso);
+      }
+      aviso.innerHTML = `<i class="bx bx-archive"></i><span>Este board está arquivado. Ele não aparece na lista de ativos.</span><button type="button">Restaurar board</button>`;
+      aviso.querySelector("button").addEventListener("click", async () => {
+        if (await arquivarBoard(quadro, false)) { quadro.arquivado = false; atualizarAvisoArquivado(); }
+      });
+    } else if (aviso) aviso.remove();
+    const n = cartoes.filter((c) => c.arquivado).length;
+    const badge = $("badgeArquivados");
+    badge.hidden = !n;
+    badge.textContent = n > 99 ? "99+" : String(n);
   }
 
   function mostrarLista() {
@@ -148,14 +246,14 @@
   function agendarAtualizacao() {
     clearTimeout(timerAtualizar);
     timerAtualizar = setTimeout(async () => {
-      const ocupado = arrastando || $("modalCartao").classList.contains("active") || document.querySelector(".form-novo, [contenteditable=true], .menu-lista");
+      const ocupado = arrastando || $("modalCartao").classList.contains("active") || $("modalQuadro").classList.contains("active") || document.querySelector(".form-novo, [contenteditable=true], .menu-lista");
       if (quadro && !ocupado && !document.hidden) {
         const r = await api(`trello-quadro-get&id=${encodeURIComponent(quadro.id)}`);
         if (r.ok && quadro && r.quadro.id === quadro.id && !arrastando) {
           const mudou = JSON.stringify(r.cartoes) !== JSON.stringify(cartoes) || JSON.stringify(r.quadro) !== JSON.stringify(quadro);
           quadro = r.quadro;
           cartoes = r.cartoes || [];
-          if (mudou) { $("nomeQuadro").textContent = quadro.nome; preencherFiltros(); renderListas(); }
+          if (mudou) { $("nomeQuadro").textContent = quadro.nome; preencherFiltros(); renderListas(); atualizarAvisoArquivado(); if ($("modalArquivados").classList.contains("active")) renderArquivados(); }
         }
       }
       if (quadro) agendarAtualizacao();
@@ -730,6 +828,96 @@
     toast("Cartão excluído.");
   });
 
+  async function arquivarCartao(id, arquivar) {
+    const r = await api("trello-cartao-salvar", { quadroId: quadro.id, cartao: { id, arquivado: arquivar } });
+    if (!r.ok) { toast(r.erro || "Não foi possível atualizar o cartão.", "erro"); return null; }
+    const idx = cartoes.findIndex((x) => x.id === id);
+    if (idx !== -1) cartoes[idx] = r.cartao;
+    renderListas();
+    atualizarAvisoArquivado();
+    return r.cartao;
+  }
+
+  $("btnArquivarCartao").addEventListener("click", async () => {
+    if (!cartaoAberto) return;
+    // salva o que foi editado antes de arquivar
+    const salvo = await salvarCartaoAberto({ silencioso: true });
+    if (salvo === false || !cartaoAberto) return;
+    const id = cartaoAberto.id;
+    const titulo = cartaoAberto.titulo;
+    if (await arquivarCartao(id, true)) {
+      fecharCartao();
+      toast(`Cartão "${titulo}" arquivado. Veja em "Cartões arquivados".`);
+    }
+  });
+
+  // ── Cartões arquivados ─────────────────────────────────────
+  function renderArquivados() {
+    const busca = $("buscaArquivados").value.trim().toLowerCase();
+    const lista = cartoes.filter((c) => c.arquivado)
+      .filter((c) => !busca || `${c.titulo} ${c.descricao || ""}`.toLowerCase().includes(busca))
+      .sort((a, b) => String(b.arquivadoEm || "").localeCompare(String(a.arquivadoEm || "")));
+    const ul = $("listaArquivados");
+    if (!lista.length) {
+      ul.innerHTML = `<li class="vazio">${cartoes.some((c) => c.arquivado) ? "Nada encontrado." : "Nenhum cartão arquivado neste board."}</li>`;
+      return;
+    }
+    ul.innerHTML = lista.map((c) => {
+      const l = (quadro.listas || []).find((x) => x.id === c.listaId);
+      return `<li data-id="${esc(c.id)}">
+        <div class="info-arq">
+          <strong>${esc(c.titulo)}</strong>
+          <small>${l ? "Lista: " + esc(l.nome) : "Lista removida"}${c.arquivadoEm ? " · arquivado " + esc(dataHora(c.arquivadoEm)) : ""}</small>
+        </div>
+        <div class="acoes-arq">
+          <button type="button" data-acao="restaurar"><i class="bx bx-archive-out"></i> Restaurar</button>
+          <button type="button" data-acao="excluir" class="perigo" aria-label="Excluir de vez"><i class="bx bx-trash"></i></button>
+        </div>
+      </li>`;
+    }).join("");
+  }
+  function abrirArquivados() {
+    $("buscaArquivados").value = "";
+    renderArquivados();
+    $("modalArquivados").classList.add("active");
+  }
+  function fecharArquivados() { $("modalArquivados").classList.remove("active"); }
+  $("btnArquivadosQuadro").addEventListener("click", abrirArquivados);
+  $("fecharModalArquivados").addEventListener("click", fecharArquivados);
+  $("modalArquivados").addEventListener("click", (e) => { if (e.target === $("modalArquivados")) fecharArquivados(); });
+  $("buscaArquivados").addEventListener("input", renderArquivados);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && $("modalArquivados").classList.contains("active") && !document.querySelector("#modal-confirmacao-global.active")) fecharArquivados();
+  });
+  $("listaArquivados").addEventListener("click", async (e) => {
+    const btn = e.target.closest("button[data-acao]");
+    if (!btn) return;
+    const id = btn.closest("li").dataset.id;
+    const c = cartoes.find((x) => x.id === id);
+    if (!c) return;
+    btn.disabled = true;
+    if (btn.dataset.acao === "restaurar") {
+      // se a lista original sumiu, volta para a primeira lista
+      const listaExiste = (quadro.listas || []).some((l) => l.id === c.listaId);
+      if (!listaExiste && !(quadro.listas || []).length) { toast("Crie uma lista antes de restaurar.", "erro"); btn.disabled = false; return; }
+      const r = await api("trello-cartao-salvar", { quadroId: quadro.id, cartao: listaExiste ? { id, arquivado: false } : { id, arquivado: false, listaId: quadro.listas[0].id } });
+      if (!r.ok) { toast(r.erro || "Não foi possível restaurar.", "erro"); btn.disabled = false; return; }
+      const idx = cartoes.findIndex((x) => x.id === id);
+      if (idx !== -1) cartoes[idx] = r.cartao;
+      renderListas();
+      atualizarAvisoArquivado();
+      toast(`Cartão "${c.titulo}" restaurado.`);
+    } else {
+      if (!(await confirmarAcao(`Excluir o cartão "${c.titulo}" de vez?`, "Não dá para desfazer."))) { btn.disabled = false; return; }
+      const r = await api("trello-cartao-excluir", { quadroId: quadro.id, id });
+      if (!r.ok) { toast(r.erro || "Não foi possível excluir.", "erro"); btn.disabled = false; return; }
+      cartoes = cartoes.filter((x) => x.id !== id);
+      atualizarAvisoArquivado();
+      toast("Cartão excluído.");
+    }
+    renderArquivados();
+  });
+
   // ============================================================
   // MODAL DO QUADRO (criar / configurar)
   // ============================================================
@@ -744,7 +932,11 @@
     corQuadroEdicao = (q && q.cor) || CORES[quadros.length % CORES.length];
     etiquetasEdicao = q ? JSON.parse(JSON.stringify(q.etiquetas || [])) : [];
     $("blocoEtiquetas").hidden = !q; // quadro novo já nasce com etiquetas padrão
-    $("btnExcluirQuadro").hidden = !q;
+    $("btnExcluirQuadro").hidden = !(q && q.podeExcluir);
+    $("btnArquivarQuadro").hidden = !q;
+    if (q) $("btnArquivarQuadro").innerHTML = q.arquivado
+      ? `<i class="bx bx-archive-out"></i> Restaurar board`
+      : `<i class="bx bx-archive-in"></i> Arquivar board`;
     renderCoresQuadro();
     renderEtiquetasEdicao();
     $("modalQuadro").classList.add("active");
@@ -802,7 +994,7 @@
     if (!r.ok) { toast(r.erro || "Não foi possível salvar o board.", "erro"); return; }
     fecharModalQuadro();
     if (quadroEditando && quadro && quadro.id === r.quadro.id) {
-      quadro = r.quadro;
+      quadro = manterPermissao(r.quadro);
       // etiquetas removidas somem dos cartões na próxima leitura
       await abrirQuadro(quadro.id, { silencioso: true });
     } else {
@@ -812,14 +1004,23 @@
 
   $("btnExcluirQuadro").addEventListener("click", async () => {
     if (!quadroEditando) return;
-    const ok = await confirmarAcao(`Excluir o board "${quadroEditando.nome}"?`, "Todas as listas e cartões dele serão apagados. Não dá para desfazer.");
-    if (!ok) return;
-    const r = await api("trello-quadro-excluir", { id: quadroEditando.id });
-    if (!r.ok) { toast(r.erro || "Não foi possível excluir.", "erro"); return; }
+    if (!(await excluirBoard(quadroEditando))) return;
     fecharModalQuadro();
-    toast("Board excluído.");
     history.pushState({}, "", "quadros.html");
     mostrarLista();
+  });
+  $("btnArquivarQuadro").addEventListener("click", async () => {
+    if (!quadroEditando) return;
+    const arquivar = !quadroEditando.arquivado;
+    if (!(await arquivarBoard(quadroEditando, arquivar))) return;
+    fecharModalQuadro();
+    if (arquivar) {
+      history.pushState({}, "", "quadros.html");
+      mostrarLista();
+    } else if (quadro && quadro.id === quadroEditando.id) {
+      quadro.arquivado = false;
+      atualizarAvisoArquivado();
+    }
   });
 
   // ── Barra do quadro ────────────────────────────────────────
@@ -831,7 +1032,7 @@
   $("nomeQuadro").addEventListener("click", () => editarTextoInline($("nomeQuadro"), quadro.nome, async (novo) => {
     const r = await api("trello-quadro-salvar", { id: quadro.id, nome: novo });
     if (!r.ok) { toast(r.erro || "Não foi possível renomear.", "erro"); $("nomeQuadro").textContent = quadro.nome; return; }
-    quadro = r.quadro;
+    quadro = manterPermissao(r.quadro);
     $("nomeQuadro").textContent = quadro.nome;
   }));
 

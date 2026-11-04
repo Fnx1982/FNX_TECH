@@ -278,3 +278,69 @@ body.pagina-quadros {
 @media (max-width: 768px) {
   #cartaoLista { width: auto !important; max-width: 70%; }
 }
+
+/* ===================== FILTRO / ARQUIVO DE BOARDS ===================== */
+.barra-filtro-boards { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 16px; }
+.busca-boards { position: relative; flex: 1 1 240px; min-width: 0; }
+.busca-boards i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #888; font-size: 18px; }
+.busca-boards input { width: 100%; border: 1px solid #d0d0d0; border-radius: 40px; padding: 10px 14px 10px 38px; font-size: 14px; background: #fff; color: #222; }
+.busca-boards input:focus { outline: 2px solid #FF6A00; border-color: transparent; }
+.abas-boards { display: inline-flex; background: #e9e9ec; border-radius: 40px; padding: 4px; gap: 2px; }
+.abas-boards button { border: none; background: transparent; border-radius: 40px; padding: 7px 14px; font-weight: 700; font-size: 13px; color: #555; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.abas-boards button.ativo { background: #111; color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.2); }
+.abas-boards button span { opacity: .75; font-weight: 600; }
+.so-meus { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #333; cursor: pointer; white-space: nowrap; }
+.so-meus input { accent-color: #FF6A00; width: 16px; height: 16px; }
+#ordemBoards { border: 1px solid #d0d0d0; border-radius: 40px; padding: 9px 12px; font-size: 13px; background: #fff; color: #222; cursor: pointer; }
+
+.card-quadro .criador { opacity: .85; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.card-quadro .info { flex-wrap: wrap; row-gap: 2px; padding-right: 70px; }
+.card-quadro.arquivado { filter: saturate(.35); }
+.card-quadro .selo-arquivado { position: relative; z-index: 1; align-self: flex-start; font-size: 11px; font-weight: 700; background: rgba(0,0,0,.45); padding: 3px 8px; border-radius: 20px; display: inline-flex; gap: 4px; align-items: center; }
+.acoes-card-quadro { position: absolute; z-index: 2; right: 10px; bottom: 10px; display: flex; gap: 6px; opacity: 0; transition: opacity .15s; }
+.card-quadro:hover .acoes-card-quadro, .card-quadro:focus-within .acoes-card-quadro { opacity: 1; }
+.acoes-card-quadro button { width: 32px; height: 32px; border-radius: 9px; border: none; background: rgba(0,0,0,.45); color: #fff; font-size: 17px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+.acoes-card-quadro button:hover { background: rgba(0,0,0,.7); }
+.acoes-card-quadro button.perigo:hover { background: #E5141B; }
+@media (hover: none) { .acoes-card-quadro { opacity: 1; } }
+
+/* quadro aberto */
+#btnArquivadosQuadro { position: relative; }
+.badge-arq { position: absolute; top: -4px; right: -4px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9px; background: #FFB000; color: #111; font-size: 11px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; }
+.badge-arq[hidden] { display: none; }
+.aviso-arquivado { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; background: #FFF4D6; color: #6b4a00; padding: 10px 16px; font-size: 13.5px; font-weight: 600; border-bottom: 1px solid #f1d58a; }
+.aviso-arquivado i { font-size: 18px; }
+.aviso-arquivado button { margin-left: auto; border: none; background: #111; color: #fff; border-radius: 20px; padding: 6px 14px; font-weight: 700; cursor: pointer; }
+.aviso-arquivado button:hover { background: #FF6A00; }
+
+.acoes-perigo-q { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* modal de arquivados */
+.corpo-arquivados { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 12px; }
+#buscaArquivados { border: 1px solid #ccc; border-radius: 10px; padding: 9px 11px; font-size: 14px; }
+#buscaArquivados:focus { outline: 2px solid #FF6A00; border-color: transparent; }
+.lista-arquivados { list-style: none; margin: 0; padding: 0; max-height: 55vh; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+.lista-arquivados li { display: flex; align-items: center; gap: 10px; background: #f4f5f7; border-radius: 10px; padding: 10px 12px; }
+.lista-arquivados li.vazio { justify-content: center; color: #777; background: transparent; padding: 20px; }
+.info-arq { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.info-arq strong { font-size: 14px; color: #222; overflow-wrap: anywhere; }
+.info-arq small { font-size: 12px; color: #777; }
+.acoes-arq { display: flex; gap: 6px; flex-shrink: 0; }
+.acoes-arq button { border: none; border-radius: 8px; padding: 7px 10px; font-weight: 700; font-size: 12.5px; cursor: pointer; background: #e4e6ea; color: #222; display: inline-flex; align-items: center; gap: 4px; }
+.acoes-arq button:hover { background: #d6d9de; }
+.acoes-arq button.perigo { color: #E5141B; }
+.acoes-arq button.perigo:hover { background: #fdecea; }
+.acoes-arq button:disabled { opacity: .5; cursor: wait; }
+
+@media (max-width: 768px) {
+  .barra-filtro-boards { gap: 8px; }
+  .busca-boards { flex-basis: 100%; }
+  .abas-boards { flex: 1 1 auto; }
+  .abas-boards button { flex: 1; justify-content: center; padding: 7px 8px; }
+  #ordemBoards { flex: 1 1 140px; }
+  .card-quadro { height: auto; min-height: 118px; gap: 8px; }
+  .card-quadro .info { padding-right: 0; padding-bottom: 36px; }
+  .acoes-card-quadro button { width: 30px; height: 30px; font-size: 16px; }
+  .lista-arquivados li { flex-wrap: wrap; }
+  .acoes-arq { width: 100%; justify-content: flex-end; }
+}

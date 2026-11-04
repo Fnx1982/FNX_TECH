@@ -79,7 +79,13 @@
     return todosOsLancamentos.filter((l) => l.banco === BANCO_ATUAL);
   }
   async function salvarExtratoConfigGeral() {
-    await apiDataSet("extratoConfig", extratoConfigGeral);
+    let r;
+    try { r = await apiDataSet("extratoConfig", extratoConfigGeral); } catch (e) { r = { ok: false, erro: "Sem conexão com o servidor." }; }
+    if (!r || !r.ok) {
+      const msg = "Configuração NÃO salva na nuvem: " + ((r && r.erro) || "tente de novo.");
+      if (typeof mostrarToast === "function") mostrarToast(msg, "erro"); else alert(msg);
+    }
+    return r;
   }
 
   async function carregarTudo() {
