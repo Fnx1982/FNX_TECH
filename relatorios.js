@@ -2,7 +2,7 @@
 // relatorios.js
 // Lê dados já existentes do Folha da Equipe e do
 // Extrato Bancário (qualquer um dos 3 bancos) direto do
-// localStorage, aplica os filtros configurados, e gera um PDF
+// servidor (nuvem), aplica os filtros configurados, e gera um PDF
 // com jsPDF + autotable. Guarda um histórico de configurações
 // salvas, que podem ser reabertas e editadas (o que regenera
 // o PDF) ou excluídas.
@@ -59,7 +59,36 @@ const tipoLancamentoExtratoSelect = document.getElementById("tipoLancamentoExtra
 // ====================================================
 // ESTADO
 // ====================================================
-let relatorios = JSON.parse(localStorage.getItem(CHAVE_RELATORIOS)) || [];
+let relatorios = [];
+
+// ── Dados que vêm da NUVEM (antes eram lidos do navegador e os
+// relatórios saíam vazios em outro computador) ──
+let _cacheRel = { funcionarios: [], obrasFinanceiro: [], materiais: [], setoresMaterial: [], obras: [], boletos: [] };
+async function carregarDadosRelatorio() {
+  const [fin, rMat, rSet, rBol, rRel] = await Promise.all([
+    carregarFinanceiroFunc().catch(() => ({ obras: [], funcionarios: [] })),
+    apiListarMateriais().catch(() => ({ ok: false })),
+    apiDataGet("materiaisSetores").catch(() => ({ ok: false })),
+    apiListarBoletos().catch(() => ({ ok: false })),
+    apiDataGet("relatoriosSalvos").catch(() => ({ ok: false })),
+    typeof carregarObrasCache === "function" ? carregarObrasCache().catch(() => {}) : null,
+  ]);
+  _cacheRel.funcionarios = (fin && fin.funcionarios) || [];
+  _cacheRel.obrasFinanceiro = (fin && fin.obras) || [];
+  _cacheRel.materiais = (rMat.ok ? rMat.materiais || [] : []).map((m) => ({
+    ...m, nome: String(m.nome || ""), setor: m.setor || "Sem setor", codigo: String(m.codigo || ""),
+    valor: Number(m.valor) || 0, quantidade: Number(m.quantidade) || 0, observacao: m.observacao || "" }));
+  _cacheRel.setoresMaterial = rSet.ok && Array.isArray(rSet.valor) ? rSet.valor : [];
+  if (_cacheRel.materiais.some((m) => m.setor === "Sem setor") && !_cacheRel.setoresMaterial.includes("Sem setor")) _cacheRel.setoresMaterial.push("Sem setor");
+  _cacheRel.boletos = rBol.ok ? rBol.boletos || [] : [];
+  if (rRel.ok && Array.isArray(rRel.valor)) relatorios = rRel.valor;
+  else {
+    // primeira vez: sobe o histórico que estava só neste navegador
+    try { relatorios = JSON.parse(localStorage.getItem(CHAVE_RELATORIOS)) || []; } catch (e) { relatorios = []; }
+    if (relatorios.length) apiDataSet("relatoriosSalvos", relatorios);
+  }
+}
+const _dadosRelatorioPronto = carregarDadosRelatorio();
 let idEditando = null; // id do relatório sendo editado, ou null se for novo
 let tipoSelecionado = "funcionarios";
 
@@ -73,12 +102,8 @@ let obrasRelatorioSel = new Set(); // vazio = todas as obras
 // ====================================================
 // LEITURA DOS DADOS EXISTENTES (Funcionários / Extrato)
 // ====================================================
-function lerFuncionarios() {
-  return JSON.parse(localStorage.getItem("financeiro")) || [];
-}
-function lerObrasFinanceiro() {
-  return JSON.parse(localStorage.getItem("obrasFinanceiro")) || [];
-}
+function lerFuncionarios() { return _cacheRel.funcionarios; }
+function lerObrasFinanceiro() { return _cacheRel.obrasFinanceiro; }
 function lerExtrato(bancoKey) {
   if (!BANCOS[bancoKey]) return { lancamentos: [], classificacoes: [] };
   return {
@@ -86,12 +111,8 @@ function lerExtrato(bancoKey) {
     classificacoes: (_extratoConfigRelatorio[bancoKey] && _extratoConfigRelatorio[bancoKey].classificacoes) || [],
   };
 }
-function lerMateriais() {
-  return JSON.parse(localStorage.getItem("materiais_lista")) || [];
-}
-function lerSetoresMaterial() {
-  return JSON.parse(localStorage.getItem("materiais_setores")) || [];
-}
+function lerMateriais() { return _cacheRel.materiais; }
+function lerSetoresMaterial() { return _cacheRel.setoresMaterial; }
 
 // ====================================================
 // MODAL — abrir / fechar
@@ -347,7 +368,10 @@ function atualizarOpcoesMultiSelect() {
 // SALVAR CONFIGURAÇÃO DO RELATÓRIO (histórico)
 // ====================================================
 function salvarRelatorios() {
-  localStorage.setItem(CHAVE_RELATORIOS, JSON.stringify(relatorios));
+  // Histórico de relatórios fica na nuvem (todo mundo vê o mesmo)
+  apiDataSet("relatoriosSalvos", relatorios).then((r) => {
+    if (!r || !r.ok) mostrarToast("Não foi possível salvar o histórico na nuvem.", "erro");
+  });
 }
 
 btnSalvarRelatorio.addEventListener("click", () => {
@@ -535,7 +559,7 @@ function renderListaRelatorios() {
         <div class="relatorio-nome">${escaparHtml(r.nome)}</div>
         <div class="relatorio-meta">
           <span class="tag-tipo ${r.tipo}">${rotuloTipo(r.tipo)}</span>
-          ${ (r.tipo === "extrato" || r.tipo === "combinado") && bancosNomes ? `<span>Banco(s): ${bancosNomes}</span>` : "" }
+          ${ (r.tipo === "extrato" || r.tipo === "combinado") && bancosNomes ? `<span>Conta(s): ${escaparHtml(bancosNomes)}</span>` : "" }
           <span>Atualizado em ${formatarDataHora(r.atualizadoEm)}</span>
         </div>
       </div>
@@ -1060,13 +1084,13 @@ const MESES_ABREV = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out"
 function lerPropostas2() { return typeof lerPropostas === "function" ? lerPropostas() : []; } // nuvem (propostas-core.js)
 function lerFinanceiro2() { return financeiroFuncCache.funcionarios || []; } // nuvem (auth-worker.js)
 carregarFinanceiroFunc();
-function lerObras2()      { return JSON.parse(localStorage.getItem("obras_lista")) || []; }
+function lerObras2()      { return typeof lerObras === "function" ? lerObras() : []; } // nuvem (propostas-core.js)
 function lerUsuarios2()   { console.warn("[relatorios.js] lerUsuarios2() está obsoleta — use await lerUsuariosDoServidor()."); return []; }
 async function lerUsuariosDoServidor() {
   const r = await apiListarUsuariosBasico();
   return r.ok ? r.usuarios : [];
 }
-function lerBoletos2()    { return JSON.parse(localStorage.getItem("boletos_lista")) || []; }
+function lerBoletos2()    { return _cacheRel.boletos; } // nuvem
 
 function totalProposta(p) {
   if (typeof totalGeral === "function") return totalGeral(p); // já conta desconto e ajuste
@@ -1472,3 +1496,4 @@ async function gerarApresentacaoFinanceiroPptx(mesesArr, ano, selecionados) {
 
 definirTipo("funcionarios");
 renderListaRelatorios();
+Promise.all([_dadosRelatorioPronto, _contasRelatorioPronto]).then(() => renderListaRelatorios());
