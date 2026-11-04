@@ -9,11 +9,11 @@
 // ============================================================
 (function () {
   const STATUS = {
-    "em-analise":   { nome: "Em análise",   cor: "#B34700", fundo: "#FFF1E6" },
+    "em-analise":   { nome: "Em aprovação",   cor: "#B34700", fundo: "#FFF1E6" },
     "em-andamento": { nome: "Em andamento", cor: "#1D5FB4", fundo: "#E3EEFB" },
     "finalizada":   { nome: "Finalizada",   cor: "#1C7A43", fundo: "#E2F5EA" },
   };
-  const AREAS = ["Geral", "Orçamento / Propostas", "Obras e Demandas", "Financeiro / Boletos", "Pontos", "Calendário", "Contatos", "Celular", "Outro"];
+  const AREAS = ["Geral", "Estimativa / Propostas", "Projetos e Tarefas", "Financeiro / Boletos", "Pontos", "Calendário", "Contatos", "Celular", "Outro"];
 
   // Só pra mostrar a aba — quem decide de verdade é o Worker
   function pareceTI() {
@@ -131,7 +131,7 @@
     const corpo = document.getElementById("corpoSugestoes");
     corpo.innerHTML = `
       <label>Título
-        <input type="text" id="sugTitulo" maxlength="150" placeholder="Ex.: Botão pra duplicar orçamento" />
+        <input type="text" id="sugTitulo" maxlength="150" placeholder="Ex.: Botão pra duplicar estimativa" />
       </label>
       <label>Parte do site
         <select id="sugArea">${AREAS.map((a) => `<option>${a}</option>`).join("")}</select>
@@ -168,7 +168,7 @@
     let filtrosHtml = "";
     if (modoTI) {
       const contagem = (f) => lista.filter((s) => f === "abertas" ? s.status !== "finalizada" : f === "todas" ? true : s.status === f).length;
-      const filtros = [["abertas", "Abertas"], ["em-analise", "Em análise"], ["em-andamento", "Em andamento"], ["finalizada", "Finalizadas"], ["todas", "Todas"]];
+      const filtros = [["abertas", "Abertas"], ["em-analise", "Em aprovação"], ["em-andamento", "Em andamento"], ["finalizada", "Finalizadas"], ["todas", "Todas"]];
       filtrosHtml = `<div class="filtros-ti">${filtros.map(([f, n]) => `<button type="button" data-filtro="${f}" class="${filtroTI === f ? "ativo" : ""}">${n} (${contagem(f)})</button>`).join("")}</div>`;
       lista = lista.filter((s) => filtroTI === "abertas" ? s.status !== "finalizada" : filtroTI === "todas" ? true : s.status === filtroTI);
     }

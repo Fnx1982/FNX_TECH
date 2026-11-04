@@ -7,7 +7,7 @@
   <script src="confirm-modal.js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Visita Técnica — FNX TECH</title>
+  <title>Levantamento de Requisitos — FNX TECH</title>
   <link rel="stylesheet" href="contatos.css" />
   <link rel="stylesheet" href="extrato.css" />
   <link rel="stylesheet" href="visita-tecnica.css?v=3" />
@@ -24,17 +24,17 @@
 
     <div class="topo-pagina">
       <div>
-        <h1>Visita Técnica</h1>
-        <p>Registre a visita ao local — fotos, descritivo e endereço — pra gerar o orçamento depois</p>
+        <h1>Levantamento de Requisitos</h1>
+        <p>Registre o levantamento — fotos, descritivo e endereço — pra gerar a estimativa depois</p>
       </div>
       <a href="home.html" class="btn-voltar">← Voltar</a>
     </div>
     <div class="atalhos-fluxo">
-      <a href="visita-tecnica.html" class="atalho-fluxo atalho-atual">🔍 Visita</a>
-      <a href="orcamento.html" class="atalho-fluxo">📝 Orçamento</a>
-      <a href="propostas.html" class="atalho-fluxo">📋 Análise</a>
-      <a href="andamento.html" class="atalho-fluxo">⚙ Em Andamento</a>
-      <a href="obras.html" class="atalho-fluxo">🏗 Obras</a>
+      <a href="visita-tecnica.html" class="atalho-fluxo atalho-atual">🔍 Levantamento</a>
+      <a href="orcamento.html" class="atalho-fluxo">📝 Estimativa</a>
+      <a href="propostas.html" class="atalho-fluxo">📋 Em Aprovação</a>
+      <a href="andamento.html" class="atalho-fluxo">⚙ Em Desenvolvimento</a>
+      <a href="obras.html" class="atalho-fluxo">🏗 Projetos</a>
     </div>
 
     <!-- Agendamentos do Google Agenda -->
@@ -50,7 +50,7 @@
           <input type="text" id="buscaAgenda" placeholder="Buscar no calendário..." />
         </div>
       </div>
-      <p class="texto-ajuda-agenda">Aqui aparecem só os eventos marcados como <b>📍 Visita técnica</b> no Calendário. Toque em <b>Registrar visita</b> para trazer para o formulário — nome do local, cliente, telefone, endereço e o descritivo já vêm preenchidos.</p>
+      <p class="texto-ajuda-agenda">Aqui aparecem só os eventos marcados como <b>📍 Levantamento de requisitos</b> na Agenda. Toque em <b>Registrar levantamento</b> para trazer para o formulário — nome do local, cliente, telefone, endereço e o descritivo já vêm preenchidos.</p>
       <div class="filtro-tipo-agenda">
         <label><input type="checkbox" id="mostrarTodosEventosAgenda" /> Mostrar também os outros eventos (pagamentos, reuniões...)</label>
         <span id="contagemOutrosAgenda"></span>
@@ -59,9 +59,9 @@
     </div>
 
     <div class="card-secao">
-      <h2 id="tituloFormulario">Nova visita</h2>
+      <h2 id="tituloFormulario">Novo levantamento</h2>
       <div class="origem-visita" id="origemVisita">
-        <span class="tag-origem avulsa">Visita avulsa (sem agendamento)</span>
+        <span class="tag-origem avulsa">Levantamento avulso (sem agendamento)</span>
       </div>
       <input type="hidden" id="campoId" />
 
@@ -71,7 +71,7 @@
           <input type="text" id="campoClienteNome" placeholder="Nome ou razão social" />
         </div>
         <div class="campo">
-          <label for="campoDataVisita">Data da visita</label>
+          <label for="campoDataVisita">Data do levantamento</label>
           <input type="date" id="campoDataVisita" />
         </div>
         <div class="campo">
@@ -95,12 +95,12 @@
           <input type="text" id="campoCidade" placeholder="Curitiba" />
         </div>
         <div class="campo full">
-          <label for="campoDescricao">Descritivo da visita</label>
+          <label for="campoDescricao">Descritivo do levantamento</label>
           <textarea id="campoDescricao" placeholder="O que foi observado, o que precisa ser feito..." rows="3"></textarea>
         </div>
         <div class="campo full">
-          <label for="campoAnotacoes">📝 Anotações da visita <span class="dica-anotacoes">(só para a empresa — não vai para o cliente)</span></label>
-          <textarea id="campoAnotacoes" placeholder="Anote aqui durante a visita: o que o cliente pediu, problemas que viu, acesso, horários, contato do síndico, materiais que vai precisar..." rows="6"></textarea>
+          <label for="campoAnotacoes">📝 Anotações do levantamento <span class="dica-anotacoes">(só para a empresa — não vai para o cliente)</span></label>
+          <textarea id="campoAnotacoes" placeholder="Anote aqui durante o levantamento: o que o cliente precisa, regras de negócio, integrações, acessos, prazos, contato do responsável..." rows="6"></textarea>
         </div>
       </div>
 
@@ -127,7 +127,7 @@
       </div>
 
       <div class="barra-acoes">
-        <button type="button" class="btn-salvar" id="btnSalvarVisita">Salvar visita</button>
+        <button type="button" class="btn-salvar" id="btnSalvarVisita">Salvar levantamento</button>
         <button type="button" class="btn-cancelar-edicao" id="btnCancelarEdicao" style="display:none;">Cancelar edição</button>
       </div>
     </div>
@@ -142,7 +142,7 @@
     </div>
 
     <div class="lista-contatos" id="listaVisitas"></div>
-    <div class="vazio" id="vazioVisitas" style="display:none;">Nenhuma visita registrada ainda.</div>
+    <div class="vazio" id="vazioVisitas" style="display:none;">Nenhum levantamento registrado ainda.</div>
 
   </main>
 

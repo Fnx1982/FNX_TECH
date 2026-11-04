@@ -25,8 +25,8 @@
       <a href="home.html" class="btn-voltar">← Voltar</a>
     </div>
     <div class="atalhos-fluxo">
-      <a href="nfe.html" class="atalho-fluxo">📦 Material</a>
-      <a href="nfse.html" class="atalho-fluxo">🔧 Mão de Obra</a>
+      <a href="nfe.html" class="atalho-fluxo">📦 Produtos</a>
+      <a href="nfse.html" class="atalho-fluxo">🔧 Serviços</a>
       <a href="consulta-notas.html" class="atalho-fluxo">🔍 Consulta</a>
       <a href="recebidos.html" class="atalho-fluxo atalho-atual">📥 Recebidos</a>
       <a href="contatos.html" class="atalho-fluxo">👤 Clientes/Fornecedores</a>
@@ -49,7 +49,7 @@
           <div class="campo">
             <label for="campoTipo">Tipo de documento</label>
             <select id="campoTipo" required>
-              <option value="NF-e">NF-e (Material)</option>
+              <option value="NF-e">NF-e (Produtos)</option>
               <option value="NFS-e">NFS-e (Serviço)</option>
               <option value="Outro">Outro</option>
             </select>
@@ -76,7 +76,7 @@
           </div>
           <div class="campo full">
             <label for="campoDescricao">Descrição</label>
-            <textarea id="campoDescricao" placeholder="Ex: Cimento e areia para a obra do Centro"></textarea>
+            <textarea id="campoDescricao" placeholder="Ex: Licença anual do servidor para o projeto do cliente X"></textarea>
           </div>
         </div>
 
@@ -109,7 +109,7 @@
 
     <div id="painelLixeira" style="display:none;">
       <p class="aviso-lixeira">
-        Os arquivos aqui ficam guardados junto com a lixeira do Armazenamento —
+        Os arquivos aqui ficam guardados junto com a lixeira do Drive —
         depois de 30 dias sem restaurar, são apagados automaticamente.
       </p>
       <div class="lista-recebidos" id="listaLixeira"></div>

@@ -33,7 +33,7 @@ function textoMedidasDaVisita(medidas) {
   });
   if (!linhas.length) return "";
   const total = Object.entries(totais).map(([u, v]) => `${vpoFmt(v)} ${u}`).join(" · ");
-  return `MEDIDAS DA VISITA:\n${linhas.join("\n")}\nTotal: ${total}`;
+  return `MEDIDAS DO LEVANTAMENTO:\n${linhas.join("\n")}\nTotal: ${total}`;
 }
 function montarOrcamentoDaVisita(v) {
   // Só as medidas: o descritivo já vai no "Serviço", e as anotações

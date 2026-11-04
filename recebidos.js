@@ -108,7 +108,7 @@ function renderizarLista() {
     `;
 
     el.querySelector(".btn-excluir-recebido").addEventListener("click", async () => {
-      const ok = await confirmarAcao(`Mover a nota de "${nota.fornecedorNome}" pra lixeira?`, "Fica guardada na lixeira (junto com o Armazenamento) até você restaurar ou excluir definitivamente.");
+      const ok = await confirmarAcao(`Mover a nota de "${nota.fornecedorNome}" pra lixeira?`, "Fica guardada na lixeira (junto com o Drive) até você restaurar ou excluir definitivamente.");
       if (!ok) return;
       const resp = await apiExcluirRecebido(nota.id);
       if (!resp.ok) { mostrarToast(resp.erro || "Erro ao mover pra lixeira.", "erro"); return; }
@@ -173,7 +173,7 @@ function renderizarLixeira(notas) {
     });
 
     el.querySelector(".btn-excluir-recebido").addEventListener("click", async () => {
-      const ok = await confirmarAcao(`Excluir definitivamente a nota de "${nota.fornecedorNome}"?`, "Isso apaga o arquivo de vez do Armazenamento. Não tem como desfazer.");
+      const ok = await confirmarAcao(`Excluir definitivamente a nota de "${nota.fornecedorNome}"?`, "Isso apaga o arquivo de vez do Drive. Não tem como desfazer.");
       if (!ok) return;
       const resp = await apiExcluirRecebidoDefinitivo(nota.id);
       if (!resp.ok) { mostrarToast(resp.erro || "Erro ao excluir.", "erro"); return; }

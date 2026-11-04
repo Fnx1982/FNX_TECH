@@ -6,7 +6,7 @@
 <script src="auth-guard.js"></script>
 <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Relatórios</title>
+  <title>Métricas &amp; Relatórios — FNX TECH</title>
   <link rel="stylesheet" href="relatorios.css" />
   <script src="confirm-modal.js"></script>
   <script src="validacao.js"></script>
@@ -25,7 +25,7 @@
   <main class="container">
     <div class="topo-pagina">
       <div>
-        <h1>Relatórios</h1>
+        <h1>Métricas &amp; Relatórios</h1>
         <p>Funcionários, Extrato bancário ou os dois combinados — gere em PDF e mantenha um histórico editável.</p>
       </div>
       <a href="home.html" class="btn-voltar">Voltar</a>
@@ -51,7 +51,7 @@
 
       <div class="campo-bloco">
         <label for="nomeRelatorio">Nome do relatório</label>
-        <input type="text" id="nomeRelatorio" placeholder="Ex: Fechamento de Junho - Obra Centro" />
+        <input type="text" id="nomeRelatorio" placeholder="Ex: Fechamento de Junho - Projeto App" />
       </div>
 
       <div class="campo-bloco">
@@ -59,17 +59,17 @@
         <div class="tipo-relatorio-toggle">
           <button type="button" data-tipo="funcionarios" id="btnTipoFuncionarios">Funcionários</button>
           <button type="button" data-tipo="extrato" id="btnTipoExtrato">Extrato</button>
-          <button type="button" data-tipo="materiais" id="btnTipoMateriais">Materiais</button>
-          <button type="button" data-tipo="obras" id="btnTipoObras">Obras</button>
+          <button type="button" data-tipo="materiais" id="btnTipoMateriais">Produtos</button>
+          <button type="button" data-tipo="obras" id="btnTipoObras">Projetos</button>
           <button type="button" data-tipo="combinado" id="btnTipoCombinado">Combinado</button>
           <button type="button" data-tipo="apresentacao" id="btnTipoApresentacao">📊 Apresentação</button>
         </div>
-        <p class="banco-aviso">"Combinado" reúne Funcionários + Extrato no mesmo PDF. Materiais e Obras são gerados separadamente por enquanto.</p>
+        <p class="banco-aviso">"Combinado" reúne Funcionários + Extrato no mesmo PDF. Produtos e Projetos são gerados separadamente por enquanto.</p>
       </div>
 
       <!-- Seção: filtros de Funcionários -->
       <div class="secao-filtro" id="secaoFuncionarios">
-        <h3>Filtros — Financeiro de Funcionários</h3>
+        <h3>Filtros — Folha da Equipe</h3>
         <div class="linha-campos">
           <div class="multi-select" id="multiMesFunc">
             <button type="button" class="multi-select-toggle" id="toggleMesFunc">
@@ -80,7 +80,7 @@
           </div>
           <div class="multi-select" id="multiObraFunc">
             <button type="button" class="multi-select-toggle" id="toggleObraFunc">
-              <span class="filtro-label-mini">Obra</span>
+              <span class="filtro-label-mini">Projeto</span>
               <span class="filtro-valor" id="resumoObraFunc">Todas</span>
             </button>
             <div class="multi-select-painel" id="painelObraFunc"></div>
@@ -127,7 +127,7 @@
 
       <!-- Seção: filtros de Materiais -->
       <div class="secao-filtro" id="secaoMateriais">
-        <h3>Filtros — Gestão de Materiais</h3>
+        <h3>Filtros — Catálogo de Produtos</h3>
         <div class="linha-campos">
           <div class="multi-select" id="multiSetorMaterial">
             <button type="button" class="multi-select-toggle" id="toggleSetorMaterial">
@@ -144,12 +144,12 @@
 
       <!-- Seção: filtros de Obras -->
       <div class="secao-filtro" id="secaoObras">
-        <h3>Filtros — Obras</h3>
-        <p class="banco-aviso">Selecione uma ou mais obras. Cada obra aparece em sua própria seção no PDF, com funcionários e materiais detalhados.</p>
+        <h3>Filtros — Projetos</h3>
+        <p class="banco-aviso">Selecione um ou mais projetos. Cada projeto aparece em sua própria seção no PDF, com funcionários e produtos detalhados.</p>
         <div class="linha-campos">
           <div class="multi-select" id="multiObrasRelatorio">
             <button type="button" class="multi-select-toggle" id="toggleObrasRelatorio">
-              <span class="filtro-label-mini">Obra(s)</span>
+              <span class="filtro-label-mini">Projeto(s)</span>
               <span class="filtro-valor" id="resumoObrasRelatorio">Todas</span>
             </button>
             <div class="multi-select-painel" id="painelObrasRelatorio"></div>
@@ -199,7 +199,7 @@
             <input type="checkbox" value="resumo_financeiro" checked style="width:15px;height:15px;accent-color:#FF6A00;" /> Fluxo de Caixa
           </label>
           <label style="display:flex;align-items:center;gap:9px;padding:10px 12px;background:#F7F7F7;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;">
-            <input type="checkbox" value="obras" checked style="width:15px;height:15px;accent-color:#FF6A00;" /> Obras
+            <input type="checkbox" value="obras" checked style="width:15px;height:15px;accent-color:#FF6A00;" /> Projetos
           </label>
           <label style="display:flex;align-items:center;gap:9px;padding:10px 12px;background:#F7F7F7;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;">
             <input type="checkbox" value="propostas" checked style="width:15px;height:15px;accent-color:#FF6A00;" /> Propostas
@@ -214,7 +214,7 @@
             <input type="checkbox" value="pontos" checked style="width:15px;height:15px;accent-color:#FF6A00;" /> Banco de Horas
           </label>
           <label style="display:flex;align-items:center;gap:9px;padding:10px 12px;background:#F7F7F7;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;">
-            <input type="checkbox" value="materiais" checked style="width:15px;height:15px;accent-color:#FF6A00;" /> Materiais
+            <input type="checkbox" value="materiais" checked style="width:15px;height:15px;accent-color:#FF6A00;" /> Produtos
           </label>
         </div>
         <div style="display:flex;gap:8px;margin-top:10px;">
@@ -226,7 +226,7 @@
       <div class="modal-rodape">
         <button type="button" class="btn-secundario" id="btnCancelarRelatorio">Cancelar</button>
         <button type="button" class="btn-laranja" id="btnSalvarRelatorio">Salvar e Gerar PDF</button>
-        <button type="button" class="btn-laranja" id="btnGerarApresentacaoDemanda" style="display:none;">📊 Apresentação Demanda</button>
+        <button type="button" class="btn-laranja" id="btnGerarApresentacaoDemanda" style="display:none;">📊 Apresentação Comercial</button>
         <button type="button" class="btn-laranja" id="btnGerarApresentacaoFinanceiro" style="display:none;">📊 Apresentação Financeiro</button>
       </div>
     </div>

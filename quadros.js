@@ -77,7 +77,7 @@
   async function carregarQuadros() {
     const r = await api("trello-quadros-list");
     const grade = $("gradeQuadros");
-    if (!r.ok) { grade.innerHTML = `<div class="vazio">${esc(r.erro || "Não foi possível carregar os quadros.")}</div>`; return; }
+    if (!r.ok) { grade.innerHTML = `<div class="vazio">${esc(r.erro || "Não foi possível carregar os boards.")}</div>`; return; }
     quadros = r.quadros || [];
     renderGradeQuadros();
   }
@@ -101,7 +101,7 @@
     const novo = document.createElement("button");
     novo.type = "button";
     novo.className = "card-quadro-novo";
-    novo.innerHTML = `<i class="bx bx-plus"></i> Criar quadro`;
+    novo.innerHTML = `<i class="bx bx-plus"></i> Criar board`;
     novo.addEventListener("click", () => abrirModalQuadro(null));
     grade.appendChild(novo);
   }
@@ -112,7 +112,7 @@
   async function abrirQuadro(id, { silencioso = false } = {}) {
     const r = await api(`trello-quadro-get&id=${encodeURIComponent(id)}`);
     if (!r.ok) {
-      if (!silencioso) toast(r.erro || "Não foi possível abrir o quadro.", "erro");
+      if (!silencioso) toast(r.erro || "Não foi possível abrir o board.", "erro");
       if (!quadro) mostrarLista();
       return false;
     }
@@ -128,7 +128,7 @@
     $("telaQuadro").hidden = false;
     $("telaQuadro").style.setProperty("--cor-quadro", quadro.cor || CORES[0]);
     $("nomeQuadro").textContent = quadro.nome;
-    document.title = `${quadro.nome} — Quadros — FNX TECH`;
+    document.title = `${quadro.nome} — Boards — FNX TECH`;
     preencherFiltros();
     renderListas();
     agendarAtualizacao();
@@ -141,7 +141,7 @@
     clearTimeout(timerAtualizar);
     $("telaQuadro").hidden = true;
     $("telaQuadros").hidden = false;
-    document.title = "Quadros — FNX TECH";
+    document.title = "Boards — FNX TECH";
     carregarQuadros();
   }
 
@@ -550,7 +550,7 @@
     // etiquetas
     $("escolhaEtiquetas").innerHTML = (quadro.etiquetas || []).length
       ? quadro.etiquetas.map((e) => `<label class="escolha"><input type="checkbox" value="${esc(e.id)}" ${(c.etiquetas || []).includes(e.id) ? "checked" : ""} /><span class="amostra" style="background:${esc(e.cor)}"></span><span>${esc(e.nome || "Sem nome")}</span></label>`).join("")
-      : `<span class="escolha-vazia">Crie etiquetas na engrenagem do quadro.</span>`;
+      : `<span class="escolha-vazia">Crie etiquetas na engrenagem do board.</span>`;
     // capa
     $("coresCapa").innerHTML = `<button type="button" class="sem-cor ${!c.capa ? "ativo" : ""}" data-cor="" title="Sem capa">✕</button>` +
       CORES.map((cor) => `<button type="button" data-cor="${cor}" class="${c.capa === cor ? "ativo" : ""}" style="background:${cor}" title="${cor}"></button>`).join("");
@@ -739,7 +739,7 @@
 
   function abrirModalQuadro(q) {
     quadroEditando = q;
-    $("tituloModalQuadro").textContent = q ? "Configurar quadro" : "Novo quadro";
+    $("tituloModalQuadro").textContent = q ? "Configurar board" : "Novo board";
     $("campoNomeQuadro").value = q ? q.nome : "";
     corQuadroEdicao = (q && q.cor) || CORES[quadros.length % CORES.length];
     etiquetasEdicao = q ? JSON.parse(JSON.stringify(q.etiquetas || [])) : [];
@@ -799,7 +799,7 @@
     if (quadroEditando) { dados.id = quadroEditando.id; dados.etiquetas = etiquetasEdicao; }
     const r = await api("trello-quadro-salvar", dados);
     btn.disabled = false;
-    if (!r.ok) { toast(r.erro || "Não foi possível salvar o quadro.", "erro"); return; }
+    if (!r.ok) { toast(r.erro || "Não foi possível salvar o board.", "erro"); return; }
     fecharModalQuadro();
     if (quadroEditando && quadro && quadro.id === r.quadro.id) {
       quadro = r.quadro;
@@ -812,12 +812,12 @@
 
   $("btnExcluirQuadro").addEventListener("click", async () => {
     if (!quadroEditando) return;
-    const ok = await confirmarAcao(`Excluir o quadro "${quadroEditando.nome}"?`, "Todas as listas e cartões dele serão apagados. Não dá para desfazer.");
+    const ok = await confirmarAcao(`Excluir o board "${quadroEditando.nome}"?`, "Todas as listas e cartões dele serão apagados. Não dá para desfazer.");
     if (!ok) return;
     const r = await api("trello-quadro-excluir", { id: quadroEditando.id });
     if (!r.ok) { toast(r.erro || "Não foi possível excluir.", "erro"); return; }
     fecharModalQuadro();
-    toast("Quadro excluído.");
+    toast("Board excluído.");
     history.pushState({}, "", "quadros.html");
     mostrarLista();
   });

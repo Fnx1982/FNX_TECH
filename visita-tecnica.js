@@ -101,7 +101,7 @@ function limparFormulario() {
   fotosJaSalvas = [];
   document.getElementById("campoFotos").value = "";
   renderPreviaFotos();
-  document.getElementById("tituloFormulario").textContent = "Nova visita";
+  document.getElementById("tituloFormulario").textContent = "Novo levantamento";
   document.getElementById("btnCancelarEdicao").style.display = "none";
 }
 
@@ -281,7 +281,7 @@ document.getElementById("btnSalvarVisita").addEventListener("click", async () =>
     const ehNova = !visitaEmEdicaoId;
     const resposta = await apiSalvarVisita(dados);
     if (!resposta.ok) { mostrarToast(resposta.erro || "Erro ao salvar.", "erro"); return; }
-    mostrarToast("Visita salva.");
+    mostrarToast("Levantamento salvo.");
     const visitaSalva = { ...dados, id: resposta.id };
     if (rascunhoAtualId) { await apiExcluirRascunho("visita", rascunhoAtualId); rascunhoAtualId = null; }
     limparFormulario();
@@ -292,12 +292,12 @@ document.getElementById("btnSalvarVisita").addEventListener("click", async () =>
     // Visita nova: já oferece abrir o orçamento dela. Se escolher
     // "depois", ela fica em Orçamento → "Visitas aguardando orçamento".
     if (ehNova) {
-      const agora = await confirmarAcao("Visita salva! Criar o orçamento agora?",
-        "Se preferir fazer depois, ela fica esperando em Orçamento → \"Visitas aguardando orçamento\".");
+      const agora = await confirmarAcao("Levantamento salvo! Criar a estimativa agora?",
+        "Se preferir fazer depois, ele fica esperando em Estimativa → \"Levantamentos aguardando estimativa\".");
       if (agora) abrirOrcamentoDaVisita(visitaSalva);
     }
   } catch (e) {
-    mostrarToast(e.message || "Erro ao salvar a visita.", "erro");
+    mostrarToast(e.message || "Erro ao salvar o levantamento.", "erro");
   } finally {
     botao.disabled = false;
     botao.textContent = textoOriginal;
@@ -307,7 +307,7 @@ document.getElementById("btnSalvarVisita").addEventListener("click", async () =>
 // ── Listar / buscar / excluir / gerar orçamento ──────────────────
 async function carregarVisitas() {
   const resposta = await apiListarVisitas();
-  if (!resposta.ok) { mostrarToast(resposta.erro || "Erro ao carregar visitas.", "erro"); return; }
+  if (!resposta.ok) { mostrarToast(resposta.erro || "Erro ao carregar levantamentos.", "erro"); return; }
   visitasCache = resposta.visitas;
   renderizarLista();
   if (eventosAgendaCache.length) renderAgenda(); // atualiza quais agendamentos já viraram visita
@@ -338,14 +338,14 @@ function renderizarLista() {
       <div style="display:flex; align-items:center;">
         ${fotoThumb}
         <div>
-          <div class="nome">${escaparHtml(v.clienteNome)} ${v.eventoCalendarioId ? '<span class="badge-tipo" style="background:#FFF1E6;color:#8A3300;">📅 Do calendário</span>' : ""} ${v.convertidaEmPropostaId === "dispensada" ? '<span class="badge-tipo" style="background:#EEF0F3;color:#666;">Sem orçamento</span>' : v.convertidaEmPropostaId ? '<span class="badge-tipo" style="background:#E7F6EC;color:#1C8A4B;">Já virou orçamento</span>' : '<span class="badge-tipo" style="background:#FFF1E6;color:#8A3300;">Aguardando orçamento</span>'}</div>
+          <div class="nome">${escaparHtml(v.clienteNome)} ${v.eventoCalendarioId ? '<span class="badge-tipo" style="background:#FFF1E6;color:#8A3300;">📅 Do calendário</span>' : ""} ${v.convertidaEmPropostaId === "dispensada" ? '<span class="badge-tipo" style="background:#EEF0F3;color:#666;">Sem estimativa</span>' : v.convertidaEmPropostaId ? '<span class="badge-tipo" style="background:#E7F6EC;color:#1C8A4B;">Já virou estimativa</span>' : '<span class="badge-tipo" style="background:#FFF1E6;color:#8A3300;">Aguardando estimativa</span>'}</div>
           ${v.endereco || v.cidade ? `<div class="endereco-com-mapa">${htmlLinksMapa(juntarEndereco(v.endereco, v.bairro, v.cidade))}</div>` : ""}
           <div class="meta">${enderecoPartes || "Sem endereço"} · ${v.dataVisita ? dataBRVisita(v.dataVisita) : new Date(v.criadoEm).toLocaleDateString("pt-BR")} · ${(v.fotos || []).length} foto(s)${(v.medidas || []).length ? " · " + escaparHtml(resumoTotaisMedidas(v.medidas)) : ""}</div>
         </div>
       </div>
       <div class="acoes">
         <button class="btn-editar-visita">Editar</button>
-        <button class="btn-gerar-orcamento">📝 Gerar orçamento</button>
+        <button class="btn-gerar-orcamento">📝 Gerar estimativa</button>
         <button class="btn-excluir-visita">Excluir</button>
       </div>
     `;
@@ -354,7 +354,7 @@ function renderizarLista() {
     el.querySelector(".btn-gerar-orcamento").addEventListener("click", () => abrirOrcamentoDaVisita(v));
 
     el.querySelector(".btn-excluir-visita").addEventListener("click", async () => {
-      const ok = await confirmarAcao(`Excluir a visita de "${v.clienteNome}"?`, "");
+      const ok = await confirmarAcao(`Excluir o levantamento de "${v.clienteNome}"?`, "");
       if (!ok) return;
       const resp = await apiExcluirVisita(v.id);
       if (!resp.ok) { mostrarToast(resp.erro || "Erro ao excluir.", "erro"); return; }
@@ -433,7 +433,7 @@ function definirEventoVinculado(evento) {
       <button type="button" id="btnDesvincularEvento" style="background:none;border:none;color:#888;font-size:12px;cursor:pointer;text-decoration:underline;">tornar avulsa</button>`;
     document.getElementById("btnDesvincularEvento").addEventListener("click", () => definirEventoVinculado(null));
   } else {
-    el.innerHTML = '<span class="tag-origem avulsa">Visita avulsa (sem agendamento)</span>';
+    el.innerHTML = '<span class="tag-origem avulsa">Levantamento avulso (sem agendamento)</span>';
   }
 }
 
@@ -469,7 +469,7 @@ function textoMedidasParaOrcamento(medidas) {
     return `- ${m.descricao || "Medida"}: ${conta}`;
   });
   if (!linhas.length) return "";
-  return `Medidas da visita:\n${linhas.join("\n")}\nTotal: ${resumoTotaisMedidas(medidas)}`;
+  return `Medidas do levantamento:\n${linhas.join("\n")}\nTotal: ${resumoTotaisMedidas(medidas)}`;
 }
 
 function renderMedidas() {
@@ -555,7 +555,7 @@ function separarEnderecoGoogle(texto) {
     resultado.bairro = bairro || "";
     resultado.cidade = /\d{5}-?\d{3}/.test(cidade) ? "" : cidade;
   } else if (partes.length === 2 && partes[1].split(" - ").length >= 3) {
-    // Formato do próprio EnJob: "Rua X, 100 - Bairro - Cidade"
+    // Formato do próprio FNX TECH: "Rua X, 100 - Bairro - Cidade"
     const [numero, bairro, cidade] = partes[1].split(" - ").map((s) => s.trim());
     resultado.endereco = `${partes[0]}, ${numero}`;
     resultado.bairro = bairro || "";
@@ -577,7 +577,7 @@ async function carregarAgendaVisitas() {
   const lista = document.getElementById("listaAgenda");
   if (!lista) return;
   if (typeof isGoogleAuthenticated !== "function" || !isGoogleAuthenticated()) {
-    lista.innerHTML = '<div class="vazio-agenda">Seu Gmail não está conectado. Conecte uma vez na tela do <a href="calendario.html">Calendário</a> e os agendamentos aparecem aqui.<br>Enquanto isso, dá para registrar uma <b>visita avulsa</b> no formulário abaixo.</div>';
+    lista.innerHTML = '<div class="vazio-agenda">Seu Gmail não está conectado. Conecte uma vez na tela da <a href="calendario.html">Agenda</a> e os agendamentos aparecem aqui.<br>Enquanto isso, dá para registrar uma <b>levantamento avulso</b> no formulário abaixo.</div>';
     return;
   }
   lista.innerHTML = '<div class="vazio-agenda">Carregando o calendário…</div>';
@@ -595,7 +595,7 @@ async function carregarAgendaVisitas() {
     eventosAgendaCache = (resp.result.items || []).filter((ev) => ev.status !== "cancelled");
     renderAgenda();
   } catch (e) {
-    console.error("[visita] Erro ao ler o calendário:", e);
+    console.error("[levantamento] Erro ao ler o calendário:", e);
     lista.innerHTML = '<div class="vazio-agenda">Não foi possível ler o calendário agora. Recarregue a página.</div>';
   }
 }
@@ -622,7 +622,7 @@ function renderAgenda() {
     eventos = eventos.filter((ev) => { const pv = ev.extendedProperties?.private || {}; return normalizarBuscaVisita([ev.summary, ev.location, ev.description, pv.clientePagamento, pv.localNome, pv.clienteVisita].join(" ")).includes(busca); });
   }
   if (!eventos.length) {
-    lista.innerHTML = `<div class="vazio-agenda">Nenhuma visita agendada nesse período.${outros && !mostrarTodos ? " Marque \"mostrar também os outros eventos\" se a visita foi agendada sem o tipo Visita técnica." : ""}</div>`;
+    lista.innerHTML = `<div class="vazio-agenda">Nenhum levantamento agendado nesse período.${outros && !mostrarTodos ? " Marque \"mostrar também os outros eventos\" se o levantamento foi agendado sem o tipo Levantamento de requisitos." : ""}</div>`;
     return;
   }
   lista.innerHTML = "";
@@ -647,8 +647,8 @@ function renderAgenda() {
         ${descricao ? `<div class="desc-agenda">${escaparHtml(descricao)}</div>` : ""}
       </div>
       ${visitaExistente
-        ? '<button type="button" class="btn-registrar-agenda" style="background:#1C8A4B">✓ Ver visita</button>'
-        : '<button type="button" class="btn-registrar-agenda">Registrar visita</button>'}
+        ? '<button type="button" class="btn-registrar-agenda" style="background:#1C8A4B">✓ Ver levantamento</button>'
+        : '<button type="button" class="btn-registrar-agenda">Registrar levantamento</button>'}
     `;
     el.querySelector(".btn-registrar-agenda").addEventListener("click", () => {
       if (visitaExistente) preencherFormulario(visitaExistente);
@@ -690,7 +690,7 @@ async function registrarVisitaDoEvento(ev) {
   const descricao = textoSemHtml(ev.description);
   document.getElementById("campoDescricao").value = novo ? descricao : [cliente ? ev.summary : "", descricao].filter(Boolean).join("\n");
   definirEventoVinculado({ id: ev.id, titulo: ev.summary || "" });
-  document.getElementById("tituloFormulario").textContent = `Nova visita — ${cliente || ev.summary || ""}`;
+  document.getElementById("tituloFormulario").textContent = `Novo levantamento — ${cliente || ev.summary || ""}`;
   document.getElementById("btnCancelarEdicao").style.display = "inline-block";
   window.scrollTo({ top: document.getElementById("tituloFormulario").getBoundingClientRect().top + window.scrollY - 20, behavior: "smooth" });
   mostrarToast("Agendamento trazido para o formulário. Complete com medidas e fotos e salve.");

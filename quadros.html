@@ -6,7 +6,7 @@
   <script src="auth-guard.js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quadros — FNX TECH</title>
+  <title>Boards — FNX TECH</title>
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="quadros.css?v=1" />
   <script src="confirm-modal.js"></script>
@@ -19,20 +19,20 @@
   <main class="tela-quadros" id="telaQuadros">
     <div class="topo-quadros">
       <div>
-        <h1>Quadros</h1>
-        <p>Organize tarefas e projetos em listas e cartões.</p>
+        <h1>Boards</h1>
+        <p>Organize tarefas e sprints em listas e cartões.</p>
       </div>
       <a href="home.html" class="btn-voltar">← Voltar</a>
     </div>
     <div class="grade-quadros" id="gradeQuadros">
-      <div class="carregando">Carregando quadros…</div>
+      <div class="carregando">Carregando boards…</div>
     </div>
   </main>
 
   <!-- ===== QUADRO ABERTO ===== -->
   <section class="tela-quadro" id="telaQuadro" hidden>
     <header class="barra-quadro" id="barraQuadro">
-      <button type="button" class="btn-icone-claro" id="btnVoltarQuadros" title="Todos os quadros" aria-label="Todos os quadros"><i class="bx bx-arrow-back"></i></button>
+      <button type="button" class="btn-icone-claro" id="btnVoltarQuadros" title="Todos os boards" aria-label="Todos os boards"><i class="bx bx-arrow-back"></i></button>
       <h1 id="nomeQuadro" class="nome-quadro" title="Clique para renomear"></h1>
       <div class="barra-quadro-acoes">
         <div class="busca-quadro">
@@ -46,7 +46,7 @@
         <select id="filtroEtiqueta" aria-label="Filtrar por etiqueta">
           <option value="">Todas as etiquetas</option>
         </select>
-        <button type="button" class="btn-icone-claro" id="btnConfigQuadro" title="Configurar quadro" aria-label="Configurar quadro"><i class="bx bx-cog"></i></button>
+        <button type="button" class="btn-icone-claro" id="btnConfigQuadro" title="Configurar board" aria-label="Configurar board"><i class="bx bx-cog"></i></button>
       </div>
     </header>
     <div class="area-listas" id="areaListas"></div>
@@ -122,12 +122,12 @@
   <div class="modal-overlay" id="modalQuadro">
     <div class="modal-caixa-q" role="dialog" aria-modal="true" aria-labelledby="tituloModalQuadro">
       <div class="modal-cabecalho-q">
-        <h2 id="tituloModalQuadro">Novo quadro</h2>
+        <h2 id="tituloModalQuadro">Novo board</h2>
         <button type="button" class="modal-fechar" id="fecharModalQuadro" aria-label="Fechar">&times;</button>
       </div>
       <form id="formQuadro">
-        <label class="campo-q">Nome do quadro
-          <input type="text" id="campoNomeQuadro" maxlength="80" required placeholder="Ex: Projetos, Suporte, Marketing" />
+        <label class="campo-q">Nome do board
+          <input type="text" id="campoNomeQuadro" maxlength="80" required placeholder="Ex: Sprint 12, Suporte, Roadmap" />
         </label>
         <div class="campo-q">Cor
           <div class="cores-capa" id="coresQuadro"></div>
@@ -137,7 +137,7 @@
           <button type="button" class="btn-link" id="btnNovaEtiqueta">+ Nova etiqueta</button>
         </div>
         <div class="rodape-q">
-          <button type="button" class="btn-lateral perigo" id="btnExcluirQuadro" hidden><i class="bx bx-trash"></i> Excluir quadro</button>
+          <button type="button" class="btn-lateral perigo" id="btnExcluirQuadro" hidden><i class="bx bx-trash"></i> Excluir board</button>
           <button type="submit" class="btn-laranja" id="btnSalvarQuadro">Salvar</button>
         </div>
       </form>

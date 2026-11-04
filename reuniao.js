@@ -4,7 +4,7 @@
 // ============================================================
 
 const JITSI_DOMAIN = "meet.jit.si";
-const PREFIXO_SALA = "EnJobEngenharia-"; // reduz chance de colisão com salas de outras pessoas no servidor público
+const PREFIXO_SALA = "FNXTECH-"; // reduz chance de colisão com salas de outras pessoas no servidor público
 
 let jitsiApi = null;
 let salaAtualEhRestrita = false;

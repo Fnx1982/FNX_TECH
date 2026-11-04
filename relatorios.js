@@ -1,6 +1,6 @@
 // ============================================================
 // relatorios.js
-// Lê dados já existentes do Financeiro de Funcionários e do
+// Lê dados já existentes do Folha da Equipe e do
 // Extrato Bancário (qualquer um dos 3 bancos) direto do
 // localStorage, aplica os filtros configurados, e gera um PDF
 // com jsPDF + autotable. Guarda um histórico de configurações
@@ -505,8 +505,8 @@ function formatarDataHora(iso) {
 function rotuloTipo(tipo) {
   if (tipo === "funcionarios") return "Funcionários";
   if (tipo === "extrato") return "Extrato";
-  if (tipo === "materiais") return "Materiais";
-  if (tipo === "obras") return "Obras";
+  if (tipo === "materiais") return "Produtos";
+  if (tipo === "obras") return "Projetos";
   return "Combinado";
 }
 
@@ -650,7 +650,7 @@ function secaoFuncionariosPDF(doc, config, y, margemEsquerda) {
   y = garantirEspaco(doc, y, 60);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(13);
-  doc.text("Financeiro de Funcionários", margemEsquerda, y);
+  doc.text("Folha da Equipe", margemEsquerda, y);
   y += 16;
 
   const itens = filtrarFuncionarios(config);
@@ -673,7 +673,7 @@ function secaoFuncionariosPDF(doc, config, y, margemEsquerda) {
 
   doc.autoTable({
     startY: y,
-    head: [["Funcionário", "Obra", "Mês", "Valor"]],
+    head: [["Funcionário", "Projeto", "Mês", "Valor"]],
     body: linhas,
     margin: { left: margemEsquerda, right: margemEsquerda },
     styles: { fontSize: 9 },
@@ -758,7 +758,7 @@ function secaoMateriaisPDF(doc, config, y, margemEsquerda) {
   y = garantirEspaco(doc, y, 60);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(13);
-  doc.text("Gestão de Materiais", margemEsquerda, y);
+  doc.text("Catálogo de Produtos", margemEsquerda, y);
   y += 16;
 
   const itens = filtrarMateriais(config);
@@ -766,7 +766,7 @@ function secaoMateriaisPDF(doc, config, y, margemEsquerda) {
   if (itens.length === 0) {
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
-    doc.text("Nenhum material encontrado com os filtros selecionados.", margemEsquerda, y);
+    doc.text("Nenhum produto encontrado com os filtros selecionados.", margemEsquerda, y);
     return y + 20;
   }
 
@@ -786,7 +786,7 @@ function secaoMateriaisPDF(doc, config, y, margemEsquerda) {
 
   doc.autoTable({
     startY: y,
-    head: [["Material", "Setor", "Código", "Valor Unit.", "Qtd.", "Subtotal"]],
+    head: [["Produto", "Setor", "Código", "Valor Unit.", "Qtd.", "Subtotal"]],
     body: linhas,
     margin: { left: margemEsquerda, right: margemEsquerda },
     styles: { fontSize: 9 },
@@ -812,7 +812,7 @@ function secaoObrasPDF(doc, config, y, margemEsquerda) {
     y = garantirEspaco(doc, y, 40);
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
-    doc.text("Nenhuma obra encontrada com os filtros selecionados.", margemEsquerda, y);
+    doc.text("Nenhum projeto encontrado com os filtros selecionados.", margemEsquerda, y);
     return y + 20;
   }
 
@@ -870,7 +870,7 @@ function secaoObrasPDF(doc, config, y, margemEsquerda) {
     y = garantirEspaco(doc, y, 60);
     doc.setFont("helvetica", "bold");
     doc.setFontSize(10);
-    doc.text("Materiais anotados", margemEsquerda, y);
+    doc.text("Produtos anotados", margemEsquerda, y);
     y += 6;
 
     const linhasMat = obra.materiais.map((m) => [
@@ -882,8 +882,8 @@ function secaoObrasPDF(doc, config, y, margemEsquerda) {
 
     doc.autoTable({
       startY: y,
-      head: [["Material", "Código", "Valor", "Data"]],
-      body: linhasMat.length ? linhasMat : [["Nenhum material anotado", "-", "-", "-"]],
+      head: [["Produto", "Código", "Valor", "Data"]],
+      body: linhasMat.length ? linhasMat : [["Nenhum produto anotado", "-", "-", "-"]],
       margin: { left: margemEsquerda, right: margemEsquerda },
       styles: { fontSize: 9 },
       headStyles: { fillColor: [92, 92, 92] },
@@ -898,8 +898,8 @@ function secaoObrasPDF(doc, config, y, margemEsquerda) {
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(9);
-    doc.text(`Lucro Mão de Obra: R$ ${formatarMoeda(lucroMO)}`, margemEsquerda, y);
-    doc.text(`Lucro Material: R$ ${formatarMoeda(lucroMat)}`, margemEsquerda + 200, y);
+    doc.text(`Lucro Serviços: R$ ${formatarMoeda(lucroMO)}`, margemEsquerda, y);
+    doc.text(`Lucro Produtos: R$ ${formatarMoeda(lucroMat)}`, margemEsquerda + 200, y);
     doc.text(`Lucro Total: R$ ${formatarMoeda(lucroTot)}`, margemEsquerda + 380, y);
     y += 20;
 
@@ -1030,7 +1030,7 @@ async function executarGeracaoApresentacao(btn, labelOriginal, fn) {
 
 if (btnGerarApresentacaoDemanda) {
   btnGerarApresentacaoDemanda.addEventListener("click", () => {
-    executarGeracaoApresentacao(btnGerarApresentacaoDemanda, "📊 Apresentação Demanda",
+    executarGeracaoApresentacao(btnGerarApresentacaoDemanda, "📊 Apresentação Comercial",
       (meses, ano, sel) => gerarApresentacaoDemandaPptx(meses, ano, sel));
   });
 }
@@ -1113,7 +1113,7 @@ async function gerarApresentacaoDemandaPptx(mesesArr, ano, selecionados) {
     s.addText("FNX TECH", {x:0.4,y:1.8,w:4.2,h:0.7,fontSize:40,bold:true,color:"FFFFFF",fontFace:"Montserrat",margin:0});
     s.addText("Sistema de Gestão", {x:0.4,y:2.5,w:4.2,h:0.4,fontSize:14,color:"FFFFFF",fontFace:"Montserrat",margin:0});
     s.addText("Acompanhamento de", {x:5.3,y:1.5,w:4.4,h:0.4,fontSize:14,color:D.texto2,fontFace:"Montserrat",margin:0});
-    s.addText("Demanda", {x:5.3,y:1.95,w:4.4,h:0.85,fontSize:44,bold:true,color:D.escuro,fontFace:"Montserrat",margin:0});
+    s.addText("Tarefa", {x:5.3,y:1.95,w:4.4,h:0.85,fontSize:44,bold:true,color:D.escuro,fontFace:"Montserrat",margin:0});
     s.addText(nomeMes + " / " + ano, {x:5.3,y:2.85,w:4.4,h:0.4,fontSize:15,color:D.texto2,fontFace:"Montserrat",margin:0});
   }
 
@@ -1122,7 +1122,7 @@ async function gerarApresentacaoDemandaPptx(mesesArr, ano, selecionados) {
     const s = pres.addSlide();
     s.background = {color:D.bg};
     s.addText("Propostas — " + nomeMes, {x:0.5,y:0.25,w:9,h:0.6,fontSize:26,bold:true,color:D.escuro,fontFace:"Montserrat",margin:0});
-    s.addText("Resumo dos orçamentos do período",{x:0.5,y:0.85,w:9,h:0.32,fontSize:12,color:D.texto2,fontFace:"Montserrat",margin:0});
+    s.addText("Resumo das estimativas do período",{x:0.5,y:0.85,w:9,h:0.32,fontSize:12,color:D.texto2,fontFace:"Montserrat",margin:0});
 
     const aprov   = doMes.filter(p => p.status==="andamento"||p.status==="finalizada").length;
     const reprov  = doMes.filter(p => p.status==="negada").length;
@@ -1134,7 +1134,7 @@ async function gerarApresentacaoDemandaPptx(mesesArr, ano, selecionados) {
     const cards = [
       {rot:"Total",       val:String(total),  cor:D.escuro},
       {rot:"Aprovadas",   val:String(aprov),  cor:D.verde},
-      {rot:"Em Análise",  val:String(analise),cor:"E8A000"},
+      {rot:"Em Aprovação",  val:String(analise),cor:"E8A000"},
       {rot:"Negadas",     val:String(reprov), cor:"E74C3C"},
     ];
     cards.forEach((c,i) => {
@@ -1152,7 +1152,7 @@ async function gerarApresentacaoDemandaPptx(mesesArr, ano, selecionados) {
     // Donut
     if (total > 0) {
       s.addChart(pres.ChartType.doughnut, [
-        {name:"Propostas",labels:["Aprovadas","Em Análise","Orçamento","Negadas"],
+        {name:"Propostas",labels:["Aprovadas","Em Aprovação","Estimativa","Negadas"],
          values:[aprov,analise,orcam,reprov]}
       ], {
         x:5.4,y:1.35,w:4.3,h:3.9,
@@ -1179,7 +1179,7 @@ async function gerarApresentacaoDemandaPptx(mesesArr, ano, selecionados) {
     s.addChart(pres.ChartType.bar, [
       {name:"Aprovadas",   labels, values:aprov},
       {name:"Negadas",     labels, values:reprov},
-      {name:"Em Orçamento",labels, values:semRet},
+      {name:"Em Estimativa",labels, values:semRet},
     ], {
       x:0.5,y:1.1,w:9,h:4.2,
       chartColors:[D.verde,"E74C3C",D.laranja],
@@ -1356,15 +1356,15 @@ async function gerarApresentacaoFinanceiroPptx(mesesArr, ano, selecionados) {
     // Slide 1: Tabela
     const s = pres.addSlide();
     s.background = {color:F.bg};
-    s.addText("Obras — Detalhamento",{x:0.5,y:0.2,w:9,h:0.55,fontSize:24,bold:true,color:F.laranja,fontFace:"Montserrat",margin:0});
-    s.addText("M.O. e Materiais: valor cobrado × gasto e lucro por obra",{x:0.5,y:0.75,w:9,h:0.32,fontSize:12,color:F.texto2,fontFace:"Montserrat",margin:0});
+    s.addText("Projetos — Detalhamento",{x:0.5,y:0.2,w:9,h:0.55,fontSize:24,bold:true,color:F.laranja,fontFace:"Montserrat",margin:0});
+    s.addText("Serviços e Produtos: valor cobrado × gasto e lucro por projeto",{x:0.5,y:0.75,w:9,h:0.32,fontSize:12,color:F.texto2,fontFace:"Montserrat",margin:0});
 
     const obrasComDados = obras.filter(o => o.valorMaoDeObraOrcamento || o.valorMateriaisOrcamento || (o.funcionarios||[]).length || (o.materiais||[]).length);
 
     const cols = [
-      {x:0.3,w:2.0,label:"Obra",     align:"l"},
-      {x:2.4,w:1.4,label:"M.O. Cobr.",align:"r"},
-      {x:3.9,w:1.4,label:"M.O. Gasto",align:"r"},
+      {x:0.3,w:2.0,label:"Projeto",     align:"l"},
+      {x:2.4,w:1.4,label:"Serviços Cobr.",align:"r"},
+      {x:3.9,w:1.4,label:"Serviços Gasto",align:"r"},
       {x:5.4,w:1.4,label:"Mat. Cobr.",align:"r"},
       {x:6.9,w:1.4,label:"Mat. Gasto",align:"r"},
       {x:8.4,w:1.35,label:"Lucro",    align:"r"},
@@ -1387,7 +1387,7 @@ async function gerarApresentacaoFinanceiroPptx(mesesArr, ano, selecionados) {
       const y = 1.56 + i*0.62;
       s.addShape(pres.ShapeType.rect,{x:0.3,y,w:9.4,h:0.55,fill:{color:i%2===0?F.card:"1C1C1C"},line:{color:F.card,width:0}});
       const vals = [
-        {x:cols[0].x,w:cols[0].w,txt:o.cliente||o.servico||"Obra",bold:true,cor:F.texto,align:"l"},
+        {x:cols[0].x,w:cols[0].w,txt:o.cliente||o.servico||"Projeto",bold:true,cor:F.texto,align:"l"},
         {x:cols[1].x,w:cols[1].w,txt:fmtR(moCob),  bold:false,cor:F.laranja,align:"r"},
         {x:cols[2].x,w:cols[2].w,txt:fmtR(moGasto),bold:false,cor:F.vermelho,align:"r"},
         {x:cols[3].x,w:cols[3].w,txt:fmtR(matCob), bold:false,cor:F.laranja,align:"r"},
