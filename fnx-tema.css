@@ -121,13 +121,30 @@ body:has(> main.container > .input-box) .fnx-rodape { color: #aaa; }
    PÁGINAS INTERNAS — visual unificado FNX (faixa escura no topo, cartão
    branco, títulos com detalhe em gradiente, campos e botões padronizados)
    ========================================================================== */
-body.pagina-interna {
-  background:
-    radial-gradient(ellipse 60% 220px at 12% 0, rgba(255, 106, 0, .30), transparent 70%),
-    radial-gradient(ellipse 50% 200px at 92% 0, rgba(229, 20, 27, .22), transparent 70%),
-    linear-gradient(180deg, var(--fnx-preto) 0, #161616 210px, #EDEDF0 210px) !important;
-  background-attachment: scroll !important;
+/* Fundo: o mesmo da tela inicial (escuro, calmo, pontinhos e anéis) */
+body.pagina-interna,
+body.pagina-quadros {
+  background-color: #0B0B0C !important;
+  background-image:
+    radial-gradient(circle at 18% 22%, rgba(255, 106, 0, .16), transparent 42%),
+    radial-gradient(circle at 88% 78%, rgba(229, 20, 27, .13), transparent 46%),
+    radial-gradient(circle at 60% 8%, rgba(255, 176, 0, .07), transparent 35%),
+    radial-gradient(rgba(255, 255, 255, .045) 1px, transparent 1.2px) !important;
+  background-size: auto, auto, auto, 26px 26px !important;
+  background-attachment: fixed !important;
+  min-height: 100vh;
 }
+body.pagina-interna::before,
+body.pagina-quadros::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(circle at 100% 0, transparent 240px, rgba(255, 106, 0, .12) 241px, transparent 243px),
+    radial-gradient(circle at 100% 0, transparent 330px, rgba(255, 106, 0, .06) 331px, transparent 334px),
+    radial-gradient(circle at 100% 0, transparent 430px, rgba(229, 20, 27, .05) 431px, transparent 434px);
+  animation: fnxRespira 14s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) { body.pagina-interna::before, body.pagina-quadros::before { animation: none; } }
+html:has(> body.pagina-interna), html:has(> body.pagina-quadros) { background: transparent !important; }
 body.pagina-interna > main.container,
 body.pagina-interna > main.container-crm {
   background: #fff !important;
@@ -136,6 +153,10 @@ body.pagina-interna > main.container-crm {
   box-shadow: 0 18px 50px rgba(0, 0, 0, .14), 0 1px 0 rgba(0, 0, 0, .04) !important;
   backdrop-filter: none !important;
   margin-top: 8px;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  /* respiro interno: nada encostado na borda do cartão */
+  padding: clamp(22px, 3vw, 38px) clamp(18px, 3.2vw, 42px) !important;
 }
 body.pagina-interna .topo-pagina h1,
 body.pagina-interna .topo-crm h1,
@@ -229,8 +250,10 @@ body.pagina-interna .modal-cabecalho { border-bottom: 3px solid transparent; bor
 body.pagina-interna .total-fixo { background: #111 !important; color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,.3) !important; }
 body.pagina-interna .total-fixo span:first-child { color: #9a9aa2 !important; }
 
-/* Rodapé "Created by" sobre o fundo claro */
-body.pagina-interna .fnx-rodape { color: #77777f; }
+/* Rodapé "Created by" sobre o fundo escuro */
+body.pagina-interna .fnx-rodape, body.pagina-quadros .fnx-rodape { color: #8a8a94; }
+/* Caixinhas flutuantes (totais) se destacam do fundo escuro */
+body.pagina-interna .total-fixo { border: 1px solid rgba(255, 106, 0, .35) !important; }
 
 /* Barra de rolagem */
 * { scrollbar-width: thin; scrollbar-color: #c9c9cf transparent; }
@@ -239,11 +262,7 @@ body.pagina-interna .fnx-rodape { color: #77777f; }
 *::-webkit-scrollbar-thumb:hover { background: var(--fnx-laranja); }
 
 @media (max-width: 768px) {
-  body.pagina-interna {
-    background:
-      radial-gradient(ellipse 80% 160px at 10% 0, rgba(255, 106, 0, .30), transparent 70%),
-      linear-gradient(180deg, var(--fnx-preto) 0, #161616 150px, #EDEDF0 150px) !important;
-  }
+  body.pagina-interna, body.pagina-quadros { background-attachment: scroll !important; }
   body.pagina-interna > main.container,
   body.pagina-interna > main.container-crm { border-radius: 16px !important; width: calc(100% - 16px) !important; margin: 8px auto 0 !important; }
 }
@@ -351,3 +370,43 @@ body.pagina-interna > main.container-crm { margin-top: 28px !important; }
 }
 /* Itens do menu: o nome nunca é cortado — se não couber, quebra em duas linhas */
 .menu .span-menu { white-space: normal !important; line-height: 1.25; }
+
+/* Editar usuário: cartão centralizado */
+body.pagina-editar { display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: flex-start !important; padding: 40px 16px 0 !important; }
+body.pagina-editar > main.container { width: min(560px, 100%) !important; }
+body.pagina-editar > main.container > h1 { text-align: center; }
+body.pagina-editar > main.container > h1::after { content: ""; display: block; width: 44px; height: 4px; border-radius: 4px; margin: 10px auto 0; background: var(--fnx-gradiente); }
+body.pagina-editar .fnx-rodape { width: 100%; }
+@media (max-width: 768px) { body.pagina-editar { padding: 16px 0 0 !important; } }
+
+/* ===================== BOARDS sobre o fundo escuro ===================== */
+body.pagina-quadros .topo-quadros h1 { color: #fff; }
+body.pagina-quadros .topo-quadros p { color: #9d9da6; }
+body.pagina-quadros .so-meus { color: #e6e6ea; }
+body.pagina-quadros .abas-boards { background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .08); }
+body.pagina-quadros .abas-boards button { color: #c9c9d0; }
+body.pagina-quadros .abas-boards button.ativo { background: var(--fnx-gradiente); color: #fff; }
+body.pagina-quadros .busca-boards input,
+body.pagina-quadros #ordemBoards { background: rgba(255, 255, 255, .06); border-color: rgba(255, 255, 255, .14); color: #fff; }
+body.pagina-quadros .busca-boards input::placeholder { color: rgba(255, 255, 255, .5); }
+body.pagina-quadros #ordemBoards option { color: #111; background: #fff; }
+body.pagina-quadros .card-quadro-novo { border-color: rgba(255, 255, 255, .22); color: #c9c9d0; }
+body.pagina-quadros .card-quadro-novo:hover { border-color: var(--fnx-laranja); color: #fff; background: rgba(255, 106, 0, .12); }
+body.pagina-quadros .grade-quadros > .vazio, body.pagina-quadros .carregando { color: #9d9da6; }
+/* Voltar no canto superior, ao lado do sino */
+body.pagina-quadros .topo-quadros { padding-right: 0; }
+body.pagina-quadros .topo-quadros .btn-voltar {
+  position: fixed; top: 16px; right: 76px; z-index: 900; height: 44px; display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(22, 22, 25, .8); color: #fff; border: 1px solid rgba(255, 255, 255, .14); box-shadow: 0 6px 20px rgba(0, 0, 0, .35);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+}
+body.pagina-quadros .topo-quadros .btn-voltar:hover { border-color: var(--fnx-laranja); color: #ff9a55; box-shadow: 0 6px 20px rgba(0, 0, 0, .35); }
+body.pagina-quadros .tela-quadros { padding-top: 24px; }
+@media (max-width: 768px) {
+  body.pagina-quadros .topo-quadros .btn-voltar { padding: 0 14px; font-size: 13px; }
+  body.pagina-quadros .tela-quadros { padding-top: 56px; }
+}
+
+/* Nenhum campo vaza para fora do cartão (celular) */
+body.pagina-interna input, body.pagina-interna select, body.pagina-interna textarea { max-width: 100%; box-sizing: border-box; }
+body.pagina-interna .linha-percentual label { max-width: 100%; min-width: 0; }

@@ -943,13 +943,53 @@
     setTimeout(() => $("campoNomeQuadro").focus(), 50);
   }
   function fecharModalQuadro() { $("modalQuadro").classList.remove("active"); }
-  function renderCoresQuadro() {
-    $("coresQuadro").innerHTML = CORES.map((cor) => `<button type="button" data-cor="${cor}" class="${cor === corQuadroEdicao ? "ativo" : ""}" style="background:${cor}" title="${cor}"></button>`).join("");
+  // Aceita "#abc", "abc", "#aabbcc" ou "rgb(255, 106, 0)" e devolve "#RRGGBB" (ou "" se inválido)
+  function normalizarCor(v) {
+    v = String(v || "").trim();
+    const rgb = v.match(/^rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})/i);
+    if (rgb) {
+      const n = rgb.slice(1, 4).map(Number);
+      if (n.some((x) => x > 255)) return "";
+      return "#" + n.map((x) => x.toString(16).padStart(2, "0")).join("").toUpperCase();
+    }
+    v = v.replace(/^#/, "");
+    if (/^[0-9a-f]{3}$/i.test(v)) v = v.split("").map((c) => c + c).join("");
+    return /^[0-9a-f]{6}$/i.test(v) ? "#" + v.toUpperCase() : "";
   }
+  function htmlSeletorCor(cor, rotulo) {
+    const c = normalizarCor(cor) || "#8A8A8A";
+    return `<span class="seletor-cor">
+        <input type="color" value="${c}" aria-label="${esc(rotulo)} — escolher no seletor" />
+        <input type="text" class="hex-cor" value="${c}" maxlength="18" spellcheck="false" aria-label="${esc(rotulo)} — código (#hex ou rgb)" title="Digite #FF6A00, FF6A00 ou rgb(255,106,0)" />
+      </span>`;
+  }
+  function renderCoresQuadro() {
+    const personalizada = !CORES.includes(corQuadroEdicao);
+    $("coresQuadro").innerHTML = CORES.map((cor) => `<button type="button" data-cor="${cor}" class="${cor === corQuadroEdicao ? "ativo" : ""}" style="background:${cor}" title="${cor}"></button>`).join("") +
+      `<div class="cor-personalizada${personalizada ? " ativo" : ""}"><span>Ou qualquer cor:</span>${htmlSeletorCor(corQuadroEdicao, "Cor do board")}</div>`;
+  }
+  // Seletor de cor da cor do board (personalizada)
+  $("coresQuadro").addEventListener("input", (e) => {
+    const sel = e.target.closest(".seletor-cor");
+    if (!sel) return;
+    const hex = sel.querySelector(".hex-cor");
+    const pick = sel.querySelector("input[type=color]");
+    if (e.target === pick) { hex.value = pick.value.toUpperCase(); }
+    const cor = normalizarCor(e.target === pick ? pick.value : hex.value);
+    hex.classList.toggle("invalida", !cor);
+    if (!cor) return;
+    if (e.target === hex) pick.value = cor;
+    corQuadroEdicao = cor;
+    $("coresQuadro").querySelectorAll("button[data-cor]").forEach((b) => b.classList.toggle("ativo", b.dataset.cor === cor));
+    sel.closest(".cor-personalizada").classList.toggle("ativo", !CORES.includes(cor));
+  });
+  $("coresQuadro").addEventListener("focusout", (e) => {
+    if (e.target.classList && e.target.classList.contains("hex-cor")) { e.target.value = corQuadroEdicao; e.target.classList.remove("invalida"); }
+  });
   function renderEtiquetasEdicao() {
     $("listaEtiquetasQuadro").innerHTML = etiquetasEdicao.map((e, i) => `
       <div class="etiqueta-linha" data-i="${i}">
-        <input type="color" value="${esc(e.cor)}" aria-label="Cor da etiqueta" />
+        ${htmlSeletorCor(e.cor, "Cor da etiqueta")}
         <input type="text" value="${esc(e.nome)}" maxlength="30" placeholder="Nome da etiqueta" />
         <button type="button" class="btn-x" aria-label="Remover etiqueta">&times;</button>
       </div>`).join("");
@@ -964,8 +1004,20 @@
     const linha = e.target.closest(".etiqueta-linha");
     if (!linha) return;
     const et = etiquetasEdicao[+linha.dataset.i];
-    if (e.target.type === "color") et.cor = e.target.value;
-    else et.nome = e.target.value;
+    const sel = e.target.closest(".seletor-cor");
+    if (sel) {
+      const hex = sel.querySelector(".hex-cor");
+      const pick = sel.querySelector("input[type=color]");
+      if (e.target === pick) hex.value = pick.value.toUpperCase();
+      const cor = normalizarCor(hex.value);
+      hex.classList.toggle("invalida", !cor);
+      if (cor) { et.cor = cor; pick.value = cor; }
+    } else et.nome = e.target.value;
+  });
+  $("listaEtiquetasQuadro").addEventListener("focusout", (e) => {
+    if (!(e.target.classList && e.target.classList.contains("hex-cor"))) return;
+    const et = etiquetasEdicao[+e.target.closest(".etiqueta-linha").dataset.i];
+    if (et) { e.target.value = normalizarCor(et.cor) || "#8A8A8A"; e.target.classList.remove("invalida"); }
   });
   $("listaEtiquetasQuadro").addEventListener("click", (e) => {
     if (!e.target.closest(".btn-x")) return;
