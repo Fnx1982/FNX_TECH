@@ -249,67 +249,96 @@ body.pagina-interna .fnx-rodape { color: #77777f; }
 }
 
 /* ==========================================================================
-   TELA INICIAL — saudação, atalhos e cartões
+   TELA INICIAL — fundo calmo (mesma linguagem do login), saudação,
+   montante à esquerda e eventos do dia à direita, maior
    ========================================================================== */
 body.pagina-home {
+  background-color: #0B0B0C !important;
+  background-image:
+    radial-gradient(circle at 18% 22%, rgba(255, 106, 0, .16), transparent 42%),
+    radial-gradient(circle at 88% 78%, rgba(229, 20, 27, .13), transparent 46%),
+    radial-gradient(circle at 60% 8%, rgba(255, 176, 0, .07), transparent 35%),
+    radial-gradient(rgba(255, 255, 255, .045) 1px, transparent 1.2px) !important;
+  background-size: auto, auto, auto, 26px 26px !important;
+  background-attachment: fixed !important;
+  min-height: 100vh;
+}
+body.pagina-home::before {
+  content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none;
   background:
-    radial-gradient(ellipse 50% 260px at 30% 0, rgba(255, 106, 0, .28), transparent 70%),
-    radial-gradient(ellipse 40% 240px at 95% 0, rgba(229, 20, 27, .20), transparent 70%),
-    linear-gradient(180deg, #0E0E0E 0, #161616 250px, #EDEDF0 250px) !important;
+    radial-gradient(circle at 100% 0, transparent 240px, rgba(255, 106, 0, .12) 241px, transparent 243px),
+    radial-gradient(circle at 100% 0, transparent 330px, rgba(255, 106, 0, .06) 331px, transparent 334px),
+    radial-gradient(circle at 100% 0, transparent 430px, rgba(229, 20, 27, .05) 431px, transparent 434px);
+  animation: fnxRespira 14s ease-in-out infinite;
 }
-body.pagina-home .dashboard { background: transparent !important; padding: 34px 36px 70px; max-width: 1320px; }
-.inicio-topo { color: #fff; padding: 6px 220px 26px 0; }
+html:has(body.pagina-home), body.pagina-home { height: auto !important; min-height: 100vh; overflow-x: hidden; }
+@keyframes fnxRespira { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
+@media (prefers-reduced-motion: reduce) { body.pagina-home::before { animation: none; } }
+body.pagina-home .dashboard { position: relative; z-index: 1; background: transparent !important; padding: 40px 40px 70px; max-width: 1280px; }
+.inicio-topo { color: #fff; padding: 6px 230px 30px 0; }
 .inicio-topo small { display: inline-block; color: #ff9a55; font-weight: 700; font-size: 13px; letter-spacing: .02em; }
-.inicio-topo h1 { font-size: 32px; font-weight: 800; margin: 4px 0 6px; letter-spacing: -.02em; }
-.inicio-topo p { color: #b9b9c0; font-size: 14px; }
-.inicio-atalhos { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px; margin-bottom: 24px; }
-.atalho-inicio {
-  position: relative; display: flex; flex-direction: column; gap: 14px; padding: 18px 16px 16px; min-height: 112px;
-  background: #fff; border-radius: 16px; text-decoration: none; color: #161616; font-weight: 700; font-size: 14.5px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, .08); border: 1px solid #EEEEF2; transition: transform .15s, box-shadow .15s, border-color .15s;
-}
-.atalho-inicio i {
-  width: 42px; height: 42px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center;
-  font-size: 22px; color: #fff; background: var(--fnx-gradiente); box-shadow: 0 6px 14px rgba(229, 20, 27, .25);
-}
-.atalho-inicio:hover, .atalho-inicio:focus-visible { transform: translateY(-3px); box-shadow: 0 16px 34px rgba(0,0,0,.14); border-color: var(--fnx-laranja); outline: none; }
-.atalho-inicio small { position: absolute; top: 14px; right: 12px; font-size: 9.5px; font-weight: 800; text-transform: uppercase; color: var(--fnx-laranja-escuro); background: var(--fnx-claro); border-radius: 20px; padding: 2px 7px; }
-.atalho-inicio.em-breve i { background: #2a2a2a; box-shadow: none; }
-.inicio-linha { display: grid; grid-template-columns: minmax(260px, 340px) minmax(280px, 1fr); gap: 16px; align-items: start; }
+.inicio-topo h1 { font-size: 34px; font-weight: 800; margin: 6px 0 8px; letter-spacing: -.02em; }
+.inicio-topo h1::after { content: ""; display: block; width: 52px; height: 4px; border-radius: 4px; margin-top: 12px; background: var(--fnx-gradiente); }
+.inicio-topo p { color: #9d9da6; font-size: 14px; margin-top: 12px; }
+.inicio-atalhos { display: none !important; }
+
+.inicio-linha { display: grid; grid-template-columns: minmax(260px, 330px) minmax(320px, 1fr); gap: 20px; align-items: stretch; }
 body.pagina-home .dashboard .card-montante,
 body.pagina-home .menu:hover ~ .dashboard .card-montante,
 body.pagina-home .calendar-box {
   position: static !important; width: auto !important; margin: 0 !important; left: auto; bottom: auto; right: auto;
-  border-radius: 16px !important; box-shadow: 0 10px 30px rgba(0,0,0,.08) !important; border: 1px solid #EEEEF2;
+  background: rgba(22, 22, 25, .72) !important; color: #f2f2f4;
+  border: 1px solid rgba(255, 255, 255, .08); border-radius: 18px !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, .35) !important;
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  padding: 24px !important;
 }
-body.pagina-home .calendar-box h2 { font-size: 18px; margin-bottom: 10px; }
-body.pagina-home .calendar-box ul { padding-left: 18px; }
-body.pagina-home .fnx-rodape { position: static !important; padding: 10px 16px 18px 86px !important; color: #77777f; }
+body.pagina-home .card-montante h2,
+body.pagina-home .card-montante h3 { color: #fff !important; }
+body.pagina-home .card-montante input,
+body.pagina-home .card-montante textarea {
+  background: rgba(255, 255, 255, .05) !important; border: 1px solid rgba(255, 255, 255, .12) !important; color: #fff !important; border-radius: 10px !important;
+}
+body.pagina-home .card-montante input::placeholder,
+body.pagina-home .card-montante textarea::placeholder { color: rgba(255, 255, 255, .45); }
+body.pagina-home .card-montante input:focus,
+body.pagina-home .card-montante textarea:focus { outline: none; border-color: var(--fnx-laranja) !important; box-shadow: 0 0 0 3px rgba(255, 106, 0, .2); }
+body.pagina-home .card-montante button { border-radius: 10px !important; font-weight: 700; }
+
+body.pagina-home .calendar-box { min-height: 440px; display: flex; flex-direction: column; }
+.cabecalho-eventos { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid rgba(255, 255, 255, .08); }
+body.pagina-home .calendar-box h2 { font-size: 20px; color: #fff; margin: 0; }
+.link-agenda { color: #ff9a55; font-weight: 700; font-size: 13.5px; text-decoration: none; white-space: nowrap; }
+.link-agenda:hover { color: #fff; }
+body.pagina-home #events-list { list-style: none; padding: 0 !important; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+body.pagina-home #events-list li {
+  background: rgba(255, 255, 255, .04); border: 1px solid rgba(255, 255, 255, .07); border-left: 3px solid var(--fnx-laranja);
+  border-radius: 12px; padding: 12px 14px; font-size: 14.5px; color: #e9e9ee; line-height: 1.5;
+}
+body.pagina-home #events-list li a { color: #ff9a55 !important; }
+body.pagina-home .fnx-rodape { position: relative !important; left: auto !important; right: auto !important; z-index: 1; padding: 10px 16px 18px 86px !important; color: #77777f; }
 
 @media (max-width: 768px), (hover: none) and (max-width: 1100px) {
-  body.pagina-home {
-    background:
-      radial-gradient(ellipse 80% 200px at 20% 64px, rgba(255, 106, 0, .30), transparent 70%),
-      linear-gradient(180deg, #0E0E0E 0, #161616 250px, #EDEDF0 250px) !important;
-  }
-  body.pagina-home .dashboard { padding: 80px 14px 24px !important; }
-  .inicio-topo { padding: 0 0 18px; }
+  body.pagina-home .dashboard { padding: 84px 14px 24px !important; }
+  .inicio-topo { padding: 0 0 20px; }
   .inicio-topo h1 { font-size: 26px; }
-  .inicio-atalhos { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-  .atalho-inicio { min-height: 96px; padding: 14px 12px; font-size: 13.5px; gap: 10px; }
-  .atalho-inicio i { width: 36px; height: 36px; font-size: 19px; }
   .inicio-linha { grid-template-columns: 1fr; }
+  body.pagina-home .calendar-box { order: -1; min-height: 240px; }
   body.pagina-home .fnx-rodape { padding: 10px 12px 18px !important; }
 }
 @media (min-width: 769px) and (max-width: 1100px) {
-  .inicio-atalhos { grid-template-columns: repeat(3, 1fr); }
-  .inicio-linha { grid-template-columns: 1fr 1fr; }
+  .inicio-linha { grid-template-columns: 1fr 1.4fr; }
 }
-
 .inicio-topo small::first-letter { text-transform: uppercase; }
 body.pagina-interna > main.container,
 body.pagina-interna > main.container-crm { margin-top: 28px !important; }
 @media (max-width: 768px) {
   body.pagina-interna > main.container,
   body.pagina-interna > main.container-crm { margin-top: 12px !important; }
+}
+
+/* Menu lateral aberto um pouco mais largo (nomes longos não cortam) */
+@media (min-width: 769px) and (hover: hover) {
+  .menu:hover, nav.menu.expanded { width: 262px !important; }
+  .menu:hover ~ .dashboard, nav.menu.expanded ~ .dashboard { margin-left: 262px !important; }
 }

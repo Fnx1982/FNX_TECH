@@ -33,7 +33,18 @@ function mostrarAvisoErroGoogle() {
   const aviso = document.createElement("div");
   aviso.id = "avisoErroGoogle";
   aviso.style.cssText = "background:#FDECEA; color:#8A1C1C; border:1px solid #F5C2C0; border-radius:8px; padding:12px 16px; margin-bottom:16px; font-size:13.5px; line-height:1.5;";
-  aviso.innerHTML = "<b>Não foi possível conectar com o Google Agenda.</b> Isso pode acontecer se a chave da API do Google acabou de ter uma restrição de segurança configurada (pode levar alguns minutos para ativar) ou se há um problema de conexão. Se persistir depois de alguns minutos, avise o administrador do sistema.";
+  // Mostra o motivo real (antes era sempre a mesma mensagem genérica)
+  const semConfig = !(typeof GOOGLE_CLIENT_ID !== "undefined" && GOOGLE_CLIENT_ID) || !(typeof GOOGLE_API_KEY !== "undefined" && GOOGLE_API_KEY);
+  const e = typeof googleApiErroInicializacao !== "undefined" ? googleApiErroInicializacao : null;
+  let detalhe = "";
+  if (e) {
+    detalhe = (e.result && e.result.error && e.result.error.message) || e.details || e.error || e.message || "";
+    if (typeof detalhe !== "string") { try { detalhe = JSON.stringify(detalhe); } catch (x) { detalhe = String(detalhe); } }
+  }
+  aviso.innerHTML = semConfig
+    ? "<b>O Google Agenda ainda não está configurado.</b> Preencha <code>FNX_GOOGLE_CLIENT_ID</code> e <code>FNX_GOOGLE_API_KEY</code> no arquivo <code>config.js</code> do site."
+    : "<b>Não foi possível conectar com o Google Agenda.</b> Se a chave da API acabou de ser criada ou restringida, o Google pode levar alguns minutos para liberar." +
+      (detalhe ? `<br><small>Motivo informado pelo Google: ${escaparHtml(detalhe)}</small>` : "");
   const container = document.querySelector(".container") || document.body;
   container.insertBefore(aviso, container.firstChild);
 }

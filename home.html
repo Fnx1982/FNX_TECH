@@ -186,6 +186,12 @@
               <span class="span-menu">Em Desenvolvimento</span>
             </a>
           </li>
+          <li class="lista">
+            <a href="gerar-apresentacao.html">
+              <i class='bx bx-file-find'></i>
+              <span class="span-menu">Proposta Comercial (PDF)</span>
+            </a>
+          </li>
         </ul>
       </li>
 
@@ -270,9 +276,8 @@
     <section class="inicio-topo">
       <small id="inicioData"></small>
       <h1 id="inicioSaudacao">Olá!</h1>
-      <p>Seus atalhos para o dia a dia da FNX TECH.</p>
+      <p>Use o menu ao lado para navegar pelo sistema.</p>
     </section>
-    <section class="inicio-atalhos" id="inicioAtalhos" aria-label="Atalhos"></section>
     <div class="inicio-linha">
     <!-- Card Montante -->
     <div class="card-montante">
@@ -285,7 +290,10 @@
       <button onclick="salvarObservacao()">Salvar Mês</button>
     </div>
   <div class="calendar-box">
-          <h2>Eventos de Hoje</h2>
+          <div class="cabecalho-eventos">
+            <h2>Eventos de Hoje</h2>
+            <a href="calendario.html" class="link-agenda">Abrir Agenda →</a>
+          </div>
           <ul id="events-list">
               <!-- Eventos aparecerão aqui -->
           </ul>
