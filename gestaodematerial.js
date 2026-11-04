@@ -69,6 +69,17 @@ const totalValorValor = document.getElementById("totalValorValor");
 // ====================================================
 let setores = [];
 let materiais = [];
+function normalizarMaterial(m) {
+  return {
+    ...m,
+    nome: String(m.nome || "(sem nome)"),
+    setor: m.setor || "Sem setor",
+    codigo: String(m.codigo || ""),
+    valor: Number(m.valor) || 0,
+    quantidade: Number(m.quantidade) || 0,
+    observacao: m.observacao || "",
+  };
+}
 
 let visaoAtual = "setor"; // "setor" ou "material"
 let indiceEditando = null;
@@ -858,7 +869,9 @@ async function iniciarGestaoDeMaterial() {
       migrarMateriaisSeNecessario(),
     ]);
     setores = setoresCarregados;
-    materiais = materiaisCarregados;
+    // Itens criados automaticamente pela Estimativa chegam só com nome e
+    // valor — completa os campos que a lista usa, senão a tela travava.
+    materiais = (materiaisCarregados || []).map(normalizarMaterial);
   } catch (e) {
     console.error("[gestaodematerial] Erro ao carregar dados da nuvem:", e);
     mostrarToast("Não foi possível carregar os produtos. Verifique sua conexão e recarregue a página.", "erro");

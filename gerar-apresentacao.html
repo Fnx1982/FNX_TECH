@@ -6,115 +6,145 @@
   <script src="auth-guard.js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gerar Apresentação — FNX TECH</title>
+  <title>Proposta Comercial — FNX TECH</title>
   <link rel="stylesheet" href="propostas.css?v=9" />
-  <link rel="stylesheet" href="gerar-apresentacao.css?v=2" />
+  <link rel="stylesheet" href="gerar-apresentacao.css?v=3" />
   <script src="confirm-modal.js?v=3"></script>
   <script src="validacao.js?v=3"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
   <script src="logo-empresa.js"></script>
-  <script src="apresentacao-imagens.js?v=5"></script>
   <script src="propostas-core.js?v=8"></script>
   <link rel="stylesheet" href="mobile.css?v=3" />
-  <link rel="stylesheet" href="fnx-tema.css?v=1" />
+  <link rel="stylesheet" href="fnx-tema.css?v=3" />
 </head>
-<body>
+<body class="pagina-interna">
   <main class="container">
     <div class="topo-pagina">
       <div>
-        <h1>Gerar Apresentação</h1>
-        <p>Monta a proposta comercial em PDF, no modelo padrão da FNX TECH.</p>
+        <h1>Proposta Comercial</h1>
+        <p>Monta a proposta de projeto em PDF, no padrão FNX TECH.</p>
       </div>
-      <div style="display:flex; gap:10px;">
-        <a href="apresentacoes-salvas.html" class="btn-secundario" style="text-decoration:none; display:inline-flex; align-items:center;">📁 Apresentações salvas</a>
+      <div class="acoes-topo-apres">
+        <a href="apresentacoes-salvas.html" class="btn-secundario">📁 Propostas salvas</a>
         <a href="propostas.html" class="btn-voltar">Voltar</a>
       </div>
     </div>
 
-    <!-- ── Indicador de etapas ──────────────────────────────────── -->
+    <!-- Etapas -->
     <div class="etapas-indicador">
-      <button type="button" class="etapa-pill active" data-etapa="1">
-        <span class="etapa-numero">1</span> Cliente e Local
-      </button>
-      <button type="button" class="etapa-pill" data-etapa="2">
-        <span class="etapa-numero">2</span> Textos
-      </button>
-      <button type="button" class="etapa-pill" data-etapa="3">
-        <span class="etapa-numero">3</span> Serviços
-      </button>
-      <button type="button" class="etapa-pill" data-etapa="4">
-        <span class="etapa-numero">4</span> Gerar PDF
-      </button>
+      <button type="button" class="etapa-pill active" data-etapa="1"><span class="etapa-numero">1</span> Cliente e projeto</button>
+      <button type="button" class="etapa-pill" data-etapa="2"><span class="etapa-numero">2</span> Desafio e escopo</button>
+      <button type="button" class="etapa-pill" data-etapa="3"><span class="etapa-numero">3</span> Cronograma</button>
+      <button type="button" class="etapa-pill" data-etapa="4"><span class="etapa-numero">4</span> Investimento</button>
+      <button type="button" class="etapa-pill" data-etapa="5"><span class="etapa-numero">5</span> Condições e PDF</button>
     </div>
 
-    <!-- ══════════════ ETAPA 1 — Cliente e Local ══════════════ -->
+    <!-- ═══════ 1 — Cliente e projeto ═══════ -->
     <div class="etapa-conteudo" data-etapa-conteudo="1">
       <div class="form-secao">
-        <h3>Dados do Documento</h3>
+        <h3>Cliente e projeto</h3>
         <div class="form-grid">
-          <label>Nome do Cliente
-            <input type="text" id="campoNomeClienteApres" placeholder="Nome do cliente" list="listaClientesApresDatalist" />
+          <label>Cliente (empresa ou pessoa)
+            <input type="text" id="campoNomeClienteApres" placeholder="Ex: Acme Ltda" list="listaClientesApresDatalist" />
             <datalist id="listaClientesApresDatalist"></datalist>
           </label>
-          <label>N° do Documento
-            <div style="display:flex; gap:6px;">
-              <input type="text" id="campoNumeroDoc" placeholder="Ex: 001" style="flex:1;" />
-              <button type="button" id="btnConfigNumeracaoApres" title="Configurar numeração automática" style="flex:0 0 auto; border:1px solid #ccc; border-radius:6px; background:#fff; cursor:pointer; padding:0 10px;">⚙</button>
+          <label>Contato no cliente <span class="texto-opcional">(nome e cargo)</span>
+            <input type="text" id="campoContatoCliente" placeholder="Ex: Maria Souza — Gerente de Operações" />
+          </label>
+          <label>Nome do projeto
+            <input type="text" id="campoNomeProjeto" placeholder="Ex: Portal do Cliente Acme" />
+          </label>
+          <label>Tipo de projeto
+            <select id="campoTipoProjeto">
+              <option>Sistema web</option>
+              <option>Site institucional / landing page</option>
+              <option>Aplicativo mobile</option>
+              <option>E-commerce</option>
+              <option>Integração / API</option>
+              <option>Automação / IA</option>
+              <option>Infraestrutura / Cloud</option>
+              <option>Consultoria</option>
+              <option>Outro</option>
+            </select>
+          </label>
+          <label>N° da proposta
+            <div class="linha-numero">
+              <input type="text" id="campoNumeroDoc" placeholder="Ex: 001" />
+              <button type="button" id="btnConfigNumeracaoApres" title="Configurar numeração automática" aria-label="Configurar numeração automática">⚙</button>
             </div>
           </label>
           <label>Data
             <input type="date" id="campoDataDoc" />
           </label>
-          <label>Nome do Local <span class="texto-opcional">(opcional)</span>
-            <input type="text" id="campoNomeLocalApres" placeholder="Ex: Edifício Central" />
-          </label>
-        </div>
-
-        <div class="bloco-foto-local">
-          <label>Foto do Local <span class="texto-opcional">(aparece no círculo da página 3)</span></label>
-          <div class="foto-local-area">
-            <div class="foto-local-preview" id="fotoLocalPreview">
-              <span id="fotoLocalPlaceholder">Sem foto</span>
-              <img id="fotoLocalImg" style="display:none;" />
-            </div>
-            <div>
-              <input type="file" id="campoFotoLocal" accept="image/*" />
-              <button type="button" class="btn-secundario" id="btnRemoverFotoLocal" style="display:none;">Remover foto</button>
-            </div>
-          </div>
         </div>
       </div>
     </div>
 
-    <!-- ══════════════ ETAPA 2 — Textos ══════════════ -->
-    <div class="etapa-conteudo" data-etapa-conteudo="2" style="display:none;">
+    <!-- ═══════ 2 — Desafio e escopo ═══════ -->
+    <div class="etapa-conteudo" data-etapa-conteudo="2" hidden>
       <div class="form-secao">
-        <h3>Textos do Documento <span class="texto-opcional">(o texto completo já vem preenchido — leia e altere só o que precisar)</span></h3>
-
-        <label>Anos de experiência da empresa
-          <input type="number" id="campoAnosExperiencia" value="14" min="0" style="max-width:120px;" />
+        <h3>Entendimento do desafio <span class="texto-opcional">(o problema do cliente, com as palavras dele)</span></h3>
+        <label>Contexto e desafio
+          <textarea id="campoDesafio" rows="5" placeholder="Ex: Hoje a Acme controla pedidos por planilhas e WhatsApp, o que gera retrabalho e atrasos na entrega..."></textarea>
         </label>
-
-        <label>Texto de abertura <span class="texto-opcional">(depois de "Prezado(a) [Cliente]")</span>
-          <textarea id="campoTextoAbertura" rows="4"></textarea>
+        <label>Objetivos do projeto <span class="texto-opcional">(um por linha)</span>
+          <textarea id="campoObjetivos" rows="4" placeholder="Centralizar os pedidos num só sistema&#10;Reduzir o tempo de atendimento&#10;Ter relatórios em tempo real"></textarea>
         </label>
-
-        <label>1. Início — texto completo
-          <textarea id="campoTextoItem1" rows="9"></textarea>
+      </div>
+      <div class="form-secao">
+        <h3>Escopo</h3>
+        <label>O que será entregue <span class="texto-opcional">(um item por linha)</span>
+          <textarea id="campoEntregaveis" rows="6" placeholder="Painel administrativo com login e níveis de acesso&#10;Cadastro de clientes e pedidos&#10;Integração com o ERP via API&#10;Publicação em produção e treinamento da equipe"></textarea>
         </label>
-
-        <label>2. Fornecimento de Documentações pela FNX TECH — texto completo
-          <textarea id="campoTextoItem2" rows="7"></textarea>
+        <label>Fora do escopo <span class="texto-opcional">(um item por linha — evita mal-entendidos)</span>
+          <textarea id="campoForaEscopo" rows="3" placeholder="Criação de identidade visual&#10;Migração de dados de sistemas antigos"></textarea>
         </label>
-
-        <label>3. Isolamentos e Proteções — texto completo
-          <textarea id="campoTextoItem3" rows="7"></textarea>
+        <label>Tecnologias <span class="texto-opcional">(separadas por vírgula)</span>
+          <input type="text" id="campoStack" placeholder="Ex: React, Node.js, PostgreSQL, Cloudflare" />
         </label>
+        <div class="chips-stack" id="previaStack"></div>
+      </div>
+    </div>
 
+    <!-- ═══════ 3 — Cronograma ═══════ -->
+    <div class="etapa-conteudo" data-etapa-conteudo="3" hidden>
+      <div class="form-secao">
+        <h3>Cronograma por fases <span class="texto-opcional">(vira uma linha do tempo no PDF)</span></h3>
+        <div class="tabela-fases" id="tabelaFases"></div>
+        <button type="button" class="btn-secundario" id="btnAddFase">+ Adicionar fase</button>
+        <p class="texto-ajuda" id="totalSemanas"></p>
+      </div>
+    </div>
+
+    <!-- ═══════ 4 — Investimento ═══════ -->
+    <div class="etapa-conteudo" data-etapa-conteudo="4" hidden>
+      <div class="form-secao">
+        <h3>Investimento <span class="texto-opcional">(puxe das estimativas já cadastradas)</span></h3>
+        <p class="texto-ajuda">Cada estimativa vira um bloco com os itens e valores no PDF.</p>
+        <div id="listaPropostasAnexadas"></div>
+        <button type="button" class="btn-laranja" id="btnAdicionarPropostaApres">+ Adicionar estimativa</button>
+      </div>
+      <div class="form-secao">
+        <h3>Suporte e manutenção mensal <span class="texto-opcional">(opcional)</span></h3>
+        <div class="form-grid">
+          <label>Valor mensal (R$)
+            <input type="number" id="campoSuporteValor" min="0" step="0.01" placeholder="Ex: 890,00" />
+          </label>
+          <label>O que inclui
+            <input type="text" id="campoSuporteDescricao" placeholder="Ex: monitoramento, backups, correções e até 8h de melhorias/mês" />
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════ 5 — Condições e PDF ═══════ -->
+    <div class="etapa-conteudo" data-etapa-conteudo="5" hidden>
+      <div class="form-secao">
+        <h3>Condições <span class="texto-opcional">(o texto já vem preenchido — ajuste o que precisar)</span></h3>
         <div class="form-grid">
           <label>Garantia — quantidade
-            <input type="number" id="campoGarantiaNumero" value="90" min="0" style="max-width:120px;" />
+            <input type="number" id="campoGarantiaNumero" value="90" min="0" />
           </label>
           <label>Garantia — unidade
             <select id="campoGarantiaUnidade">
@@ -124,56 +154,44 @@
             </select>
           </label>
           <label>Validade da proposta (dias)
-            <input type="number" id="campoValidadeDias" value="10" min="1" style="max-width:120px;" />
+            <input type="number" id="campoValidadeDias" value="15" min="1" />
+          </label>
+          <label>Anos de experiência da FNX TECH
+            <input type="number" id="campoAnosExperiencia" value="5" min="0" />
           </label>
         </div>
-
-        <label>7. Considerações finais — texto completo
-          <textarea id="campoTextoConsideracoes" rows="14"></textarea>
+        <label>O que a FNX TECH fornece <span class="texto-opcional">(um item por linha)</span>
+          <textarea id="campoFornecemos" rows="6"></textarea>
         </label>
-
-        <label>Observações adicionais <span class="texto-opcional">(itens não cotados, licenças por conta do cliente, etc. — opcional)</span>
-          <textarea id="campoObservacoesFinais" rows="3" placeholder="Deixe em branco se não tiver nenhuma observação extra."></textarea>
+        <label>O que precisamos do cliente <span class="texto-opcional">(um item por linha)</span>
+          <textarea id="campoPrecisamos" rows="5"></textarea>
         </label>
-
-        <label>8. Próxima etapa — texto completo
-          <textarea id="campoTextoProximaEtapa" rows="5"></textarea>
+        <label>Condições gerais <span class="texto-opcional">(um item por linha)</span>
+          <textarea id="campoCondicoes" rows="6"></textarea>
+        </label>
+        <label>Próximos passos <span class="texto-opcional">(um por linha, em ordem)</span>
+          <textarea id="campoProximosPassos" rows="4"></textarea>
         </label>
       </div>
-    </div>
-
-    <!-- ══════════════ ETAPA 3 — Serviços/Propostas ══════════════ -->
-    <div class="etapa-conteudo" data-etapa-conteudo="3" style="display:none;">
-      <div class="form-secao">
-        <h3>Serviços / Propostas anexadas</h3>
-        <p class="texto-ajuda">Cada uma vira uma página própria no PDF, com a tabela de itens e valores.</p>
-        <div id="listaPropostasAnexadas"></div>
-        <button type="button" class="btn-laranja" id="btnAdicionarPropostaApres">+ Adicionar Proposta</button>
-      </div>
-    </div>
-
-    <!-- ══════════════ ETAPA 4 — Gerar PDF ══════════════ -->
-    <div class="etapa-conteudo" data-etapa-conteudo="4" style="display:none;">
       <div class="form-secao">
         <h3>Revisão</h3>
         <div id="resumoRevisaoApres" class="resumo-revisao"></div>
-        <label style="margin-top:16px;">Nome do arquivo
-          <input type="text" id="campoNomeArquivoApres" placeholder="apresentacao_cliente" />
+        <label>Nome do arquivo
+          <input type="text" id="campoNomeArquivoApres" placeholder="Proposta_Cliente_001" />
         </label>
       </div>
       <div class="barra-final-apres">
-        <button type="button" class="btn-laranja" id="btnGerarPdfApresentacao" style="font-size:16px; padding:14px 28px;">📄 Gerar PDF</button>
+        <button type="button" class="btn-laranja" id="btnGerarPdfApresentacao">📄 Gerar PDF</button>
       </div>
     </div>
 
-    <!-- ── Navegação entre etapas ───────────────────────────────── -->
     <div class="etapas-navegacao">
       <button type="button" class="btn-secundario" id="btnEtapaVoltar" style="visibility:hidden;">← Voltar</button>
       <button type="button" class="btn-laranja" id="btnEtapaAvancar">Próximo →</button>
     </div>
   </main>
 
-  <!-- Template de um bloco de proposta anexada (clonado via JS) -->
+  <!-- Bloco de estimativa anexada (clonado via JS) -->
   <template id="templateBlocoProposta">
     <div class="bloco-proposta-anexada">
       <div class="bloco-proposta-cabecalho">
@@ -181,29 +199,28 @@
         <button type="button" class="btn-excluir-item btn-remover-bloco-proposta">Remover</button>
       </div>
       <div class="form-grid">
-        <label>Proposta cadastrada <span class="texto-opcional">(opcional — ou preencha na mão abaixo)</span>
+        <label>Estimativa cadastrada
           <select class="campo-select-proposta-existente">
-            <option value="">— Selecionar de uma proposta já cadastrada —</option>
+            <option value="">— Selecionar uma estimativa —</option>
           </select>
         </label>
-        <label>Nome do Serviço
-          <input type="text" class="campo-nome-servico-anexado" placeholder="Ex: Elétrica" />
+        <label>Título deste bloco
+          <input type="text" class="campo-nome-servico-anexado" placeholder="Ex: Desenvolvimento do portal" />
         </label>
       </div>
       <div class="preview-itens-proposta"></div>
       <div class="form-grid">
-        <label>Forma de Pagamento
-          <textarea class="campo-forma-pagamento-anexada" rows="2" placeholder="Ex: à vista, débito, PIX, crédito em até 12x com juros da maquininha e boleto."></textarea>
+        <label>Forma de pagamento
+          <textarea class="campo-forma-pagamento-anexada" rows="2" placeholder="Ex: 40% na assinatura e 60% em 3 parcelas mensais, via PIX ou boleto."></textarea>
         </label>
-        <label>Programação <span class="texto-opcional">(prazo estimado)</span>
-          <input type="text" class="campo-programacao-anexada" placeholder="Ex: 5 dias úteis / 1 mês útil" />
+        <label>Prazo de entrega
+          <input type="text" class="campo-programacao-anexada" placeholder="Ex: 8 semanas" />
         </label>
       </div>
     </div>
   </template>
 
-  <script src="gerar-apresentacao.js?v=20261029b"></script>
-  <script src="camera.js?v=1"></script>
+  <script src="gerar-apresentacao.js?v=fnx2"></script>
   <script src="modal-expandir.js?v=1"></script>
   <footer class="fnx-rodape">Created by Yan Victor · <a href="https://www.instagram.com/yanszaida/" target="_blank" rel="noopener">@yanszaida</a></footer>
 </body>

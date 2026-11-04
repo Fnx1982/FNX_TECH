@@ -259,7 +259,7 @@ function renderModalBatidas() {
           <div class="chip-batida">
             <span class="horario">${formatarHoraBR(b.dataHora)}</span>
             <span class="tipo-batida tipo-${b.tipo}">${b.tipo === "entrada" ? "Entrada" : "Saída"}</span>
-            ${b.obs ? `<span style="font-size:11px;color:#888;">${b.obs}</span>` : ""}
+            ${b.obs ? `<span style="font-size:11px;color:#888;">${escaparHtml(b.obs)}</span>` : ""}
             <button class="btn-editar-mini" data-edit-bat="${b.id}">Editar</button>
             <button class="btn-excluir-mini" data-del-bat="${b.id}">Excluir</button>
           </div>
@@ -905,8 +905,8 @@ function renderFeriadosNacionais(podeEditar) {
     linha.className = "feriado-item";
     linha.innerHTML = `
       <div class="feriado-item-info">
-        <span class="feriado-mmdd">${mmdd}</span>
-        <span class="feriado-nome">${nome}</span>
+        <span class="feriado-mmdd">${escaparHtml(mmdd)}</span>
+        <span class="feriado-nome">${escaparHtml(nome)}</span>
       </div>
       ${podeEditar ? `
         <div style="display:flex;gap:6px;">

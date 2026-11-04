@@ -275,7 +275,7 @@ function renderizarConsulta() {
       ${nota.tomadorInscMunicipal ? `<div><b>Insc. Municipal:</b> ${escaparHtml(nota.tomadorInscMunicipal)}</div>` : ""}
       ${nota.tomadorInscEstadual ? `<div><b>Insc. Estadual:</b> ${escaparHtml(nota.tomadorInscEstadual)}</div>` : ""}
       ${nota.tipo === "NFS-e" && nota.dadosEstruturados ? `<div style="margin-top:6px;"><b>Base de Cálculo:</b> ${formatarMoedaConsulta(baseCalculo)} · <b>Valor ISS:</b> ${formatarMoedaConsulta(valorIss)}</div>` : ""}
-      ${nota.motivoCancelamento ? `<div style="color:var(--vermelho);"><b>Motivo do cancelamento:</b> ${nota.motivoCancelamento}</div>` : ""}
+      ${nota.motivoCancelamento ? `<div style="color:var(--vermelho);"><b>Motivo do cancelamento:</b> ${escaparHtml(nota.motivoCancelamento)}</div>` : ""}
       <div style="margin-top:8px;"><b>Itens:</b></div>
       ${linhasItens || "<div>Nenhum item.</div>"}
     `;

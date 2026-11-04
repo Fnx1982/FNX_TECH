@@ -247,8 +247,8 @@ function imprimirExtrato(lancamentos, nomeBanco) {
   const linhasHtml = lancamentos.map((l) => `
     <tr>
       <td>${new Date(l.data + "T00:00:00").toLocaleDateString("pt-BR")}</td>
-      <td>${l.descricao}</td>
-      <td>${l.classificacao || "-"}</td>
+      <td>${escaparHtml(l.descricao)}</td>
+      <td>${escaparHtml(l.classificacao || "-")}</td>
       <td>${l.tipo === "entrada" ? "Entrada" : "Saída"}</td>
       <td style="text-align:right;">${l.tipo === "entrada" ? "" : "-"}R$ ${formatarMoedaBR(l.valor)}</td>
     </tr>
@@ -256,7 +256,7 @@ function imprimirExtrato(lancamentos, nomeBanco) {
 
   const janela = window.open("", "_blank");
   janela.document.write(`
-    <html><head><title>Extrato — ${nomeBanco}</title>
+    <html><head><title>Extrato — ${escaparHtml(nomeBanco)}</title>
     <style>
       body { font-family: Arial, sans-serif; padding: 20px; }
       table { width: 100%; border-collapse: collapse; margin-top: 16px; }
@@ -265,7 +265,7 @@ function imprimirExtrato(lancamentos, nomeBanco) {
       .totais { margin-top: 16px; font-weight: bold; }
     </style></head>
     <body>
-      <h2>Extrato Bancário — ${nomeBanco}</h2>
+      <h2>Extrato Bancário — ${escaparHtml(nomeBanco)}</h2>
       <p>Gerado em ${new Date().toLocaleString("pt-BR")}</p>
       <table>
         <thead><tr><th>Data</th><th>Descrição</th><th>Classificação</th><th>Tipo</th><th>Valor</th></tr></thead>

@@ -95,7 +95,7 @@ function renderBatidasHoje() {
       <span class="horario">${formatarHoraBR(b.dataHora)}</span>
       <span class="tipo-batida tipo-${b.tipo}">${b.tipo === "entrada" ? "Entrada" : "Saída"}</span>
       ${linkMaps}
-      ${b.obs ? `<span style="font-size:12px;color:#888;">${b.obs}</span>` : ""}
+      ${b.obs ? `<span style="font-size:12px;color:#888;">${escaparHtml(b.obs)}</span>` : ""}
     `;
     container.appendChild(chip);
   });

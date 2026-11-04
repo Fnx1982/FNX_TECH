@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="home.css?v=8">
   <title>FNX TECH — Início</title>
   <link rel="stylesheet" href="mobile.css?v=3" />
-  <link rel="stylesheet" href="fnx-tema.css?v=1" />
+  <link rel="stylesheet" href="fnx-tema.css?v=3" />
 </head>
 <body class="pagina-home">
   <nav class="menu" id="menuPrincipal">
@@ -136,7 +136,7 @@
           <li class="lista">
             <a href="consulta-notas.html">
               <i class='bx bx-search'></i>
-              <span class="span-menu">Consulta <small class="tag-em-breve">em breve</small></span>
+              <span class="span-menu">Consulta de Notas <small class="tag-em-breve">em breve</small></span>
             </a>
           </li>
           <li class="lista">
@@ -236,13 +236,13 @@
           <li class="lista" id="pontos-confirmacao-item">
             <a href="pontos-confirmacao.html">
               <i class='bx bx-check-square'></i>
-              <span class="span-menu">Confirmação</span>
+              <span class="span-menu">Registro de Ponto</span>
             </a>
           </li>
           <li class="lista" id="pontos-consulta-item">
             <a href="pontos-consulta.html">
               <i class='bx bx-search'></i>
-              <span class="span-menu">Consulta</span>
+              <span class="span-menu">Consulta de Horas</span>
             </a>
           </li>
         </ul>
@@ -267,6 +267,13 @@
   </nav>
 
   <div class="dashboard">
+    <section class="inicio-topo">
+      <small id="inicioData"></small>
+      <h1 id="inicioSaudacao">Olá!</h1>
+      <p>Seus atalhos para o dia a dia da FNX TECH.</p>
+    </section>
+    <section class="inicio-atalhos" id="inicioAtalhos" aria-label="Atalhos"></section>
+    <div class="inicio-linha">
     <!-- Card Montante -->
     <div class="card-montante">
       <h2>Montante Atual</h2>
@@ -276,6 +283,13 @@
       <h3>Mês</h3>
       <textarea id="observacao" rows="4" placeholder="Digite o mês"></textarea>
       <button onclick="salvarObservacao()">Salvar Mês</button>
+    </div>
+  <div class="calendar-box">
+          <h2>Eventos de Hoje</h2>
+          <ul id="events-list">
+              <!-- Eventos aparecerão aqui -->
+          </ul>
+      </div>
     </div>
   </div>
 
@@ -289,12 +303,7 @@
       </div>
     </div>
   </div>
-  <div class="calendar-box">
-        <h2>Eventos de Hoje</h2>
-        <ul id="events-list">
-            <!-- Eventos aparecerão aqui -->
-        </ul>
-    </div>
+
 
     <script src="https://apis.google.com/js/api.js"></script>
 <script src="https://accounts.google.com/gsi/client"></script>
@@ -302,7 +311,8 @@
 
 <script src="google-auth.js?v=3"></script>
 <script src="permissoes-setor.js?v=7"></script>
-<script src="home.js?v=7"></script>
+<script src="confirm-modal.js?v=3"></script>
+<script src="home.js?v=8"></script>
 <script>
   // Mídias sociais: endereços vêm do config.js (FNX_LINKS)
   document.querySelectorAll("[data-link-social]").forEach((a) => {

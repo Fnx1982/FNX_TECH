@@ -253,3 +253,30 @@
 .pv-chips span { font-size: 12px; background: #fff; border: 1px solid #f0d9b0; border-radius: 20px; padding: 3px 10px; color: #7a5a20; }
 .pv-itens:last-child, .pv-mais:last-child, .pv-tiles:last-child { border-radius: 0 0 12px 12px; }
 @media (max-width: 600px) { .pv-tiles { grid-template-columns: 1fr; } }
+
+/* ── FNX: proposta dev ─────────────────────────────── */
+.acoes-topo-apres { display: flex; gap: 10px; flex-wrap: wrap; }
+.acoes-topo-apres .btn-secundario { text-decoration: none; display: inline-flex; align-items: center; }
+.etapa-conteudo[hidden] { display: none !important; }
+.linha-numero { display: flex; gap: 6px; }
+.linha-numero input { flex: 1; }
+.linha-numero button { flex: 0 0 auto; border: 1px solid #ccc; border-radius: 8px; background: #fff; cursor: pointer; padding: 0 12px; }
+.chips-stack { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.chips-stack span { background: #111; color: #fff; border-radius: 20px; padding: 4px 12px; font-size: 12.5px; font-weight: 600; }
+.chips-stack span::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #FF6A00; margin-right: 6px; vertical-align: middle; }
+.tabela-fases { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+.linha-fase { display: grid; grid-template-columns: 1.2fr 110px 2fr 36px; gap: 8px; align-items: center; background: #fff; border: 1px solid #e6e6e9; border-left: 4px solid #FF6A00; border-radius: 10px; padding: 8px; }
+.linha-fase input { width: 100%; border: 1px solid #ddd; border-radius: 8px; padding: 8px 10px; font-size: 14px; box-sizing: border-box; }
+.linha-fase input:focus { outline: 2px solid #FF6A00; border-color: transparent; }
+.fase-semanas { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #666; }
+.fase-semanas input { width: 70px; }
+.btn-remover-fase { border: none; background: #f3f3f3; width: 32px; height: 32px; border-radius: 8px; font-size: 20px; cursor: pointer; color: #777; }
+.btn-remover-fase:hover { background: #fdecea; color: #E5141B; }
+@media (max-width: 768px) {
+  .linha-fase { grid-template-columns: 1fr 36px; }
+  .linha-fase .fase-semanas { grid-column: 1; }
+  .linha-fase .fase-entregas { grid-column: 1 / -1; }
+  .linha-fase .btn-remover-fase { grid-column: 2; grid-row: 1; }
+  .etapas-indicador { overflow-x: auto; flex-wrap: nowrap !important; }
+  .etapa-pill { flex: 0 0 auto; }
+}

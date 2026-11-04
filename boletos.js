@@ -204,8 +204,8 @@ function adicionarLinhaLote(dados) {
   tr.dataset.linhaId = linhaId;
   tr.innerHTML = `
     <td><input type="text" class="lote-codigo" placeholder="Código" value="${escaparHtml(dados.codigo)}" /></td>
-    <td><input type="number" class="lote-valor" placeholder="0,00" step="0.01" min="0" value="${dados.valor}" /></td>
-    <td><input type="date" class="lote-vencimento" value="${dados.dataVencimento}" /></td>
+    <td><input type="number" class="lote-valor" placeholder="0,00" step="0.01" min="0" value="${escaparHtml(dados.valor)}" /></td>
+    <td><input type="date" class="lote-vencimento" value="${escaparHtml(dados.dataVencimento)}" /></td>
     <td><button type="button" class="btn-remover-linha" data-remover-linha="${linhaId}">✕</button></td>
   `;
   corpoTabelaLote.appendChild(tr);

@@ -164,6 +164,7 @@ async function updateMenuVisibility() {
   });
 
   aplicarRegraPontosSubitens();
+  montarAtalhosInicio();
 
   const pontosConfirmacaoLink = document.getElementById("pontos-confirmacao-link");
   if (pontosConfirmacaoLink) {
@@ -194,26 +195,33 @@ if (inputMontante) {
   });
 }
 
-window.addEventListener("DOMContentLoaded", () => {
-  if (inputMontante) {
-    const montanteSalvo = localStorage.getItem("montante");
-    if (montanteSalvo) inputMontante.value = formatarMoeda(parseFloat(montanteSalvo));
-  }
-  if (inputObs) {
-    const observacaoSalva = localStorage.getItem("observacao");
-    if (observacaoSalva) inputObs.value = observacaoSalva;
-  }
+// Montante e mês ficam na NUVEM (antes só neste navegador)
+window.addEventListener("DOMContentLoaded", async () => {
+  try {
+    const r = await apiDataGet("painelInicio");
+    const v = (r.ok && r.valor) || {};
+    if (inputMontante && v.montante !== undefined && v.montante !== null) inputMontante.value = formatarMoeda(parseFloat(v.montante));
+    if (inputObs && v.observacao) inputObs.value = v.observacao;
+  } catch (e) { /* sem conexão */ }
 });
+
+async function salvarPainelInicio(parcial, mensagem) {
+  const atual = await apiDataGet("painelInicio").catch(() => ({ ok: false }));
+  const valor = { ...((atual.ok && atual.valor) || {}), ...parcial };
+  const r = await apiDataSet("painelInicio", valor);
+  if (typeof mostrarToast === "function") mostrarToast(r.ok ? mensagem : (r.erro || "Não foi possível salvar."), r.ok ? undefined : "erro");
+  else if (!r.ok) alert(r.erro || "Não foi possível salvar.");
+}
 
 function salvarMontante() {
   if (!inputMontante) return;
   const valor = inputMontante.value.replace(/\D/g, "");
-  if (valor) localStorage.setItem("montante", parseFloat(valor) / 100);
+  salvarPainelInicio({ montante: valor ? parseFloat(valor) / 100 : null }, "Montante salvo.");
 }
 
 function salvarObservacao() {
   if (!inputObs) return;
-  localStorage.setItem("observacao", inputObs.value);
+  salvarPainelInicio({ observacao: inputObs.value }, "Mês salvo.");
 }
 
 // ==========================
@@ -286,3 +294,36 @@ onGoogleAuthChange(fetchTodayEvents);
     botao.setAttribute("aria-label", aberto ? "Fechar menu" : "Abrir menu");
   });
 })();
+
+
+// ==========================
+// TELA INICIAL — saudação e atalhos (mesmos itens liberados no menu)
+// ==========================
+function montarAtalhosInicio() {
+  const nome = (localStorage.getItem("userNome") || "").trim().split(/\s+/)[0];
+  const h = new Date().getHours();
+  const saud = h < 12 ? "Bom dia" : h < 18 ? "Boa tarde" : "Boa noite";
+  const elSaud = document.getElementById("inicioSaudacao");
+  if (elSaud) elSaud.textContent = nome ? `${saud}, ${nome}!` : `${saud}!`;
+  const elData = document.getElementById("inicioData");
+  if (elData) elData.textContent = new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" });
+  const grade = document.getElementById("inicioAtalhos");
+  if (!grade) return;
+  const visivel = (el) => { for (let n = el; n && n.id !== "menuPrincipal"; n = n.parentElement) if (n.style && n.style.display === "none") return false; return true; };
+  const vistos = new Set();
+  const itens = [...document.querySelectorAll('#menuPrincipal a[href$=".html"]')]
+    .filter((a) => !/login\.html$/.test(a.getAttribute("href")) && visivel(a))
+    .filter((a) => { const k = a.getAttribute("href"); if (vistos.has(k)) return false; vistos.add(k); return true; });
+  grade.innerHTML = "";
+  itens.forEach((a) => {
+    const span = a.querySelector(".span-menu");
+    const rotulo = span ? [...span.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join("").trim() : a.textContent.trim();
+    const emBreve = !!(span && span.querySelector(".tag-em-breve"));
+    const icone = (a.querySelector("i.bx") || {}).className || "bx bx-right-arrow-alt";
+    const card = document.createElement("a");
+    card.href = a.getAttribute("href");
+    card.className = "atalho-inicio" + (emBreve ? " em-breve" : "");
+    card.innerHTML = `<i class="${escaparHtml(icone)}"></i><span>${escaparHtml(rotulo)}</span>${emBreve ? '<small>em breve</small>' : ""}`;
+    grade.appendChild(card);
+  });
+}

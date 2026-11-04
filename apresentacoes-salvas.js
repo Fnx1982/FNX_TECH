@@ -11,7 +11,7 @@ async function carregarListaApresentacoes() {
 
   if (!resposta.ok) {
     container.innerHTML = "";
-    semResultados.textContent = "Não foi possível carregar as apresentações.";
+    semResultados.textContent = "Não foi possível carregar as propostas.";
     semResultados.style.display = "block";
     return;
   }
@@ -22,7 +22,7 @@ async function carregarListaApresentacoes() {
 
   if (apresentacoes.length === 0) {
     container.innerHTML = "";
-    semResultados.textContent = "Nenhuma apresentação foi gerada ainda.";
+    semResultados.textContent = "Nenhuma proposta foi gerada ainda.";
     semResultados.style.display = "block";
     return;
   }
@@ -34,8 +34,8 @@ async function carregarListaApresentacoes() {
     return `
       <div class="card-apresentacao">
         <div class="card-apresentacao-info">
-          <strong>${escaparHtml(a.nomeCliente || "(sem cliente)")} ${a.numeroDocumento ? "— N° " + escaparHtml(a.numeroDocumento) : ""}</strong>
-          <span>Atualizada em ${dataFmt} · ${qtdServicos} serviço${qtdServicos === 1 ? "" : "s"}</span>
+          <strong>${escaparHtml(a.nomeProjeto || a.nomeCliente || "(sem nome)")} ${a.numeroDocumento ? "— Nº " + escaparHtml(a.numeroDocumento) : ""}</strong>
+          <span>${escaparHtml(a.nomeCliente || "(sem cliente)")} · atualizada em ${dataFmt} · ${qtdServicos} bloco${qtdServicos === 1 ? "" : "s"} de investimento</span>
         </div>
         <div class="card-apresentacao-acoes">
           <button class="btn-baixar-apres" data-baixar="${a.id}">⬇ Baixar</button>
@@ -58,11 +58,11 @@ async function carregarListaApresentacoes() {
   });
   container.querySelectorAll("[data-excluir]").forEach((btn) => {
     btn.addEventListener("click", async () => {
-      const ok = await confirmarAcao("Excluir esta apresentação?", "Essa ação não pode ser desfeita.");
+      const ok = await confirmarAcao("Excluir esta proposta?", "Essa ação não pode ser desfeita.");
       if (!ok) return;
       const resp = await apiExcluirApresentacao(btn.dataset.excluir);
       if (!resp.ok) { mostrarToast(resp.erro || "Erro ao excluir.", "erro"); return; }
-      mostrarToast("Apresentação excluída.");
+      mostrarToast("Proposta excluída.");
       carregarListaApresentacoes();
     });
   });

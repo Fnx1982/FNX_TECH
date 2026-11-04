@@ -116,3 +116,200 @@ body:has(> main.container > .input-box) .fnx-rodape { color: #aaa; }
 @media (max-width: 768px) {
   .fnx-rodape { font-size: 12px; padding: 16px 12px 20px; }
 }
+
+/* ==========================================================================
+   PÁGINAS INTERNAS — visual unificado FNX (faixa escura no topo, cartão
+   branco, títulos com detalhe em gradiente, campos e botões padronizados)
+   ========================================================================== */
+body.pagina-interna {
+  background:
+    radial-gradient(ellipse 60% 220px at 12% 0, rgba(255, 106, 0, .30), transparent 70%),
+    radial-gradient(ellipse 50% 200px at 92% 0, rgba(229, 20, 27, .22), transparent 70%),
+    linear-gradient(180deg, var(--fnx-preto) 0, #161616 210px, #EDEDF0 210px) !important;
+  background-attachment: scroll !important;
+}
+body.pagina-interna > main.container,
+body.pagina-interna > main.container-crm {
+  background: #fff !important;
+  border: none !important;
+  border-radius: 20px !important;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, .14), 0 1px 0 rgba(0, 0, 0, .04) !important;
+  backdrop-filter: none !important;
+  margin-top: 8px;
+}
+body.pagina-interna .topo-pagina h1,
+body.pagina-interna .topo-crm h1,
+body.pagina-interna main > h1 {
+  color: #111;
+  font-weight: 800;
+  letter-spacing: -.01em;
+}
+body.pagina-interna .topo-pagina h1::after,
+body.pagina-interna .topo-crm h1::after {
+  content: ""; display: block; width: 44px; height: 4px; border-radius: 4px; margin-top: 8px; background: var(--fnx-gradiente);
+}
+body.pagina-interna .topo-pagina p,
+body.pagina-interna .topo-crm p { color: #6b6b72; }
+
+/* Cartões internos (filtros, tabelas, seções) */
+body.pagina-interna .card-filtros,
+body.pagina-interna .tabela-card,
+body.pagina-interna .form-secao,
+body.pagina-interna .card-config,
+body.pagina-interna .sem-resultados {
+  background: #F7F7F9 !important;
+  border: 1px solid #ECECF0 !important;
+  border-radius: 14px !important;
+  box-shadow: none !important;
+}
+
+/* Campos */
+body.pagina-interna input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=color]),
+body.pagina-interna select,
+body.pagina-interna textarea {
+  border-radius: 10px;
+  transition: border-color .15s, box-shadow .15s;
+}
+body.pagina-interna input:not([type=checkbox]):not([type=radio]):focus,
+body.pagina-interna select:focus,
+body.pagina-interna textarea:focus {
+  outline: none !important;
+  border-color: var(--fnx-laranja) !important;
+  box-shadow: 0 0 0 3px rgba(255, 106, 0, .18) !important;
+}
+body.pagina-interna input[type=checkbox],
+body.pagina-interna input[type=radio] { accent-color: var(--fnx-laranja); }
+
+/* Botões */
+body.pagina-interna .btn-voltar {
+  background: #fff !important; color: #222 !important; border: 1px solid #E2E2E7 !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,.06) !important; font-weight: 700;
+}
+body.pagina-interna .btn-voltar:hover { border-color: var(--fnx-laranja) !important; color: var(--fnx-laranja) !important; }
+body.pagina-interna .btn-secundario {
+  background: #fff; border: 1px solid #E2E2E7; color: #222; font-weight: 700;
+}
+body.pagina-interna .btn-secundario:hover { border-color: var(--fnx-laranja); color: var(--fnx-laranja-escuro); }
+body.pagina-interna .btn-laranja,
+body.pagina-interna .btn-salvar { box-shadow: 0 6px 16px rgba(229, 20, 27, .22); }
+
+/* Atalhos do fluxo comercial (Levantamento → Estimativa → ...) */
+body.pagina-interna .atalhos-fluxo a,
+body.pagina-interna .atalho-fluxo { border-radius: 999px !important; }
+body.pagina-interna .atalho-fluxo.atalho-atual,
+body.pagina-interna .atalhos-fluxo a.atalho-atual {
+  background: var(--fnx-gradiente) !important; color: #fff !important; border-color: transparent !important;
+}
+
+/* Abas */
+body.pagina-interna .aba.active,
+body.pagina-interna .aba-btn.active,
+body.pagina-interna .tab.active,
+body.pagina-interna .abas button.active,
+body.pagina-interna .abas-nivel-superior button.active {
+  background: var(--fnx-gradiente) !important; color: #fff !important; border-color: transparent !important;
+}
+
+/* Tabelas */
+body.pagina-interna table thead th {
+  background: #111 !important; color: #fff !important; font-weight: 700; letter-spacing: .02em;
+}
+body.pagina-interna table thead th:first-child { border-top-left-radius: 10px; }
+body.pagina-interna table thead th:last-child { border-top-right-radius: 10px; }
+body.pagina-interna table tbody tr:hover td { background: #FFF6EF; }
+
+/* Modais */
+body.pagina-interna .modal-caixa,
+body.pagina-interna .modal-content,
+body.pagina-interna .modal-caixa-grande { border-radius: 18px !important; box-shadow: 0 24px 70px rgba(0,0,0,.35) !important; }
+body.pagina-interna .modal-cabecalho { border-bottom: 3px solid transparent; border-image: var(--fnx-gradiente) 1; padding-bottom: 10px; }
+.modal-overlay { backdrop-filter: blur(3px); }
+
+/* Totais fixos no rodapé */
+body.pagina-interna .total-fixo { background: #111 !important; color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,.3) !important; }
+body.pagina-interna .total-fixo span:first-child { color: #9a9aa2 !important; }
+
+/* Rodapé "Created by" sobre o fundo claro */
+body.pagina-interna .fnx-rodape { color: #77777f; }
+
+/* Barra de rolagem */
+* { scrollbar-width: thin; scrollbar-color: #c9c9cf transparent; }
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-thumb { background: #c9c9cf; border-radius: 8px; }
+*::-webkit-scrollbar-thumb:hover { background: var(--fnx-laranja); }
+
+@media (max-width: 768px) {
+  body.pagina-interna {
+    background:
+      radial-gradient(ellipse 80% 160px at 10% 0, rgba(255, 106, 0, .30), transparent 70%),
+      linear-gradient(180deg, var(--fnx-preto) 0, #161616 150px, #EDEDF0 150px) !important;
+  }
+  body.pagina-interna > main.container,
+  body.pagina-interna > main.container-crm { border-radius: 16px !important; width: calc(100% - 16px) !important; margin: 8px auto 0 !important; }
+}
+
+/* ==========================================================================
+   TELA INICIAL — saudação, atalhos e cartões
+   ========================================================================== */
+body.pagina-home {
+  background:
+    radial-gradient(ellipse 50% 260px at 30% 0, rgba(255, 106, 0, .28), transparent 70%),
+    radial-gradient(ellipse 40% 240px at 95% 0, rgba(229, 20, 27, .20), transparent 70%),
+    linear-gradient(180deg, #0E0E0E 0, #161616 250px, #EDEDF0 250px) !important;
+}
+body.pagina-home .dashboard { background: transparent !important; padding: 34px 36px 70px; max-width: 1320px; }
+.inicio-topo { color: #fff; padding: 6px 220px 26px 0; }
+.inicio-topo small { display: inline-block; color: #ff9a55; font-weight: 700; font-size: 13px; letter-spacing: .02em; }
+.inicio-topo h1 { font-size: 32px; font-weight: 800; margin: 4px 0 6px; letter-spacing: -.02em; }
+.inicio-topo p { color: #b9b9c0; font-size: 14px; }
+.inicio-atalhos { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px; margin-bottom: 24px; }
+.atalho-inicio {
+  position: relative; display: flex; flex-direction: column; gap: 14px; padding: 18px 16px 16px; min-height: 112px;
+  background: #fff; border-radius: 16px; text-decoration: none; color: #161616; font-weight: 700; font-size: 14.5px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .08); border: 1px solid #EEEEF2; transition: transform .15s, box-shadow .15s, border-color .15s;
+}
+.atalho-inicio i {
+  width: 42px; height: 42px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center;
+  font-size: 22px; color: #fff; background: var(--fnx-gradiente); box-shadow: 0 6px 14px rgba(229, 20, 27, .25);
+}
+.atalho-inicio:hover, .atalho-inicio:focus-visible { transform: translateY(-3px); box-shadow: 0 16px 34px rgba(0,0,0,.14); border-color: var(--fnx-laranja); outline: none; }
+.atalho-inicio small { position: absolute; top: 14px; right: 12px; font-size: 9.5px; font-weight: 800; text-transform: uppercase; color: var(--fnx-laranja-escuro); background: var(--fnx-claro); border-radius: 20px; padding: 2px 7px; }
+.atalho-inicio.em-breve i { background: #2a2a2a; box-shadow: none; }
+.inicio-linha { display: grid; grid-template-columns: minmax(260px, 340px) minmax(280px, 1fr); gap: 16px; align-items: start; }
+body.pagina-home .dashboard .card-montante,
+body.pagina-home .menu:hover ~ .dashboard .card-montante,
+body.pagina-home .calendar-box {
+  position: static !important; width: auto !important; margin: 0 !important; left: auto; bottom: auto; right: auto;
+  border-radius: 16px !important; box-shadow: 0 10px 30px rgba(0,0,0,.08) !important; border: 1px solid #EEEEF2;
+}
+body.pagina-home .calendar-box h2 { font-size: 18px; margin-bottom: 10px; }
+body.pagina-home .calendar-box ul { padding-left: 18px; }
+body.pagina-home .fnx-rodape { position: static !important; padding: 10px 16px 18px 86px !important; color: #77777f; }
+
+@media (max-width: 768px), (hover: none) and (max-width: 1100px) {
+  body.pagina-home {
+    background:
+      radial-gradient(ellipse 80% 200px at 20% 64px, rgba(255, 106, 0, .30), transparent 70%),
+      linear-gradient(180deg, #0E0E0E 0, #161616 250px, #EDEDF0 250px) !important;
+  }
+  body.pagina-home .dashboard { padding: 80px 14px 24px !important; }
+  .inicio-topo { padding: 0 0 18px; }
+  .inicio-topo h1 { font-size: 26px; }
+  .inicio-atalhos { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .atalho-inicio { min-height: 96px; padding: 14px 12px; font-size: 13.5px; gap: 10px; }
+  .atalho-inicio i { width: 36px; height: 36px; font-size: 19px; }
+  .inicio-linha { grid-template-columns: 1fr; }
+  body.pagina-home .fnx-rodape { padding: 10px 12px 18px !important; }
+}
+@media (min-width: 769px) and (max-width: 1100px) {
+  .inicio-atalhos { grid-template-columns: repeat(3, 1fr); }
+  .inicio-linha { grid-template-columns: 1fr 1fr; }
+}
+
+.inicio-topo small::first-letter { text-transform: uppercase; }
+body.pagina-interna > main.container,
+body.pagina-interna > main.container-crm { margin-top: 28px !important; }
+@media (max-width: 768px) {
+  body.pagina-interna > main.container,
+  body.pagina-interna > main.container-crm { margin-top: 12px !important; }
+}
