@@ -52,11 +52,11 @@ const PADRAO = {
     "Início da primeira sprint",
   ].join("\n"),
   fases: [
-    { nome: "Descoberta e planejamento", semanas: 1, entregas: "Requisitos, backlog priorizado e cronograma" },
-    { nome: "Design UX/UI", semanas: 2, entregas: "Protótipo navegável aprovado" },
-    { nome: "Desenvolvimento", semanas: 4, entregas: "Funcionalidades em sprints com homologação" },
-    { nome: "Testes e homologação", semanas: 1, entregas: "Correções e validação final" },
-    { nome: "Publicação e treinamento", semanas: 1, entregas: "Sistema no ar e equipe treinada" },
+    { nome: "Descoberta e planejamento", valor: 5, unidade: "dias", entregas: "Requisitos, backlog priorizado e cronograma" },
+    { nome: "Design UX/UI", valor: 2, unidade: "semanas", entregas: "Protótipo navegável aprovado" },
+    { nome: "Desenvolvimento", valor: 1, unidade: "meses", entregas: "Funcionalidades em sprints com homologação" },
+    { nome: "Testes e homologação", valor: 1, unidade: "semanas", entregas: "Correções e validação final" },
+    { nome: "Publicação e treinamento", valor: 3, unidade: "dias", entregas: "Sistema no ar e equipe treinada" },
   ],
 };
 
@@ -84,31 +84,59 @@ function renderPreviaStack() {
 $a("campoStack").addEventListener("input", renderPreviaStack);
 
 // ============================================================
-// CRONOGRAMA (fases)
+// CRONOGRAMA (fases) — duração em dias, semanas ou meses
 // ============================================================
-function adicionarFase(f = { nome: "", semanas: 1, entregas: "" }) {
+const UNIDADES = { dias: { dias: 1, sing: "dia", plur: "dias", curto: "d" }, semanas: { dias: 7, sing: "semana", plur: "semanas", curto: "sem" }, meses: { dias: 30, sing: "mês", plur: "meses", curto: "mês" } };
+const numBR = (n) => String(Math.round(n * 10) / 10).replace(".", ",");
+// Fases antigas guardavam só "semanas"
+function normalizarFase(f) {
+  const unidade = UNIDADES[f.unidade] ? f.unidade : "semanas";
+  const valor = f.valor !== undefined ? Number(f.valor) : Number(f.semanas);
+  return { nome: f.nome || "", entregas: f.entregas || "", unidade, valor: Math.max(0, valor || 0) };
+}
+const diasDaFase = (f) => f.valor * UNIDADES[f.unidade].dias;
+function textoDuracao(valor, unidade) { const u = UNIDADES[unidade]; return `${numBR(valor)} ${valor === 1 ? u.sing : u.plur}`; }
+// Total em uma unidade só: a das fases, se todas usam a mesma; senão a que fica mais natural
+function textoTotal(fases) {
+  if (!fases.length) return "";
+  const unidades = [...new Set(fases.map((f) => f.unidade))];
+  if (unidades.length === 1) return textoDuracao(fases.reduce((s, f) => s + f.valor, 0), unidades[0]);
+  const dias = fases.reduce((s, f) => s + diasDaFase(f), 0);
+  if (dias >= 60) return `${textoDuracao(dias / 30, "meses")} (${numBR(dias)} dias)`;
+  if (dias >= 14) return `${textoDuracao(dias / 7, "semanas")} (${numBR(dias)} dias)`;
+  return textoDuracao(dias, "dias");
+}
+function adicionarFase(entrada = { nome: "", valor: 1, unidade: "semanas", entregas: "" }) {
+  const f = normalizarFase(entrada);
   const linha = document.createElement("div");
   linha.className = "linha-fase";
   linha.innerHTML = `
     <input type="text" class="fase-nome" placeholder="Nome da fase" value="${escA(f.nome)}" aria-label="Nome da fase" />
-    <label class="fase-semanas"><input type="number" min="0.5" step="0.5" value="${escA(f.semanas)}" aria-label="Semanas" /> sem.</label>
+    <div class="fase-semanas">
+      <input type="number" min="0.5" step="0.5" value="${escA(f.valor)}" aria-label="Duração" />
+      <select aria-label="Unidade">
+        ${Object.entries(UNIDADES).map(([k, u]) => `<option value="${k}" ${k === f.unidade ? "selected" : ""}>${u.plur}</option>`).join("")}
+      </select>
+    </div>
     <input type="text" class="fase-entregas" placeholder="O que é entregue nessa fase" value="${escA(f.entregas)}" aria-label="Entregas da fase" />
     <button type="button" class="btn-remover-fase" title="Remover fase" aria-label="Remover fase">&times;</button>`;
   linha.querySelector(".btn-remover-fase").addEventListener("click", () => { linha.remove(); atualizarTotalSemanas(); });
   linha.querySelector(".fase-semanas input").addEventListener("input", atualizarTotalSemanas);
+  linha.querySelector(".fase-semanas select").addEventListener("change", atualizarTotalSemanas);
   $a("tabelaFases").appendChild(linha);
   atualizarTotalSemanas();
 }
 function lerFases() {
   return [...document.querySelectorAll(".linha-fase")].map((l) => ({
     nome: l.querySelector(".fase-nome").value.trim(),
-    semanas: Math.max(0, parseFloat(l.querySelector(".fase-semanas input").value) || 0),
+    valor: Math.max(0, parseFloat(l.querySelector(".fase-semanas input").value) || 0),
+    unidade: l.querySelector(".fase-semanas select").value,
     entregas: l.querySelector(".fase-entregas").value.trim(),
   })).filter((f) => f.nome);
 }
 function atualizarTotalSemanas() {
-  const total = lerFases().reduce((s, f) => s + f.semanas, 0);
-  $a("totalSemanas").textContent = total ? `Prazo total estimado: ${String(total).replace(".", ",")} semana(s).` : "";
+  const fases = lerFases().filter((f) => f.valor > 0);
+  $a("totalSemanas").textContent = fases.length ? `Prazo total estimado: ${textoTotal(fases)}.` : "";
 }
 $a("btnAddFase").addEventListener("click", () => adicionarFase());
 PADRAO.fases.forEach(adicionarFase);
@@ -273,14 +301,14 @@ function totalInvestimento(dados) {
 }
 function renderResumoRevisao() {
   const d = coletarDadosApresentacao();
-  const semanas = d.fases.reduce((s, f) => s + f.semanas, 0);
+  const fasesValidas = d.fases.filter((f) => f.valor > 0);
   const linha = (r, v) => `<div class="linha-resumo"><span>${r}</span><strong>${v}</strong></div>`;
   $a("resumoRevisaoApres").innerHTML =
     linha("Cliente", escA(d.nomeCliente) || "—") +
     linha("Projeto", escA(d.nomeProjeto) || "—") +
     linha("Nº / data", `${escA(d.numeroDocumento) || "—"} · ${d.data ? new Date(d.data + "T12:00:00").toLocaleDateString("pt-BR") : "—"}`) +
     linha("Entregáveis", String(linhas(d.entregaveis).length)) +
-    linha("Fases", `${d.fases.length} (${String(semanas).replace(".", ",")} semanas)`) +
+    linha("Fases", `${d.fases.length}${fasesValidas.length ? ` (${textoTotal(fasesValidas)})` : ""}`) +
     linha("Investimento", moedaA(totalInvestimento(d)) + (Number(d.suporteValor) > 0 ? ` + ${moedaA(d.suporteValor)}/mês` : ""));
   const campo = $a("campoNomeArquivoApres");
   if (!campo.value.trim() && d.nomeCliente) {
@@ -516,20 +544,22 @@ async function gerarPdfApresentacao(dados) {
     }
 
     // ── 04 CRONOGRAMA ───────────────────────────────────────
-    const fases = dados.fases.filter((f) => f.semanas > 0);
+    const fases = dados.fases.map(normalizarFase).filter((f) => f.valor > 0);
     if (fases.length) {
       novaPagina();
-      const total = fases.reduce((s, f) => s + f.semanas, 0);
-      tituloSecao("Cronograma", `Prazo total estimado: ${String(total).replace(".", ",")} semana${total > 1 ? "s" : ""}`);
+      const totalDias = fases.reduce((s, f) => s + diasDaFase(f), 0);
+      tituloSecao("Cronograma", `Prazo total estimado: ${textoTotal(fases)}`);
       const colNome = 170, xBar = M + colNome, wBar = LU - colNome;
-      const escala = wBar / total;
-      // régua de semanas
+      const escala = wBar / totalDias;
+      // régua: em dias, semanas ou meses, conforme o tamanho do projeto
+      const regua = totalDias <= 21 ? { passo: totalDias > 10 ? 2 : 1, div: 1, pre: "D" }
+        : totalDias <= 140 ? { passo: 7 * (totalDias > 70 ? 2 : 1), div: 7, pre: "S" }
+        : { passo: 30 * (totalDias > 360 ? 2 : 1), div: 30, pre: "M" };
       fonte("normal", 7.5); cor(COR.cinza);
-      const passo = total > 16 ? 4 : total > 8 ? 2 : 1;
-      for (let s = 0; s <= total; s += passo) {
-        const x = xBar + s * escala;
+      for (let d = 0; d <= totalDias + 0.01; d += regua.passo) {
+        const x = xBar + d * escala;
         doc.setDrawColor(...COR.linha); doc.setLineWidth(0.5); doc.line(x, y + 12, x, y + 22 + fases.length * 46);
-        doc.text(`S${s}`, x, y + 8, { align: "center" });
+        doc.text(`${regua.pre}${Math.round(d / regua.div)}`, x, y + 8, { align: "center" });
       }
       y += 20;
       let inicio = 0;
@@ -539,14 +569,20 @@ async function gerarPdfApresentacao(dados) {
         doc.text(doc.splitTextToSize(f.nome, colNome - 12)[0], M, y + 14);
         fonte("normal", 8); cor(COR.cinza);
         if (f.entregas) doc.text(doc.splitTextToSize(f.entregas, colNome - 12).slice(0, 2), M, y + 26);
-        const x = xBar + inicio * escala, w = Math.max(f.semanas * escala, 8);
+        const dias = diasDaFase(f);
+        const x = xBar + inicio * escala, w = Math.max(dias * escala, 8);
         const c1 = misturar(COR.laranja, COR.vermelho, i / Math.max(1, fases.length - 1));
         fill(c1); doc.roundedRect(x, y + 4, w, 18, 5, 5, "F");
         fonte("bold", 8); cor(COR.branco);
-        const rot = `${String(f.semanas).replace(".", ",")} sem`;
+        const rot = textoDuracao(f.valor, f.unidade);
         if (doc.getTextWidth(rot) + 10 < w) doc.text(rot, x + 6, y + 16);
-        else { cor(COR.cinza); doc.text(rot, x + w + 4, y + 16); }
-        inicio += f.semanas;
+        else {
+          // rótulo fora da barra: à direita, ou à esquerda se não couber
+          cor(COR.cinza);
+          const tw = doc.getTextWidth(rot);
+          doc.text(rot, x + w + 4 + tw <= PW - M ? x + w + 4 : x - tw - 4, y + 16);
+        }
+        inicio += dias;
         y += 46;
       });
       y += 10;

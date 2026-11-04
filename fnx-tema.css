@@ -339,6 +339,15 @@ body.pagina-interna > main.container-crm { margin-top: 28px !important; }
 
 /* Menu lateral aberto um pouco mais largo (nomes longos não cortam) */
 @media (min-width: 769px) and (hover: hover) {
-  .menu:hover, nav.menu.expanded { width: 262px !important; }
-  .menu:hover ~ .dashboard, nav.menu.expanded ~ .dashboard { margin-left: 262px !important; }
+  .menu:hover, nav.menu.expanded { width: 300px !important; }
+  .menu:hover ~ .dashboard, nav.menu.expanded ~ .dashboard { margin-left: 300px !important; }
 }
+
+/* Tela inicial: Montante, Mês e Eventos ficam na parte de baixo da tela */
+@media (min-width: 769px) and (hover: hover) {
+  body.pagina-home .dashboard { display: flex !important; flex-direction: column; min-height: calc(100vh - 52px) !important; padding-bottom: 28px !important; }
+  body.pagina-home .inicio-linha { margin-top: auto; }
+  body.pagina-home .calendar-box { min-height: 340px; }
+}
+/* Itens do menu: o nome nunca é cortado — se não couber, quebra em duas linhas */
+.menu .span-menu { white-space: normal !important; line-height: 1.25; }
