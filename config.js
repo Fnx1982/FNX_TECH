@@ -9,7 +9,7 @@
 // 1) Endereço do Worker da FNX TECH (Cloudflare → Workers → o seu
 //    Worker → copie a URL que termina em .workers.dev). Sem barra
 //    no final.
-const FNX_API = "https://fnx-tech-api.SEU-USUARIO.workers.dev";
+const FNX_API = "https://fnx-tech-backend.holdingfnx.workers.dev";
 
 // 2) Dados da empresa — usados nos PDFs (propostas, notas,
 //    apresentações, extrato de ponto). Deixe "" o que ainda não tiver.
@@ -41,5 +41,5 @@ const FNX_LINKS = {
 // 4) Integração com o Google Agenda (Calendário). Opcional — deixe
 //    "" para desligar. Crie as chaves no Google Cloud Console em nome
 //    da FNX TECH (não reaproveite as de outra empresa).
-const FNX_GOOGLE_CLIENT_ID = "";
-const FNX_GOOGLE_API_KEY = "";
+const FNX_GOOGLE_CLIENT_ID = "427826556766-52fl3ihfrtivstnaqg700iscbc23oqcr.apps.googleusercontent.com";
+const FNX_GOOGLE_API_KEY = "AIzaSyDxJY_fzB03iBTV2XMfX83_YbeMedX_sHU";
