@@ -88,11 +88,11 @@ function renderLista() {
     const statusObraAtual = p.statusObra || (p.status === "finalizada" ? "finalizada" : "andamento");
     const seloObra = statusObraAtual === "finalizada"
       ? `<span style="background:#E8F5EF;color:#1c8a4b;font-size:10px;font-weight:700;padding:2px 9px;border-radius:12px;text-transform:uppercase;">✓ Finalizada</span>`
-      : `<span style="background:#EBF2FB;color:#2B6CB0;font-size:10px;font-weight:700;padding:2px 9px;border-radius:12px;text-transform:uppercase;">⚙ Em Andamento</span>`;
+      : `<span style="background:#EBF2FB;color:#2B6CB0;font-size:10px;font-weight:700;padding:2px 9px;border-radius:12px;text-transform:uppercase;">⚙ Em Desenvolvimento</span>`;
 
     const botaoStatusObra = statusObraAtual !== "finalizada"
-      ? `<button class="btn-finalizar" data-finalizar-obra="${p.id}">Finalizar Obra</button>`
-      : `<button class="btn-andamento" data-reabrir-obra="${p.id}">Reabrir Obra</button>`;
+      ? `<button class="btn-finalizar" data-finalizar-obra="${p.id}">Finalizar Projeto</button>`
+      : `<button class="btn-andamento" data-reabrir-obra="${p.id}">Reabrir Projeto</button>`;
 
     const botaoNfe = propostaTemMateriais(p)
       ? `<button class="btn-gerar-nota" data-nfe-id="${p.id}">NF-e</button>`
@@ -128,7 +128,7 @@ function renderLista() {
         ${botaoNfe}
         ${botaoNfse}
         ${botaoStatusObra}
-        <button class="btn-negar" data-reverter-id="${p.id}">Voltar para Análise</button>
+        <button class="btn-negar" data-reverter-id="${p.id}">Voltar para aprovação</button>
         <button class="btn-excluir-item" data-delete-id="${p.id}">Excluir</button>
       </div>
     `;
@@ -161,7 +161,7 @@ function renderLista() {
   });
   listaPropostasEl.querySelectorAll("[data-finalizar-obra]").forEach((btn) => {
     btn.addEventListener("click", async () => {
-      const confirmado = await confirmarAcao("Finalizar esta obra?", "O status vai para 'Finalizada'.");
+      const confirmado = await confirmarAcao("Finalizar este projeto?", "O status vai para 'Finalizada'.");
       if (!confirmado) return;
       const p = buscarProposta(btn.dataset.finalizarObra);
       if (p) { p.statusObra = "finalizada"; p.status = "finalizada"; salvarProposta(p); }
@@ -170,7 +170,7 @@ function renderLista() {
   });
   listaPropostasEl.querySelectorAll("[data-reabrir-obra]").forEach((btn) => {
     btn.addEventListener("click", async () => {
-      const confirmado = await confirmarAcao("Reabrir esta obra?", "O status volta para 'Em Andamento'.");
+      const confirmado = await confirmarAcao("Reabrir este projeto?", "O status volta para 'Em Desenvolvimento'.");
       if (!confirmado) return;
       const p = buscarProposta(btn.dataset.reabrirObra);
       if (p) { p.statusObra = "andamento"; p.status = "andamento"; salvarProposta(p); }
@@ -179,7 +179,7 @@ function renderLista() {
   });
   listaPropostasEl.querySelectorAll("[data-reverter-id]").forEach((btn) => {
     btn.addEventListener("click", async () => {
-      const confirmado = await confirmarAcao("Voltar para Análise?", "A aprovação será desfeita.");
+      const confirmado = await confirmarAcao("Voltar para aprovação?", "A aprovação será desfeita.");
       if (!confirmado) return;
       reverterParaAnalise(btn.dataset.reverterId);
       renderLista();
@@ -187,7 +187,7 @@ function renderLista() {
   });
   listaPropostasEl.querySelectorAll("[data-delete-id]").forEach((btn) => {
     btn.addEventListener("click", async () => {
-      const confirmado = await confirmarAcao("Excluir obra?", "Essa ação não pode ser desfeita.");
+      const confirmado = await confirmarAcao("Excluir projeto?", "Essa ação não pode ser desfeita.");
       if (!confirmado) return;
       await excluirProposta(btn.dataset.deleteId);
       renderLista();

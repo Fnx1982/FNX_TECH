@@ -6,7 +6,7 @@
   <script src="auth-guard.js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Comissão — FNX TECH</title>
+  <title>Comissões — FNX TECH</title>
   <link rel="stylesheet" href="comissao.css" />
   <script src="confirm-modal.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -18,8 +18,8 @@
   <main class="container">
     <div class="topo-pagina">
       <div>
-        <h1>Comissão</h1>
-        <p>Calculada sobre o lucro das obras finalizadas.</p>
+        <h1>Comissões</h1>
+        <p>Calculada sobre o lucro dos projetos finalizados.</p>
       </div>
       <a href="home.html" class="btn-voltar">← Voltar</a>
     </div>
@@ -30,7 +30,7 @@
       <h3 class="subtitulo-config">Percentual de comissão</h3>
       <div class="linha-percentual">
         <label>
-          % sobre o lucro de cada obra
+          % sobre o lucro de cada projeto
           <input type="number" id="campoPercentualComissao" min="0" max="100" step="0.1" value="10" />
         </label>
         <button type="button" class="btn-laranja" id="btnSalvarPercentual">Salvar</button>
@@ -43,17 +43,17 @@
           <select id="campoMesImpostos"></select>
         </label>
         <label>
-          INSS (%) sobre a Mão de obra
+          INSS (%) sobre os serviços
           <input type="number" id="campoInssMensal" min="0" max="100" step="0.1" value="11" />
         </label>
         <label>
-          ISS (%) sobre a Mão de obra
+          ISS (%) sobre os serviços
           <input type="number" id="campoIssMensal" min="0" max="100" step="0.1" value="5" />
         </label>
         <button type="button" class="btn-laranja" id="btnSalvarImpostosMensal">Salvar</button>
       </div>
       <p class="texto-ajuda">
-        Vale pra todas as obras finalizadas nesse mês, automaticamente — só muda quando você mudar aqui. Se alguma obra específica precisar de um percentual diferente, edita direto nela, na lista de obras.
+        Vale pra todos os projetos finalizados nesse mês, automaticamente — só muda quando você mudar aqui. Se algum projeto específica precisar de um percentual diferente, edita direto nela, na lista de projetos.
       </p>
     </div>
 
@@ -72,7 +72,7 @@
       <h2 id="tituloResumoPeriodo">Resumo</h2>
       <div class="resumo-comissao-grid">
         <div class="resumo-item">
-          <span class="resumo-label">Obras finalizadas</span>
+          <span class="resumo-label">Projetos finalizados</span>
           <span class="resumo-valor" id="resumoQtdObras">0</span>
         </div>
         <div class="resumo-item">
@@ -96,16 +96,16 @@
     </div>
 
     <div class="card-secao">
-      <h2>Obras do período</h2>
+      <h2>Projetos do período</h2>
       <div class="lista-obras-comissao" id="listaObrasComissao"></div>
       <div class="sem-resultados" id="semObrasComissao" style="display:none;">
-        Nenhuma obra finalizada nesse período.
+        Nenhum projeto finalizado nesse período.
       </div>
     </div>
 
     <div class="card-secao" id="secaoObrasSemData" style="display:none;">
-      <h2>Obras finalizadas sem data</h2>
-      <p class="texto-ajuda">Essas obras foram marcadas como finalizadas antes dessa data começar a ser registrada. Escolha uma data pra cada uma, pra elas entrarem nos relatórios por período.</p>
+      <h2>Projetos finalizados sem data</h2>
+      <p class="texto-ajuda">Esses projetos foram marcados como finalizados antes dessa data começar a ser registrada. Escolha uma data pra cada uma, pra elas entrarem nos relatórios por período.</p>
       <div class="lista-obras-comissao" id="listaObrasSemData"></div>
     </div>
   </main>

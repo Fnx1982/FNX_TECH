@@ -5,7 +5,7 @@
   <script>
   // TELA TRAVADA: emissão de notas ainda em desenvolvimento.
   // Para liberar de novo, é só apagar este bloco <script> inteiro.
-  location.replace("em-construcao.html?pagina=" + encodeURIComponent("Nota Fiscal — Material") + "&tipo=notas");
+  location.replace("em-construcao.html?pagina=" + encodeURIComponent("Nota Fiscal — Produtos") + "&tipo=notas");
 </script>
 
   <script src="auth-worker.js?v=6"></script>
@@ -15,7 +15,7 @@
   <script src="validacao-fiscal.js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NF-e (Material) — FNX TECH</title>
+  <title>NF-e (Produtos) — FNX TECH</title>
   <link rel="stylesheet" href="nota-fiscal.css" />
   <link rel="stylesheet" href="mobile.css?v=3" />
   <link rel="stylesheet" href="fnx-tema.css?v=1" />
@@ -26,14 +26,14 @@
 
     <div class="topo-pagina">
       <div>
-        <h1>NF-e — Material</h1>
+        <h1>NF-e — Produtos</h1>
         <p>Nota fiscal eletrônica de produto</p>
       </div>
       <a href="home.html" class="btn-voltar">← Voltar</a>
     </div>
     <div class="atalhos-fluxo">
-      <a href="nfe.html" class="atalho-fluxo atalho-atual">📦 Material</a>
-      <a href="nfse.html" class="atalho-fluxo">🔧 Mão de Obra</a>
+      <a href="nfe.html" class="atalho-fluxo atalho-atual">📦 Produtos</a>
+      <a href="nfse.html" class="atalho-fluxo">🔧 Serviços</a>
       <a href="consulta-notas.html" class="atalho-fluxo">🔍 Consulta</a>
       <a href="recebidos.html" class="atalho-fluxo">📥 Recebidos</a>
       <a href="contatos.html" class="atalho-fluxo">👤 Clientes/Fornecedores</a>
@@ -115,7 +115,7 @@
         <thead><tr><th style="width:95px;">Código</th><th>Descrição</th><th style="width:95px;">NCM</th><th style="width:70px;">CSOSN</th><th style="width:65px;">CFOP</th><th style="width:60px;">UN</th><th style="width:60px;">Qtd.</th><th style="width:110px;">Valor unit. (R$)</th><th>Total</th><th></th></tr></thead>
         <tbody></tbody>
       </table>
-      <button type="button" class="btn-add-linha" id="btnAddItem">+ Adicionar material</button>
+      <button type="button" class="btn-add-linha" id="btnAddItem">+ Adicionar produto</button>
       <datalist id="listaMateriaisDatalist"></datalist>
 
       <!-- ═══════════ CÁLCULO DO IMPOSTO ═══════════ -->

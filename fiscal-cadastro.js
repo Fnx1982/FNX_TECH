@@ -488,7 +488,7 @@ function montarAbaGruposTributarios() {
   painelServicos.insertAdjacentHTML("afterend", `
     <div id="painelGruposTrib" style="display:none;">
       <div class="barra-acoes">
-        <p class="texto-ajuda-grupo">Um grupo reúne as regras de imposto que se repetem (CFOP, PIS, COFINS, ISS, IBS/CBS). Depois é só escolher o grupo no material ou no serviço.</p>
+        <p class="texto-ajuda-grupo">Um grupo reúne as regras de imposto que se repetem (CFOP, PIS, COFINS, ISS, IBS/CBS). Depois é só escolher o grupo no produto ou no serviço.</p>
         <div class="botoes-cadastro"><button type="button" class="btn-laranja" id="btnNovoGrupoTrib">+ Grupo tributário</button></div>
       </div>
       <div id="listaGruposTrib" class="lista-servicos"></div>
@@ -507,13 +507,13 @@ function montarAbaGruposTributarios() {
           </label>
           <label>Vale para
             <select id="gtAplica">
-              <option value="ambos">Materiais e serviços</option>
-              <option value="material">Só materiais (NF-e)</option>
+              <option value="ambos">Produtos e serviços</option>
+              <option value="material">Só produtos (NF-e)</option>
               <option value="servico">Só serviços (NFS-e)</option>
             </select>
           </label>
           <label class="campo-largura-total">Descrição
-            <input type="text" id="gtDescricao" maxlength="120" placeholder="ex: Venda de material — Simples Nacional" />
+            <input type="text" id="gtDescricao" maxlength="120" placeholder="ex: Venda de produto — Simples Nacional" />
           </label>
           <label>CFOP de venda
             <input type="text" id="gtCfop" maxlength="4" inputmode="numeric" placeholder="ex: 5102" />
@@ -612,12 +612,12 @@ function renderListaGruposTributarios() {
   if (!lista) return;
   const vazio = document.getElementById("vazioGruposTrib");
   vazio.style.display = gruposTributariosCache.length ? "none" : "block";
-  const nomeAplica = { ambos: "Materiais e serviços", material: "Materiais", servico: "Serviços" };
+  const nomeAplica = { ambos: "Produtos e serviços", material: "Produtos", servico: "Serviços" };
   lista.innerHTML = gruposTributariosCache.map((g) => `
     <div class="item-servico item-grupo-trib">
       <div>
         <div class="nome">${escF(rotuloGrupoTributario(g))}</div>
-        <div class="meta">${escF([nomeAplica[g.aplicaEm] || "Materiais e serviços", g.cfopVenda ? "CFOP " + g.cfopVenda : "",
+        <div class="meta">${escF([nomeAplica[g.aplicaEm] || "Produtos e serviços", g.cfopVenda ? "CFOP " + g.cfopVenda : "",
           g.pisCst ? "PIS " + g.pisCst : "", g.cofinsCst ? "COFINS " + g.cofinsCst : "", g.ibsCbsCst ? "IBS/CBS " + g.ibsCbsCst + (g.ibsCbsClassTrib ? "/" + g.ibsCbsClassTrib : "") : ""].filter(Boolean).join(" · "))}</div>
       </div>
       <div class="acoes">
@@ -628,7 +628,7 @@ function renderListaGruposTributarios() {
   lista.querySelectorAll("[data-editar-gt]").forEach((b) => b.addEventListener("click", () =>
     abrirModalGrupoTrib(gruposTributariosCache.find((g) => g.id === b.dataset.editarGt))));
   lista.querySelectorAll("[data-excluir-gt]").forEach((b) => b.addEventListener("click", async () => {
-    const ok = await confirmarAcao("Excluir este grupo tributário?", "Materiais e serviços ligados a ele ficam sem grupo.");
+    const ok = await confirmarAcao("Excluir este grupo tributário?", "Produtos e serviços ligados a ele ficam sem grupo.");
     if (!ok) return;
     const r = await chamarWorker("grupos-trib-excluir", { method: "POST", body: { id: b.dataset.excluirGt } });
     if (!r.ok) { mostrarToast(r.erro || "Não foi possível excluir.", "erro"); return; }

@@ -6,7 +6,7 @@
 <script src="auth-guard.js"></script>
 <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestão de Materiais</title>
+    <title>Catálogo de Serviços — FNX TECH</title>
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="gestaodematerial.css">
     <script src="confirm-modal.js"></script>
@@ -17,13 +17,13 @@
 <body>
   <main class="container">
     <div class="topo-pagina">
-      <h1>Materiais e Serviços</h1>
+      <h1>Catálogo de Serviços</h1>
       <a href="home.html" class="btn-voltar">Voltar</a>
     </div>
 
     <!-- Abas de nível superior: Materiais / Serviços -->
     <div class="abas abas-nivel-superior">
-      <button type="button" class="aba active" id="btnAbaMateriais">📦 Materiais</button>
+      <button type="button" class="aba active" id="btnAbaMateriais">📦 Produtos</button>
       <button type="button" class="aba" id="btnAbaServicos">🔧 Serviços</button>
     </div>
 
@@ -34,12 +34,12 @@
     <div class="barra-acoes">
       <div class="abas">
         <button type="button" class="aba active" id="btnVisaoSetor">Por Setor</button>
-        <button type="button" class="aba" id="btnVisaoMaterial">Por Material</button>
+        <button type="button" class="aba" id="btnVisaoMaterial">Por Produto</button>
       </div>
 
       <div class="botoes-cadastro">
         <button type="button" class="btn-secundario" id="btnAbrirSetor">+ Setor</button>
-        <button type="button" class="btn-laranja" id="btnAbrirMaterial">+ Material</button>
+        <button type="button" class="btn-laranja" id="btnAbrirMaterial">+ Produto</button>
       </div>
     </div>
 
@@ -72,8 +72,8 @@
     <!-- Conteúdo agrupado (setor ou material) -->
     <div id="grupos"></div>
     <div class="sem-resultados" id="semResultados" style="display:none;">
-      <p id="semResultadosTexto">Nenhum material encontrado com esses filtros.</p>
-      <button type="button" class="btn-laranja" id="btnCadastrarDaBusca" style="display:none;">+ Cadastrar como material novo</button>
+      <p id="semResultadosTexto">Nenhum produto encontrado com esses filtros.</p>
+      <button type="button" class="btn-laranja" id="btnCadastrarDaBusca" style="display:none;">+ Cadastrar como produto novo</button>
     </div>
 
     </div><!-- /painelMateriais -->
@@ -143,12 +143,12 @@
   <div class="modal-overlay" id="modalMaterial">
     <div class="modal-caixa">
       <div class="modal-cabecalho">
-        <h2 id="tituloModalMaterial">Novo Material</h2>
+        <h2 id="tituloModalMaterial">Novo Produto</h2>
         <button type="button" class="modal-fechar" id="fecharModalMaterial">&times;</button>
       </div>
       <form id="form-material" class="form-modal-grid">
         <label class="campo-largura-total">
-          Nome do material
+          Nome do produto
           <input type="text" id="nomeMaterial" placeholder="Ex: Cimento CP II 50kg" required />
         </label>
 

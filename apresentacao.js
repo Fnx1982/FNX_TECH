@@ -216,7 +216,7 @@ function slideResumoFinanceiro(pres, dados, pag) {
     return new Date(b.dataVencimento + "T00:00:00") < new Date();
   }).length;
 
-  addCardNumero(slide, 0.3, 2.7, 2.9, 1.2, "PAGAMENTOS M.O.", formatarMoedaApres(totalPagFuncionarios), CORES.fundo, CORES.cinzaEscuro);
+  addCardNumero(slide, 0.3, 2.7, 2.9, 1.2, "PAGAMENTOS SERVIÇOS", formatarMoedaApres(totalPagFuncionarios), CORES.fundo, CORES.cinzaEscuro);
   addCardNumero(slide, 3.5, 2.7, 2.9, 1.2, "BOLETOS A PAGAR", formatarMoedaApres(totalBoletos), CORES.fundo, CORES.cinzaEscuro);
   addCardNumero(slide, 6.7, 2.7, 2.9, 1.2, "BOLETOS ATRASADOS", String(boletosAtrasados), boletosAtrasados > 0 ? "FFF0F0" : CORES.fundo, boletosAtrasados > 0 ? CORES.vermelho : CORES.verde);
 
@@ -225,10 +225,10 @@ function slideResumoFinanceiro(pres, dados, pag) {
 
 function slideObras(pres, dados, pag) {
   const slide = pres.addSlide();
-  addCabecalhoSlide(slide, "Obras do Período", `${nomeMes(dados.mes)} / ${dados.ano}`);
+  addCabecalhoSlide(slide, "Projetos do Período", `${nomeMes(dados.mes)} / ${dados.ano}`);
 
   if (dados.obrasDoMes.length === 0) {
-    slide.addText("Nenhuma obra no período selecionado.", {
+    slide.addText("Nenhum projeto no período selecionado.", {
       x: 0.4, y: 2, w: 9.2, h: 1,
       fontSize: 16, color: CORES.cinzaMedio, align: "center",
       fontFace: "Calibri",
@@ -243,7 +243,7 @@ function slideObras(pres, dados, pag) {
     return s + ((o.valorMaoDeObraOrcamento || 0) + (o.valorMateriaisOrcamento || 0) - pago - mat);
   }, 0);
 
-  addCardNumero(slide, 0.3, 1.3, 2.9, 0.9, "OBRAS NO PERÍODO", String(dados.obrasDoMes.length), CORES.fundo, CORES.cinzaEscuro);
+  addCardNumero(slide, 0.3, 1.3, 2.9, 0.9, "PROJETOS NO PERÍODO", String(dados.obrasDoMes.length), CORES.fundo, CORES.cinzaEscuro);
   addCardNumero(slide, 3.5, 1.3, 2.9, 0.9, "LUCRO TOTAL", formatarMoedaApres(totalLucro), totalLucro >= 0 ? "F0FFF4" : "FFF0F0", totalLucro >= 0 ? CORES.verde : CORES.vermelho);
 
   const linhas = dados.obrasDoMes.slice(0, 8).map((o) => {
@@ -274,7 +274,7 @@ function slideObras(pres, dados, pag) {
 
 function slidePropostas(pres, dados, pag) {
   const slide = pres.addSlide();
-  addCabecalhoSlide(slide, "Propostas e Orçamentos", `${nomeMes(dados.mes)} / ${dados.ano}`);
+  addCabecalhoSlide(slide, "Propostas e Estimativas", `${nomeMes(dados.mes)} / ${dados.ano}`);
 
   const total     = dados.propostasDoMes.length;
   const aprovadas = dados.propostasDoMes.filter((p) => p.status === "andamento" || p.status === "finalizada").length;
@@ -284,13 +284,13 @@ function slidePropostas(pres, dados, pag) {
 
   addCardNumero(slide, 0.3,  1.3, 1.8, 1.1, "TOTAL",      String(total),     CORES.fundo,  CORES.cinzaEscuro);
   addCardNumero(slide, 2.4,  1.3, 1.8, 1.1, "APROVADAS",  String(aprovadas), "F0FFF4",     CORES.verde);
-  addCardNumero(slide, 4.5,  1.3, 1.8, 1.1, "EM ANÁLISE", String(emAnalise), "FFFDF0",     CORES.laranjaEscuro);
+  addCardNumero(slide, 4.5,  1.3, 1.8, 1.1, "EM APROVAÇÃO", String(emAnalise), "FFFDF0",     CORES.laranjaEscuro);
   addCardNumero(slide, 6.6,  1.3, 1.8, 1.1, "NEGADAS",    String(negadas),   negadas > 0 ? "FFF0F0" : CORES.fundo, negadas > 0 ? CORES.vermelho : CORES.cinzaEscuro);
-  addCardNumero(slide, 8.7,  1.3, 1.0, 1.1, "ORÇAMENTO",  String(orcamento), CORES.fundo,  CORES.cinzaEscuro);
+  addCardNumero(slide, 8.7,  1.3, 1.0, 1.1, "ESTIMATIVA",  String(orcamento), CORES.fundo,  CORES.cinzaEscuro);
 
   if (dados.propostasDoMes.length > 0) {
     const linhas = dados.propostasDoMes.slice(0, 7).map((p) => {
-      const statusLabel = { orcamento: "Orçamento", analise: "Em Análise", andamento: "Em Andamento", finalizada: "Finalizada", negada: "Negada" }[p.status] || p.status;
+      const statusLabel = { orcamento: "Estimativa", analise: "Em Aprovação", andamento: "Em Desenvolvimento", finalizada: "Finalizada", negada: "Negada" }[p.status] || p.status;
       const totalProp = ((p.itensMaoDeObra || []).reduce((s, i) => s + i.qtd * i.valorUnit, 0)) +
                         ((p.itensMateriais || []).reduce((s, i) => s + i.qtd * i.valorUnit, 0));
       return [
@@ -320,7 +320,7 @@ function slidePropostas(pres, dados, pag) {
 
 function slideMateriais(pres, dados, pag) {
   const slide = pres.addSlide();
-  addCabecalhoSlide(slide, "Gestão de Materiais", "Estoque atual");
+  addCabecalhoSlide(slide, "Catálogo de Produtos", "Estoque atual");
 
   const totalItens  = dados.materiais.length;
   const valorTotal  = dados.materiais.reduce((s, m) => s + (m.valor || 0) * (m.quantidade || 0), 0);
@@ -342,7 +342,7 @@ function slideMateriais(pres, dados, pag) {
     slide.addTable(
       [
         [
-          { text: "Material", options: { bold: true, color: CORES.branco, fill: { color: CORES.azul }, fontSize: 10 } },
+          { text: "Produto", options: { bold: true, color: CORES.branco, fill: { color: CORES.azul }, fontSize: 10 } },
           { text: "Setor", options: { bold: true, color: CORES.branco, fill: { color: CORES.azul }, fontSize: 10 } },
           { text: "Qtd", options: { bold: true, color: CORES.branco, fill: { color: CORES.azul }, fontSize: 10 } },
           { text: "Valor Unit.", options: { bold: true, color: CORES.branco, fill: { color: CORES.azul }, fontSize: 10 } },
@@ -379,7 +379,7 @@ function slideFuncionarios(pres, dados, pag) {
       [
         [
           { text: "Funcionário", options: { bold: true, color: CORES.branco, fill: { color: CORES.cinzaEscuro }, fontSize: 10 } },
-          { text: "Obra", options: { bold: true, color: CORES.branco, fill: { color: CORES.cinzaEscuro }, fontSize: 10 } },
+          { text: "Projeto", options: { bold: true, color: CORES.branco, fill: { color: CORES.cinzaEscuro }, fontSize: 10 } },
           { text: "Mês", options: { bold: true, color: CORES.branco, fill: { color: CORES.cinzaEscuro }, fontSize: 10 } },
           { text: "Valor Pago", options: { bold: true, color: CORES.branco, fill: { color: CORES.cinzaEscuro }, fontSize: 10 } },
         ],
@@ -516,7 +516,7 @@ function slideEncerramento(pres) {
 async function gerarApresentacao(mes, ano, slidesSelecionados) {
   const pres = new PptxGenJS();
   pres.layout = "LAYOUT_16x9";
-  pres.author = "EnJob Engenharia";
+  pres.author = "FNX TECH";
   pres.title  = `Relatório ${nomeMes(mes)} ${ano}`;
 
   const dados = coletarDados(mes, ano);

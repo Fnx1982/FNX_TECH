@@ -105,7 +105,7 @@ function salvarObras() {
 function renderObras() {
   // Atualiza o <select> do formulário de pagamento
   const valorSelecionado = selectObra.value;
-  selectObra.innerHTML = '<option value="" disabled selected>Selecione a obra</option>';
+  selectObra.innerHTML = '<option value="" disabled selected>Selecione o projeto</option>';
   obras.forEach((obra) => {
     const opt = document.createElement("option");
     opt.value = obra;
@@ -132,7 +132,7 @@ function renderObras() {
   // Atualiza a lista de chips
   listaObras.innerHTML = "";
   if (obras.length === 0) {
-    listaObras.innerHTML = '<p class="sem-obras">Nenhuma obra cadastrada ainda.</p>';
+    listaObras.innerHTML = '<p class="sem-obras">Nenhum projeto cadastrado ainda.</p>';
     return;
   }
   obras.forEach((obra, index) => {
@@ -141,7 +141,7 @@ function renderObras() {
     chip.innerHTML = `<span>${escaparHtml(obra)}</span>`;
     const btnRemover = document.createElement("button");
     btnRemover.textContent = "×";
-    btnRemover.title = "Excluir obra";
+    btnRemover.title = "Excluir projeto";
     btnRemover.addEventListener("click", () => excluirObra(index));
     chip.appendChild(btnRemover);
     listaObras.appendChild(chip);
@@ -153,8 +153,8 @@ async function excluirObra(index) {
   const usada = funcionarios.some((f) => f.obra === nomeObra);
   if (usada) {
     const confirmado = await confirmarAcao(
-      `Excluir a obra "${nomeObra}"?`,
-      "Os pagamentos já registrados não serão apagados, mas essa obra não vai mais aparecer na lista para novos lançamentos."
+      `Excluir o projeto "${nomeObra}"?`,
+      "Os pagamentos já registrados não serão apagados, mas esse projeto não vai mais aparecer na lista para novos lançamentos."
     );
     if (!confirmado) return;
   }
@@ -168,7 +168,7 @@ formObra.addEventListener("submit", (e) => {
   const nome = novaObraInput.value.trim();
   if (!nome) return;
   if (obras.includes(nome)) {
-    alert("Essa obra já está cadastrada.");
+    alert("Esse projeto já está cadastrado.");
     return;
   }
   obras.push(nome);
@@ -448,7 +448,7 @@ function renderGrupos() {
     corpo.className = "grupo-corpo";
 
     const table = document.createElement("table");
-    const colunaExtra = visaoAtual === "obra" ? "Funcionário" : "Obra";
+    const colunaExtra = visaoAtual === "obra" ? "Funcionário" : "Projeto";
     table.innerHTML = `
       <thead>
         <tr>

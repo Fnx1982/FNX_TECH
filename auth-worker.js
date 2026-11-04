@@ -120,7 +120,7 @@ async function apiExcluirRecebido(id) {
   return chamarWorker("recebidos-excluir", { method: "POST", body: { id } });
 }
 
-// ── Lixeira de Recebidos (unificada com a lixeira do Armazenamento) ──
+// ── Lixeira de Recebidos (unificada com a lixeira do Drive) ──
 async function apiListarLixeiraRecebidos() {
   return chamarWorker("recebidos-lixeira-list");
 }

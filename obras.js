@@ -76,7 +76,7 @@ function renderLista() {
             ? `<span class="card-obra-num">Nº ${escaparHtml(proposta.numeroOrcamento)}</span>` : "";
           const badgeStatus = statusObra === "finalizada"
             ? `<span class="badge-obra badge-finalizada">✓ Finalizada</span>`
-            : `<span class="badge-obra badge-andamento">⚙ Em Andamento</span>`;
+            : `<span class="badge-obra badge-andamento">⚙ Em Desenvolvimento</span>`;
 
           const card = document.createElement("div");
           card.className = "card-obra";
@@ -128,7 +128,7 @@ function renderLista() {
     btn.addEventListener("click", async (e) => {
       e.stopPropagation();
       const fin = btn.dataset.status === "finalizada";
-      const ok = await confirmarAcao(fin?"Reabrir esta obra?":"Finalizar esta obra?", fin?"Volta para Em Andamento.":"Vai para a aba Finalizadas.");
+      const ok = await confirmarAcao(fin?"Reabrir este projeto?":"Finalizar este projeto?", fin?"Volta para Em Desenvolvimento.":"Vai para a aba Finalizadas.");
       if (!ok) return;
       await alternarStatusObra(btn.dataset.id);
       renderLista(); atualizarContadoresAbas();
@@ -137,11 +137,11 @@ function renderLista() {
   gruposMesesEl.querySelectorAll(".btn-lixeira-obra").forEach((btn) =>
     btn.addEventListener("click", async (e) => {
       e.stopPropagation();
-      const ok = await confirmarAcao("Mover para lixeira?", "A obra pode ser restaurada depois.");
+      const ok = await confirmarAcao("Mover para lixeira?", "O projeto pode ser restaurado depois.");
       if (!ok) return;
       await excluirObra(btn.dataset.id);
       renderLista(); atualizarContadoresAbas();
-      mostrarToast("Obra movida para a lixeira.");
+      mostrarToast("Projeto movido para a lixeira.");
     }));
 
   gruposMesesEl.querySelectorAll(".btn-restaurar-obra").forEach((btn) =>
@@ -149,7 +149,7 @@ function renderLista() {
       e.stopPropagation();
       await restaurarObra(btn.dataset.id);
       renderLista(); atualizarContadoresAbas();
-      mostrarToast("Obra restaurada.");
+      mostrarToast("Projeto restaurado.");
     }));
 
   gruposMesesEl.querySelectorAll(".btn-excluir-def-obra").forEach((btn) =>
@@ -159,7 +159,7 @@ function renderLista() {
       if (!ok) return;
       await excluirObraDefinitivo(btn.dataset.id);
       renderLista(); atualizarContadoresAbas();
-      mostrarToast("Obra excluída permanentemente.");
+      mostrarToast("Projeto excluído permanentemente.");
     }));
 }
 
@@ -168,7 +168,7 @@ function atualizarContadoresAbas() {
   const nFin = lerObrasFinaliz().length;
   const nLix = lerObrasLixeira().length;
   const el = (s) => document.querySelector(`[data-aba="${s}"]`);
-  if (el("andamento"))  el("andamento").textContent  = `Em Andamento${nAnd>0?` (${nAnd})`:""}`;
+  if (el("andamento"))  el("andamento").textContent  = `Em Desenvolvimento${nAnd>0?` (${nAnd})`:""}`;
   if (el("finalizada")) el("finalizada").textContent  = `Finalizadas${nFin>0?` (${nFin})`:""}`;
   if (el("lixeira"))    el("lixeira").innerHTML        = `🗑 Lixeira${nLix>0?` <span style="color:crimson;font-size:11px;">(${nLix})</span>`:""}`;
 }
@@ -188,7 +188,7 @@ btnLimparFiltros.addEventListener("click", () => { buscaInput.value=""; filtroAn
 
 const paramsUrlObras = new URLSearchParams(window.location.search);
 if (paramsUrlObras.get("erro") === "obra_nao_encontrada") {
-  mostrarToast("Obra não encontrada.", "erro");
+  mostrarToast("Projeto não encontrado.", "erro");
   window.history.replaceState({}, "", "obras.html");
 }
 

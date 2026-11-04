@@ -56,7 +56,7 @@ async function carregarPropostasDoServidor() {
         // Guarda o original com outro nome, por segurança (não é mais usado)
         localStorage.setItem(CHAVE_PROPOSTAS + "_backup_antes_da_nuvem", localStorage.getItem(CHAVE_PROPOSTAS));
         localStorage.removeItem(CHAVE_PROPOSTAS);
-        console.info(`[propostas] ${r.salvas.length} orçamento(s) deste navegador enviados para a nuvem.`);
+        console.info(`[propostas] ${r.salvas.length} estimativa(s) deste navegador enviados para a nuvem.`);
       }
     } else {
       localStorage.setItem(CHAVE_MIGRADO, String(Date.now()));
@@ -324,8 +324,8 @@ function encontrarServicoNoCatalogo(servicoId) {
 // propagada de volta pro catálogo (Gestão de Materiais / Serviços).
 async function perguntarSincronizarMaterial(nomeMaterial) {
   return confirmarAcao(
-    `Atualizar "${nomeMaterial}" na Gestão de Materiais também?`,
-    "Isso vai sobrescrever o nome e o valor desse material no catálogo com os novos valores."
+    `Atualizar "${nomeMaterial}" No Catálogo de Produtos também?`,
+    "Isso vai sobrescrever o nome e o valor desse produto no catálogo com os novos valores."
   );
 }
 async function perguntarSincronizarServico(nomeServico) {
@@ -517,10 +517,10 @@ function calcularImpostosProposta(proposta) {
 // ====================================================
 function rotuloStatus(proposta) {
   const mapa = {
-    orcamento: "Orçamento",
-    analise: "Em Análise",
+    orcamento: "Estimativa",
+    analise: "Em Aprovação",
     negada: "Negada",
-    andamento: proposta.statusExecucao === "finalizada" ? "Finalizada" : "Em Andamento",
+    andamento: proposta.statusExecucao === "finalizada" ? "Finalizada" : "Em Desenvolvimento",
     finalizada: "Finalizada",
   };
   return mapa[proposta.status] || proposta.status;
@@ -675,7 +675,7 @@ async function salvarFuncionariosFinanceiro(lista) {
 const NOMES_MESES_OBRA = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
 
 // Adiciona um funcionário na obra E cria automaticamente o
-// pagamento correspondente no Financeiro de Funcionários, usando
+// pagamento correspondente no Folha da Equipe, usando
 // o nome da obra (cliente + serviço) como referência de "obra".
 async function adicionarFuncionarioNaObra(obraId, dadosFuncionario) {
   const obra = buscarObra(obraId);
@@ -686,13 +686,13 @@ async function adicionarFuncionarioNaObra(obraId, dadosFuncionario) {
   const vinculoId = `vinculo_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
 
   // Garante que essa "obra" existe na lista fixa de obras do
-  // Financeiro de Funcionários (obrasFinanceiro), senão ela não
+  // Folha da Equipe (obrasFinanceiro), senão ela não
   // aparece nos seletores por lá.
   const dadosFin = await carregarFinanceiroFunc();
   const obrasFinanceiro = dadosFin.obras;
   if (!obrasFinanceiro.includes(nomeObraNoFinanceiro)) obrasFinanceiro.push(nomeObraNoFinanceiro);
 
-  // Cria o pagamento no Financeiro de Funcionários, marcado com um
+  // Cria o pagamento no Folha da Equipe, marcado com um
   // ID de vínculo estável (em vez de depender da posição no array,
   // que mudaria se outro pagamento fosse excluído antes dele).
   const financeiro = dadosFin.funcionarios;
@@ -719,11 +719,11 @@ async function adicionarFuncionarioNaObra(obraId, dadosFuncionario) {
 
 function nomeObraParaFinanceiro(obra) {
   const partes = [obra.cliente, obra.servico].filter(Boolean);
-  return partes.join(" — ") || "Obra sem nome";
+  return partes.join(" — ") || "Projeto sem nome";
 }
 
 // Atualiza um funcionário já existente na obra, e sincroniza o
-// valor pago de volta no Financeiro de Funcionários.
+// valor pago de volta no Folha da Equipe.
 async function editarFuncionarioNaObra(obraId, funcionarioId, dadosNovos) {
   const obra = buscarObra(obraId);
   if (!obra) return;
@@ -735,7 +735,7 @@ async function editarFuncionarioNaObra(obraId, funcionarioId, dadosNovos) {
   func.valorCobrado = dadosNovos.valorCobrado;
   func.valorPago = dadosNovos.valorPago;
 
-  // Sincroniza com o Financeiro de Funcionários, procurando pelo
+  // Sincroniza com o Folha da Equipe, procurando pelo
   // ID de vínculo estável (funciona mesmo que outros pagamentos
   // tenham sido excluídos/reordenados desde a criação).
   if (func.vinculoObraId) {
@@ -875,7 +875,7 @@ function gerarPdfProposta(proposta, modo) {
   y = Math.max(yTexto, y - 6 + alturaLogo) + 12;
 
   // ----- Faixa do título -----
-  const titulo = descritivo ? "DESCRITIVO DOS SERVIÇOS" : "ORÇAMENTO";
+  const titulo = descritivo ? "DESCRITIVO DOS SERVIÇOS" : "ESTIMATIVA";
   const numero = proposta.numeroOrcamento ? `Nº ${proposta.numeroOrcamento}` : "";
   doc.setFillColor(...ESCURO);
   doc.rect(margem, y, larguraUtil, 26, "F");
@@ -965,12 +965,12 @@ function gerarPdfProposta(proposta, modo) {
   };
   const infoDesconto = (valor, tipo) => (tipo === "pct" && valor ? `${String(valor).replace(".", ",")}%` : "");
   if ((proposta.itensMaoDeObra || []).length || !descritivo) {
-    desenharTabela("MÃO DE OBRA", proposta.itensMaoDeObra, "descricao", subtotalMaoDeObra(proposta), descontoMaoDeObra(proposta),
-      infoDesconto(proposta.descontoMaoDeObra, proposta.descontoTipoMaoDeObra), proposta.ajusteMaoDeObra, "Total Mão de Obra");
+    desenharTabela("SERVIÇOS", proposta.itensMaoDeObra, "descricao", subtotalMaoDeObra(proposta), descontoMaoDeObra(proposta),
+      infoDesconto(proposta.descontoMaoDeObra, proposta.descontoTipoMaoDeObra), proposta.ajusteMaoDeObra, "Total Serviços");
   }
   if ((proposta.itensMateriais || []).length || !descritivo) {
-    desenharTabela("MATERIAIS", proposta.itensMateriais, "nome", subtotalMateriais(proposta), descontoMateriais(proposta),
-      infoDesconto(proposta.descontoMateriais, proposta.descontoTipoMateriais), proposta.ajusteMateriais, "Total Materiais");
+    desenharTabela("PRODUTOS", proposta.itensMateriais, "nome", subtotalMateriais(proposta), descontoMateriais(proposta),
+      infoDesconto(proposta.descontoMateriais, proposta.descontoTipoMateriais), proposta.ajusteMateriais, "Total Produtos");
   }
 
   // ----- Total geral -----
@@ -990,7 +990,7 @@ function gerarPdfProposta(proposta, modo) {
     doc.setTextColor(255);
     doc.setFont("helvetica", "bold");
     doc.setFontSize(12);
-    doc.text("MATERIAL E MÃO DE OBRA — TOTAL:", margem + 10, y + 18);
+    doc.text("PRODUTOS E SERVIÇOS — TOTAL:", margem + 10, y + 18);
     doc.text(`R$ ${formatarMoeda(totalGeral(proposta))}`, margem + larguraUtil - 10, y + 18, { align: "right" });
     doc.setTextColor(0);
     y += 46;
@@ -1002,7 +1002,7 @@ function gerarPdfProposta(proposta, modo) {
       y = garantirEspacoPdf(doc, y, 70);
       doc.setFont("helvetica", "bold");
       doc.setFontSize(11);
-      doc.text("DADOS DA VISITA (INTERNO)", margem, y);
+      doc.text("DADOS DO LEVANTAMENTO (INTERNO)", margem, y);
       y += 6;
       doc.autoTable({
         startY: y,
@@ -1025,11 +1025,11 @@ function gerarPdfProposta(proposta, modo) {
       startY: y,
       head: [["Descrição", "Base de cálculo", "%", "Valor"]],
       body: [
-        ["Local da obra", imp.emCuritiba ? "Curitiba" : "Fora de Curitiba", "", ""],
+        ["Local do projeto", imp.emCuritiba ? "Curitiba" : "Fora de Curitiba", "", ""],
         ["Mês de referência", rotuloMesImpostosOrc((proposta.impostos || {}).mesRef), "", ""],
-        ["INSS (sobre mão de obra)", `R$ ${formatarMoeda(imp.baseMO)}`, pct(imp.inssPerc), `R$ ${formatarMoeda(imp.valorInss)}`],
-        [imp.emCuritiba ? "ISS (não se aplica em Curitiba)" : "ISS (sobre mão de obra)", `R$ ${formatarMoeda(imp.baseMO)}`, pct(imp.issPerc), `R$ ${formatarMoeda(imp.valorIss)}`],
-        ["Imposto de material", `R$ ${formatarMoeda(imp.baseMat)}`, pct(imp.matPerc), `R$ ${formatarMoeda(imp.valorMat)}`],
+        ["INSS (sobre serviços)", `R$ ${formatarMoeda(imp.baseMO)}`, pct(imp.inssPerc), `R$ ${formatarMoeda(imp.valorInss)}`],
+        [imp.emCuritiba ? "ISS (não se aplica em Curitiba)" : "ISS (sobre serviços)", `R$ ${formatarMoeda(imp.baseMO)}`, pct(imp.issPerc), `R$ ${formatarMoeda(imp.valorIss)}`],
+        ["Imposto de produto", `R$ ${formatarMoeda(imp.baseMat)}`, pct(imp.matPerc), `R$ ${formatarMoeda(imp.valorMat)}`],
       ],
       foot: [
         ["Total de impostos", "", "", `R$ ${formatarMoeda(imp.total)}`],
@@ -1049,7 +1049,7 @@ function gerarPdfProposta(proposta, modo) {
       y = garantirEspacoPdf(doc, y, 60);
       doc.setFont("helvetica", "bold");
       doc.setFontSize(11);
-      doc.text("LINKS DOS MATERIAIS (INTERNO)", margem, y);
+      doc.text("LINKS DOS PRODUTOS (INTERNO)", margem, y);
       y += 14;
       doc.setFontSize(9);
       links.forEach((l) => {
@@ -1080,9 +1080,9 @@ function gerarPdfProposta(proposta, modo) {
   if (pagamento.length) secoes.push(["Forma de Pagamento", pagamento.join(" ")]);
   if (proposta.validadeDias) secoes.push(["Validade", `Proposta tem validade de ${proposta.validadeDias} dias corridos.`]);
   if (proposta.planejamentoDias) secoes.push(["Programação",
-    `Prazo previsto para execução dos serviços: ${proposta.planejamentoDias} dias úteis. Os prazos podem sofrer alterações conforme previsão do tempo, chegada de materiais necessários e andamento interno do local.`]);
+    `Prazo previsto para entrega dos serviços: ${proposta.planejamentoDias} dias úteis. Os prazos podem sofrer alterações conforme envio de acessos, conteúdos e aprovações pelo cliente.`]);
   if ((proposta.garantia || "").trim()) secoes.push(["Garantia",
-    `O contratado fornece garantia de ${proposta.garantia.trim()} para os serviços executados citados nesta proposta. Materiais conforme fornecedor.`]);
+    `O contratado fornece garantia de ${proposta.garantia.trim()} para os serviços executados citados nesta proposta. Produtos e licenças de terceiros conforme fornecedor.`]);
   secoes.push(["Início", "Início dos serviços após aprovação e formalização da proposta."]);
 
   y = garantirEspacoPdf(doc, y, 60);
@@ -1112,7 +1112,7 @@ function gerarPdfProposta(proposta, modo) {
   doc.setFont("helvetica", "bold");
   doc.setFontSize(9);
   doc.setTextColor(200, 0, 0);
-  doc.text("Não nos responsabilizamos por compra particular de material.", margem, y);
+  doc.text("Não nos responsabilizamos por compra particular de produto.", margem, y);
   doc.setTextColor(0);
   y += 18;
 

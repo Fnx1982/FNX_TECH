@@ -359,7 +359,7 @@ document.getElementById("btnExcluirSelecionados").addEventListener("click", asyn
   if (qtd === 0) return;
   const ok = await confirmarAcao(
     `Excluir ${qtd} item(ns) selecionado(s) definitivamente?`,
-    "Essa ação não pode ser desfeita — os arquivos são apagados de vez do Armazenamento."
+    "Essa ação não pode ser desfeita — os arquivos são apagados de vez do Drive."
   );
   if (!ok) return;
 

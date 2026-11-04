@@ -49,7 +49,7 @@ function renderCabecalho() {
     ? (propostaVinculada.statusObra || propostaVinculada.status || "andamento")
     : "andamento";
 
-  tituloObraEl.textContent = (obraAtual.cliente || "Obra") + numOrc;
+  tituloObraEl.textContent = (obraAtual.cliente || "Projeto") + numOrc;
   clienteObraEl.textContent = obraAtual.cliente || "(sem nome do cliente)";
   servicoObraEl.textContent = obraAtual.servico || "";
   // Endereço da obra com atalho pro Maps/Waze
@@ -69,18 +69,18 @@ function renderCabecalho() {
       <span style="display:inline-flex;align-items:center;gap:10px;">
         <span style="background:${eFinalizada ? "#E8F5EF" : "#EBF2FB"};color:${eFinalizada ? "#1c8a4b" : "#2B6CB0"};
           font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;text-transform:uppercase;">
-          ${eFinalizada ? "✓ Finalizada" : "⚙ Em Andamento"}
+          ${eFinalizada ? "✓ Finalizada" : "⚙ Em Desenvolvimento"}
         </span>
         <button id="btnAlternarStatusObra" style="background:none;border:1px solid #ccc;border-radius:20px;
           padding:4px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;color:#555;">
-          ${eFinalizada ? "Reabrir" : "Finalizar Obra"}
+          ${eFinalizada ? "Reabrir" : "Finalizar Projeto"}
         </button>
       </span>
     `;
     document.getElementById("btnAlternarStatusObra").addEventListener("click", async () => {
       const ok = await confirmarAcao(
-        eFinalizada ? "Reabrir esta obra?" : "Finalizar esta obra?",
-        eFinalizada ? "O status volta para Em Andamento." : "A obra será marcada como Finalizada."
+        eFinalizada ? "Reabrir este projeto?" : "Finalizar este projeto?",
+        eFinalizada ? "O status volta para Em Desenvolvimento." : "O projeto será marcado como Finalizado."
       );
       if (!ok) return;
       // Usa a função central (não mexe só na proposta) — garante que
@@ -114,11 +114,11 @@ function renderLucros() {
 
   lucroMaoDeObraValor.textContent = `R$ ${formatarMoeda(lucroMO)}`;
   lucroMaoDeObraValor.className = "valor " + (lucroMO >= 0 ? "positivo" : "negativo");
-  lucroMaoDeObraConta.textContent = `Orçamento R$ ${formatarMoeda(obraAtual.valorMaoDeObraOrcamento)} − Pago R$ ${formatarMoeda(totalPagoFuncionariosObra(obraAtual))}`;
+  lucroMaoDeObraConta.textContent = `Estimativa R$ ${formatarMoeda(obraAtual.valorMaoDeObraOrcamento)} − Pago R$ ${formatarMoeda(totalPagoFuncionariosObra(obraAtual))}`;
 
   lucroMaterialValor.textContent = `R$ ${formatarMoeda(lucroMat)}`;
   lucroMaterialValor.className = "valor " + (lucroMat >= 0 ? "positivo" : "negativo");
-  lucroMaterialConta.textContent = `Orçamento R$ ${formatarMoeda(obraAtual.valorMateriaisOrcamento)} − Gasto R$ ${formatarMoeda(totalGastoMateriaisObra(obraAtual))}`;
+  lucroMaterialConta.textContent = `Estimativa R$ ${formatarMoeda(obraAtual.valorMateriaisOrcamento)} − Gasto R$ ${formatarMoeda(totalGastoMateriaisObra(obraAtual))}`;
 
   lucroTotalValor.textContent = `R$ ${formatarMoeda(lucroTot)}`;
   lucroTotalValor.className = "valor " + (lucroTot >= 0 ? "positivo" : "negativo");
@@ -156,7 +156,7 @@ function renderFuncionarios() {
   });
   listaFuncionariosObraEl.querySelectorAll("[data-del-func]").forEach((btn) => {
     btn.addEventListener("click", async () => {
-      const confirmado = await confirmarAcao("Excluir funcionário desta obra?", "Isso também remove o pagamento vinculado no Financeiro de Funcionários.");
+      const confirmado = await confirmarAcao("Excluir funcionário deste projeto?", "Isso também remove o pagamento vinculado no Folha da Equipe.");
       if (!confirmado) return;
       await excluirFuncionarioDaObra(obraAtual.id, btn.dataset.delFunc);
       obraAtual = buscarObra(obraAtual.id);
@@ -215,7 +215,7 @@ function renderMateriais() {
   listaMateriaisObraEl.innerHTML = "";
 
   if (obraAtual.materiais.length === 0) {
-    listaMateriaisObraEl.innerHTML = '<p class="texto-ajuda">Nenhum material anotado ainda.</p>';
+    listaMateriaisObraEl.innerHTML = '<p class="texto-ajuda">Nenhum produto anotado ainda.</p>';
     return;
   }
 
@@ -241,7 +241,7 @@ function renderMateriais() {
   });
   listaMateriaisObraEl.querySelectorAll("[data-del-mat]").forEach((btn) => {
     btn.addEventListener("click", async () => {
-      const confirmado = await confirmarAcao("Excluir material anotado?", "Essa ação não pode ser desfeita.");
+      const confirmado = await confirmarAcao("Excluir produto anotado?", "Essa ação não pode ser desfeita.");
       if (!confirmado) return;
       await excluirMaterialDaObra(obraAtual.id, btn.dataset.delMat);
       obraAtual = buscarObra(obraAtual.id);
@@ -254,7 +254,7 @@ async function editarMaterialInline(materialId) {
   const mat = obraAtual.materiais.find((m) => m.id === materialId);
   if (!mat) return;
 
-  const novoNome = prompt("Nome do material:", mat.nome);
+  const novoNome = prompt("Nome do produto:", mat.nome);
   if (novoNome === null) return;
   const novoCodigo = prompt("Código:", mat.codigo);
   if (novoCodigo === null) return;
@@ -335,7 +335,7 @@ async function popularSelectAtribuidoDemanda() {
 
 async function carregarDemandas() {
   const resposta = await apiListarDemandas(obraId);
-  if (!resposta.ok) { mostrarToast(resposta.erro || "Erro ao carregar demandas.", "erro"); return; }
+  if (!resposta.ok) { mostrarToast(resposta.erro || "Erro ao carregar tarefas.", "erro"); return; }
   demandasCache = resposta.demandas;
   await garantirTokenDownload();
   renderDemandas();
@@ -346,7 +346,7 @@ function renderDemandas() {
   lista.innerHTML = "";
 
   if (demandasCache.length === 0) {
-    lista.innerHTML = `<p class="texto-ajuda">Nenhuma demanda ainda.</p>`;
+    lista.innerHTML = `<p class="texto-ajuda">Nenhuma tarefa ainda.</p>`;
     return;
   }
 
@@ -395,11 +395,11 @@ function renderDemandas() {
     }
 
     el.querySelector(".btn-excluir-demanda").addEventListener("click", async () => {
-      const ok = await confirmarAcao(`Excluir a demanda "${d.titulo}"?`, "");
+      const ok = await confirmarAcao(`Excluir a tarefa "${d.titulo}"?`, "");
       if (!ok) return;
       const resp = await apiExcluirDemanda(d.id);
       if (!resp.ok) { mostrarToast(resp.erro || "Erro ao excluir.", "erro"); return; }
-      mostrarToast("Demanda excluída.");
+      mostrarToast("Tarefa excluída.");
       carregarDemandas();
     });
 
@@ -414,7 +414,7 @@ document.getElementById("btnAddDemanda").addEventListener("click", async () => {
   const descricao = document.getElementById("novaDemandaDescricao").value.trim();
   const arquivoFoto = document.getElementById("novaDemandaFoto").files[0] || null;
 
-  if (!titulo) { mostrarToast("Informe o título/local da demanda.", "erro"); return; }
+  if (!titulo) { mostrarToast("Informe o título/local da tarefa.", "erro"); return; }
   if (!atribuidoPara) { mostrarToast("Escolha pra quem atribuir.", "erro"); return; }
 
   const botao = document.getElementById("btnAddDemanda");
@@ -429,16 +429,16 @@ document.getElementById("btnAddDemanda").addEventListener("click", async () => {
     }
     botao.textContent = "Salvando...";
     const resposta = await apiSalvarDemanda({ obraId, titulo, descricao, atribuidoPara, atribuidoParaNome, fotoChave });
-    if (!resposta.ok) { mostrarToast(resposta.erro || "Erro ao criar demanda.", "erro"); return; }
+    if (!resposta.ok) { mostrarToast(resposta.erro || "Erro ao criar tarefa.", "erro"); return; }
 
-    mostrarToast("Demanda criada — a pessoa foi avisada.");
+    mostrarToast("Tarefa criada — a pessoa foi avisada.");
     document.getElementById("novaDemandaTitulo").value = "";
     document.getElementById("novaDemandaDescricao").value = "";
     document.getElementById("novaDemandaFoto").value = "";
     document.getElementById("novaDemandaAtribuido").value = "";
     carregarDemandas();
   } catch (e) {
-    mostrarToast(e.message || "Erro ao criar demanda.", "erro");
+    mostrarToast(e.message || "Erro ao criar tarefa.", "erro");
   } finally {
     botao.disabled = false;
     botao.textContent = textoOriginal;
@@ -468,7 +468,7 @@ document.getElementById("btnConfirmarConclusaoDemanda").addEventListener("click"
     const resposta = await apiConcluirDemanda(idDemandaEmConclusao, fotoConclusaoChave, observacao);
     if (!resposta.ok) { mostrarToast(resposta.erro || "Erro ao concluir.", "erro"); return; }
 
-    mostrarToast("Demanda concluída — quem pediu foi avisado.");
+    mostrarToast("Tarefa concluída — quem pediu foi avisado.");
     document.getElementById("modalConcluirDemanda").classList.remove("active");
     idDemandaEmConclusao = null;
     carregarDemandas();

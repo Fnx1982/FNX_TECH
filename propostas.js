@@ -129,7 +129,7 @@ function renderLista() {
   });
   listaPropostasEl.querySelectorAll("[data-aprovar-id]").forEach((btn) => {
     btn.addEventListener("click", async () => {
-      const confirmado = await confirmarAcao("Aprovar esta proposta?", "Ela vai para 'Em Andamento' automaticamente.");
+      const confirmado = await confirmarAcao("Aprovar esta proposta?", "Ela vai para 'Em Desenvolvimento' automaticamente.");
       if (!confirmado) return;
       await mudarStatusProposta(btn.dataset.aprovarId, "aprovada");
       renderLista();

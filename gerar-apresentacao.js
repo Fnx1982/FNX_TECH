@@ -22,35 +22,31 @@ document.getElementById("campoTextoAbertura").value =
   "busca atender às suas necessidades de forma eficaz.";
 
 document.getElementById("campoTextoItem1").value =
-  "1.1. Fornecimento de ART do Engenheiro responsável para obra junto ao CREA-PR;\n" +
-  "Obs: Somente se necessário/solicitado para os serviços.\n\n" +
-  "1.2. Aplicação de placa de identificação da obra em frente ao local com fácil visualização externa;\n\n" +
-  "1.3. Informativos para atualizações e indicações relacionadas a execução e andamento da obra;\n\n" +
-  "1.4. Fornecimento de cronograma com previsão de início e finalização;\n" +
-  "Obs: Laudos Técnicos e documentações junto à Prefeitura e demais órgãos são custos de responsabilidade do cliente ou adicionais feita proposta separadamente.";
+  "1.1. Levantamento e documentação dos requisitos junto ao cliente;\n\n" +
+  "1.2. Cronograma com marcos (sprints) e previsão de início e entrega;\n\n" +
+  "1.3. Relatórios de andamento a cada entrega, com acesso ao ambiente de homologação;\n\n" +
+  "1.4. Entrega do código-fonte e da documentação técnica após a quitação;\n" +
+  "Obs: Domínios, hospedagem, licenças e serviços de terceiros são de responsabilidade do cliente ou orçados à parte.";
 
 document.getElementById("campoTextoItem2").value =
-  "2.1. Fornecimento de seguro da obra e de vida dos colaboradores no local de execução;\n\n" +
-  "2.2. Lista dos colaboradores (nomes) que estiverem prestando serviços na execução da obra;\n\n" +
-  "2.3. Cópia dos certificados NR's;\n" +
-  "Obs: Apenas NR's necessárias para obra citada\n\n" +
-  "2.4. Fornecimento de cópia PGR/PCMSO.";
+  "2.1. Equipe dedicada (nomes e funções) informada no início do projeto;\n\n" +
+  "2.2. Versionamento do código em repositório (Git) com acesso ao cliente;\n\n" +
+  "2.3. Testes e homologação antes de cada publicação em produção;\n\n" +
+  "2.4. Boas práticas de segurança e proteção de dados (LGPD).";
 
 document.getElementById("campoTextoItem3").value =
-  "3.1. Isolamento de área para armazenamento dos materiais, equipamentos e ferramentas, necessário também ambiente separado para vestuário, banheiro e alimentação para os colaboradores envolvidos na obra em local indicado e disponibilizado pelo cliente;\n\n" +
-  "3.2. Isolamento de áreas térreas com uso de placas sinalizadoras, fitas zebradas, tapumes, lonas, a fim de evitar acesso de pessoas não autorizadas em áreas da obra;\n\n" +
-  "3.3. Utilização dos equipamentos de proteção individual aos colaboradores;\n\n" +
-  "3.4. Utilização de caçambas próximas ao local de obra para descartes de resíduos gerados pela execução.";
+  "3.1. Acesso aos sistemas, servidores, contas e credenciais necessários para o desenvolvimento, fornecidos pelo cliente;\n\n" +
+  "3.2. Ponto focal do cliente para validar entregas e tirar dúvidas dentro dos prazos combinados;\n\n" +
+  "3.3. Conteúdos (textos, imagens, logos) fornecidos pelo cliente nos formatos solicitados;\n\n" +
+  "3.4. Mudanças de escopo após a aprovação serão estimadas e aprovadas à parte.";
 
 document.getElementById("campoTextoConsideracoes").value =
-  "Fornecimento de pontos de água, elétricos 110/220v e se necessário outros itens a serem verificados.\n\n" +
-  "Disponibilização do escopo da área de trabalho livre para execução durante os serviços;\n\n" +
-  "O Contratante/Cliente autoriza o uso de imagens, para registro do presente trabalho em execução e finalização sendo gratuitas as liberações delas para divulgações em redes sociais, portfólio, site, mídias digitais e folhetos e banners gerais.\n\n" +
-  "Caso não seja liberado/autorizado o uso das imagens do local deve ser comunicado para o contratado e informado por escrito a não utilização até a finalização dos serviços e entrega.\n\n" +
-  "- Deve ser liberada a entrada de prestadores e equipe para execução dos serviços juntamente com o Coordenador Técnico;\n" +
-  "- No local deve ser retirado todo item que possa vir a atrapalhar área e desempenho, não nos responsabilizamos por itens que ficarem em local de execução após o aviso;\n" +
-  "- O responsável pelo local deve informar os clientes/fornecedores/moradores sobre os serviços e pedir a colaboração até a finalização das execuções;\n" +
-  "- Deverá ser alinhado para os serviços a liberação de algumas áreas para ocorrer as execuções no local.";
+  "Suporte para correção de falhas por 30 dias após a entrega final, sem custo adicional.\n\n" +
+  "Atendimento em horário comercial pelos canais combinados entre as partes.\n\n" +
+  "O Contratante/Cliente autoriza a citação do projeto em portfólio, site e redes sociais da FNX TECH, salvo informação confidencial.\n\n" +
+  "Caso não autorize a divulgação, deve informar por escrito até a entrega final do projeto.\n\n" +
+  "- Atrasos no envio de acessos, conteúdos ou aprovações pelo cliente estendem os prazos na mesma proporção;\n" +
+  "- Manutenção evolutiva e novas funcionalidades após a entrega podem ser contratadas por plano mensal.";
 
 document.getElementById("campoTextoProximaEtapa").value =
   "Estamos à disposição para discutir quaisquer dúvidas ou ajustes necessários desta proposta enviada. Por favor, entre em contato conosco para agendar uma reunião ou para esclarecer qualquer questão adicional ou solicitar alterações.\n\n" +
@@ -125,7 +121,7 @@ function atualizarPreviewProposta(bloco, proposta) {
   const esc = (t) => (typeof escaparHtml === "function" ? escaparHtml(t) : String(t || ""));
   const itens = [
     ...(proposta.itensMaoDeObra || []).map((i) => ({ tipo: "Serviço", nome: i.descricao, valor: valorFinalItemApres(i) })),
-    ...(proposta.itensMateriais || []).map((i) => ({ tipo: "Material", nome: i.nome, valor: valorFinalItemApres(i) })),
+    ...(proposta.itensMateriais || []).map((i) => ({ tipo: "Produto", nome: i.nome, valor: valorFinalItemApres(i) })),
   ].filter((i) => (i.nome || "").trim());
   const mostrar = itens.slice(0, 5);
   const chips = [
@@ -138,7 +134,7 @@ function atualizarPreviewProposta(bloco, proposta) {
   preview.innerHTML = `
     <div class="pv-topo">
       <div>
-        <div class="pv-numero">Orçamento ${proposta.numeroOrcamento ? "nº " + esc(proposta.numeroOrcamento) : ""}</div>
+        <div class="pv-numero">Estimativa ${proposta.numeroOrcamento ? "nº " + esc(proposta.numeroOrcamento) : ""}</div>
         <div class="pv-cliente">${esc(proposta.cliente || "(sem cliente)")}</div>
         ${proposta.local ? `<div class="pv-endereco">📍 ${esc(proposta.local)}</div>` : ""}
       </div>
@@ -146,7 +142,7 @@ function atualizarPreviewProposta(bloco, proposta) {
     </div>
     <div class="pv-tiles">
       <div class="pv-tile"><span>Serviços</span><b>${fmt(mo)}</b><small>${(proposta.itensMaoDeObra || []).length} item(ns)</small></div>
-      <div class="pv-tile"><span>Materiais</span><b>${fmt(mat)}</b><small>${(proposta.itensMateriais || []).length} item(ns)</small></div>
+      <div class="pv-tile"><span>Produtos</span><b>${fmt(mat)}</b><small>${(proposta.itensMateriais || []).length} item(ns)</small></div>
       <div class="pv-tile pv-total"><span>Total</span><b>${fmt(mo + mat)}</b><small>vai assim no PDF</small></div>
     </div>
     ${mostrar.length ? `<ul class="pv-itens">${mostrar.map((i) => `<li><span class="pv-tipo ${i.tipo === "Serviço" ? "srv" : "mat"}">${i.tipo}</span><span class="pv-nome">${esc(i.nome)}</span><span class="pv-valor">${fmt(i.valor)}</span></li>`).join("")}</ul>
@@ -511,7 +507,7 @@ async function gerarPdfApresentacao(dados) {
       doc.setTextColor(255);
       doc.setFont("helvetica", "bold");
       doc.setFontSize(14);
-      doc.text(`Orçamento ${p.numeroOrcamento ? "nº " + p.numeroOrcamento : ""}`.trim(), ML + 16, y + 26);
+      doc.text(`Estimativa ${p.numeroOrcamento ? "nº " + p.numeroOrcamento : ""}`.trim(), ML + 16, y + 26);
       doc.setFont("helvetica", "normal");
       doc.setFontSize(9);
       const dataOrc = new Date(p.criadoEm || Date.now()).toLocaleDateString("pt-BR");
@@ -560,7 +556,7 @@ async function gerarPdfApresentacao(dados) {
       const corpo = [];
       (p.itensMaoDeObra || []).forEach((it) => corpo.push(["Serviço", it.descricao || "", it.unid || "", String(it.qtd || "").replace(".", ","),
         it.valorUnit ? fmt(Number(it.valorUnit)) : "-", fmt(valorFinalItemApres(it))]));
-      (p.itensMateriais || []).forEach((it) => corpo.push(["Material", it.nome || "", it.unid || "", String(it.qtd || "").replace(".", ","),
+      (p.itensMateriais || []).forEach((it) => corpo.push(["Produto", it.nome || "", it.unid || "", String(it.qtd || "").replace(".", ","),
         it.valorUnit ? fmt(Number(it.valorUnit)) : "-", fmt(valorFinalItemApres(it))]));
       if (corpo.length) {
         doc.autoTable({
@@ -591,7 +587,7 @@ async function gerarPdfApresentacao(dados) {
       garantirEspaco(70);
       const gap = 10;
       const tileW = (W - gap * 2) / 3;
-      const tiles = [["Serviços", tMO, false], ["Materiais", tMat, false], ["Total", tMO + tMat, true]];
+      const tiles = [["Serviços", tMO, false], ["Produtos", tMat, false], ["Total", tMO + tMat, true]];
       tiles.forEach(([rot, val, destaque], i) => {
         const x = ML + i * (tileW + gap);
         if (destaque) doc.setFillColor(...LARANJA); else doc.setFillColor(246, 246, 246);
@@ -657,8 +653,8 @@ async function gerarPdfApresentacao(dados) {
     paragrafo("Contamos com uma equipe qualificada e experiente, aliada a práticas inovadoras que garantem agilidade, organização e cumprimento dos prazos. Valorizamos relações transparentes e personalizadas, oferecendo soluções que atendem às necessidades de cada cliente e agregam valor ao seu investimento. Conheça a FNX TECH.", { espacoDepois: 18 });
 
     tituloSecao("Os serviços");
-    paragrafo("Oferecemos uma ampla gama de serviços em construção, reformas e manutenções para Condomínios, Indústrias, Residências e Instituições de ensino e religiosas, com soluções personalizadas para cada cliente.", { espacoDepois: 10 });
-    paragrafo("Contamos também com planos de Manutenção Predial e Industrial, incluindo atendimento emergencial em qualquer horário.", { espacoDepois: 16 });
+    paragrafo("Desenvolvemos sites, sistemas web, aplicativos e automações sob medida, além de integrações, infraestrutura em nuvem e consultoria em tecnologia, com soluções personalizadas para cada cliente.", { espacoDepois: 10 });
+    paragrafo("Contamos também com planos de suporte e manutenção contínua, com monitoramento e atendimento prioritário.", { espacoDepois: 16 });
 
     // Lista de serviços (switches) + Planos (medalhas), desenhados
     // peça por peça a partir de recortes individuais — mais confiável
@@ -806,7 +802,7 @@ async function gerarPdfApresentacao(dados) {
     dados.propostasAnexadas.forEach((item) => {
       if (item.programacao) paragrafo(`${item.nomeServico || "Serviço"}: ${item.programacao}.`, { espacoDepois: 4 });
     });
-    paragrafo("Os prazos podem sofrer alterações conforme previsão do tempo, chegada de materiais necessários, e andamento interno do local.", { espacoDepois: 14 });
+    paragrafo("Os prazos podem sofrer alterações conforme envio de acessos, conteúdos e aprovações pelo cliente.", { espacoDepois: 14 });
 
     tituloSecao("6. Garantia");
     const garantiaN = parseInt(dados.garantiaNumero, 10) || 0;

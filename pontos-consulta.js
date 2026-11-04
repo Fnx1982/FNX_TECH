@@ -1495,7 +1495,7 @@ function gerarPdfMensalPontos(registroFuncionario, nomeFuncionario, secoes) {
     const xResp = ML+largAssin+40;
     doc.line(xResp, y+40, xResp+largAssin, y+40);
     doc.text("Responsável / Gestor", xResp+largAssin/2, y+52, {align:"center"});
-    doc.text("FNX TECH Engenharia", xResp+largAssin/2, y+63, {align:"center"});
+    doc.text("FNX TECH", xResp+largAssin/2, y+63, {align:"center"});
     y += 80;
     doc.setFontSize(7); doc.setTextColor(160);
     doc.text(

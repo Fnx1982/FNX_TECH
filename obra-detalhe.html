@@ -6,7 +6,7 @@
 <script src="auth-guard.js"></script>
 <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Detalhe da Obra</title>
+  <title>Projeto — FNX TECH</title>
   <link rel="stylesheet" href="propostas.css?v=9" />
   <link rel="stylesheet" href="obras.css" />
   <script src="confirm-modal.js"></script>
@@ -20,7 +20,7 @@
   <main class="container">
     <div class="topo-pagina">
       <div>
-        <h1 id="tituloObra">Obra</h1>
+        <h1 id="tituloObra">Projeto</h1>
       </div>
       <a href="obras.html" class="btn-voltar">Voltar</a>
     </div>
@@ -33,30 +33,30 @@
 
       <div class="detalhe-observacao" id="blocoObservacao">
         <label for="campoObservacaoObra">Observação</label>
-        <textarea id="campoObservacaoObra" rows="3" placeholder="Anotações sobre esta obra..."></textarea>
+        <textarea id="campoObservacaoObra" rows="3" placeholder="Anotações sobre este projeto..."></textarea>
       </div>
     </div>
 
     <div class="cards-lucro" id="blocoLucros">
       <div class="card-lucro">
-        <div class="rotulo">Lucro Mão de Obra</div>
+        <div class="rotulo">Lucro Serviços</div>
         <div class="valor" id="lucroMaoDeObraValor">R$ 0,00</div>
         <div class="detalhe-conta" id="lucroMaoDeObraConta"></div>
       </div>
       <div class="card-lucro">
-        <div class="rotulo">Lucro Material</div>
+        <div class="rotulo">Lucro Produtos</div>
         <div class="valor" id="lucroMaterialValor">R$ 0,00</div>
         <div class="detalhe-conta" id="lucroMaterialConta"></div>
       </div>
       <div class="card-lucro">
         <div class="rotulo">Lucro Total</div>
         <div class="valor" id="lucroTotalValor">R$ 0,00</div>
-        <div class="detalhe-conta">Mão de Obra + Material</div>
+        <div class="detalhe-conta">Serviços + Produtos</div>
       </div>
     </div>
 
     <div class="secao-detalhe" id="blocoFuncionarios">
-      <h3>Funcionários nesta obra</h3>
+      <h3>Funcionários neste projeto</h3>
       <div class="lista-itens-obra" id="listaFuncionariosObra"></div>
       <div class="form-rapido-item">
         <select id="novoFuncNome">
@@ -69,7 +69,7 @@
     </div>
 
     <div class="secao-detalhe" id="blocoMateriais">
-      <h3>Materiais anotados</h3>
+      <h3>Produtos anotados</h3>
       <div class="lista-itens-obra" id="listaMateriaisObra"></div>
       <div class="form-rapido-item">
         <input type="text" id="novoMatNome" placeholder="Nome (opcional)" />
@@ -80,7 +80,7 @@
       </div>
     </div>
     <div class="secao-detalhe">
-      <h3>Demandas</h3>
+      <h3>Tarefas</h3>
       <p class="texto-ajuda">Peça uma tarefa pra alguém, com foto e local — a pessoa recebe um aviso, e você recebe outro quando ela marcar como feito.</p>
       <div class="lista-itens-obra" id="listaDemandasObra"></div>
 
@@ -88,7 +88,7 @@
         <input type="text" id="novaDemandaTitulo" placeholder="Título/local (ex: Piso do bloco B)" />
         <select id="novaDemandaAtribuido"><option value="">Atribuir para...</option></select>
         <input type="file" id="novaDemandaFoto" accept="image/*" style="max-width:180px;" />
-        <button type="button" class="btn-laranja" id="btnAddDemanda">+ Adicionar demanda</button>
+        <button type="button" class="btn-laranja" id="btnAddDemanda">+ Adicionar tarefa</button>
       </div>
       <textarea id="novaDemandaDescricao" placeholder="Descrição (opcional)" rows="2" style="width:100%; margin-top:8px; font-family:inherit; padding:8px; border-radius:8px; border:1px solid #ccc;"></textarea>
     </div>

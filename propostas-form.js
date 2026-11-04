@@ -91,15 +91,15 @@ function montarModalFormularioProposta() {
   overlay.innerHTML = `
     <div class="modal-caixa-grande caixa-orcamento">
       <div class="modal-cabecalho">
-        <h2 id="tituloModalProposta">Novo Orçamento</h2>
+        <h2 id="tituloModalProposta">Nova Estimativa</h2>
         <button type="button" class="modal-fechar" id="fecharModalProposta">&times;</button>
       </div>
       <p id="statusRascunhoProposta" style="font-size:12px; color:#888; margin:-6px 0 10px;"></p>
 
       <div class="form-secao secao-cliente">
-        <h3>Dados do Cliente / Obra</h3>
+        <h3>Dados do Cliente / Projeto</h3>
         <div class="form-grid">
-          <label>Número do Orçamento
+          <label>Número da Estimativa
             <div style="display:flex; gap:6px;">
               <input type="text" id="campoNumeroOrcamento" placeholder="Ex: 2026-001" style="flex:1;" />
               <button type="button" id="btnConfigNumeracaoOrcamento" title="Configurar numeração automática" style="flex:0 0 auto; border:1px solid #ccc; border-radius:6px; background:#fff; cursor:pointer; padding:0 10px;">⚙</button>
@@ -116,7 +116,7 @@ function montarModalFormularioProposta() {
             <input type="text" id="campoTelefone" placeholder="(99) 9 9999-9999" maxlength="17" />
           </label>
           <label>Responsável pela proposta
-            <input type="text" id="campoResponsavel" placeholder="Quem está fazendo o orçamento" list="listaResponsaveisDatalist" autocomplete="off" />
+            <input type="text" id="campoResponsavel" placeholder="Quem está fazendo a estimativa" list="listaResponsaveisDatalist" autocomplete="off" />
             <datalist id="listaResponsaveisDatalist"></datalist>
           </label>
           <label>Nome do local
@@ -126,19 +126,19 @@ function montarModalFormularioProposta() {
             <input type="text" id="campoLocal" placeholder="Rua, número, bairro, cidade" />
           </label>
           <label class="campo-largura-total">Serviço
-            <textarea id="campoServico" rows="3" placeholder="Descrição do serviço (vem do descritivo da visita)"></textarea>
+            <textarea id="campoServico" rows="3" placeholder="Descrição do serviço (vem do descritivo do levantamento)"></textarea>
           </label>
           <label class="campo-largura-total"><span class="rotulo-com-opcional">Observação para o cliente <span class="texto-opcional-inline">opcional — sai no PDF do cliente</span></span>
             <textarea id="campoObservacao" rows="2" placeholder="Só o que o cliente deve ler..."></textarea>
           </label>
-          <label class="campo-largura-total campo-interno-visita"><span class="rotulo-com-opcional">Dados da visita <span class="tag-interno">só empresa</span> <span class="texto-opcional-inline">medidas tiradas no local — só no PDF interno</span></span>
+          <label class="campo-largura-total campo-interno-visita"><span class="rotulo-com-opcional">Dados do levantamento <span class="tag-interno">só empresa</span> <span class="texto-opcional-inline">medidas tiradas no local — só no PDF interno</span></span>
             <textarea id="campoDadosVisitaInterno" rows="4" placeholder="Medidas tiradas no local..."></textarea>
           </label>
         </div>
       </div>
 
       <div class="form-secao secao-mao-obra">
-        <h3>Mão de Obra</h3>
+        <h3>Serviços</h3>
         <p class="texto-ajuda" style="margin-bottom:8px;">
           Digitar uma descrição que já existe no catálogo de Serviços preenche o valor sozinho.
           Descrições novas são salvas no catálogo automaticamente, pra aparecer aqui e na NFS-e depois.
@@ -157,11 +157,11 @@ function montarModalFormularioProposta() {
           <tbody></tbody>
         </table>
         <datalist id="listaServicosPropostaDatalist"></datalist>
-        <button type="button" class="btn-add-item" id="btnAddMaoDeObra">+ Adicionar item de mão de obra</button>
+        <button type="button" class="btn-add-item" id="btnAddMaoDeObra">+ Adicionar item de serviço</button>
         <div class="linha-total-secao" style="flex-direction:column;align-items:flex-end;gap:6px;">
-          <div>Subtotal M.O.: <span id="subtotalMaoDeObraTexto">R$ 0,00</span></div>
+          <div>Subtotal Serviços: <span id="subtotalMaoDeObraTexto">R$ 0,00</span></div>
           <div class="linha-desconto">
-            <label for="descontoMaoDeObra">Desconto M.O. <span class="valor-desconto" id="descontoTextoMaoDeObra"></span></label>
+            <label for="descontoMaoDeObra">Desconto Serviços <span class="valor-desconto" id="descontoTextoMaoDeObra"></span></label>
             <input type="text" inputmode="decimal" id="descontoMaoDeObra" placeholder="0" />
             <select id="descontoTipoMaoDeObra" title="Desconto em reais ou em porcentagem">
               <option value="rs">R$</option>
@@ -170,21 +170,21 @@ function montarModalFormularioProposta() {
           </div>
           <input type="hidden" id="ajusteMaoDeObra" />
           <div class="aviso-acrescimo-antigo" id="avisoAjusteMaoDeObra" style="display:none;"></div>
-          <div style="font-size:16px;font-weight:700;">Total M.O.: <span id="totalMaoDeObraTexto">R$ 0,00</span></div>
+          <div style="font-size:16px;font-weight:700;">Total Serviços: <span id="totalMaoDeObraTexto">R$ 0,00</span></div>
         </div>
       </div>
 
       <div class="form-secao secao-materiais">
-        <h3>Materiais</h3>
+        <h3>Produtos</h3>
         <p class="texto-ajuda" style="margin-bottom:8px;">
-          Clique no campo <strong>Material</strong> para ver a lista, ou digite para pesquisar — o valor
-          já vem preenchido. Material novo é só digitar o nome: ele é salvo no catálogo ao salvar o orçamento.
+          Clique no campo <strong>Produto</strong> para ver a lista, ou digite para pesquisar — o valor
+          já vem preenchido. Produto novo é só digitar o nome: ele é salvo no catálogo ao salvar a estimativa.
           Preencha <strong>Qtd × Valor Unit.</strong> ou direto o <strong>Valor Final</strong>.
         </p>
         <table class="itens-tabela" id="tabelaMateriais">
           <thead>
             <tr>
-              <th>Material</th>
+              <th>Produto</th>
               <th>Qtd</th>
               <th>Unid</th>
               <th>Valor Unit. <span style="font-weight:normal;font-size:10px;">(opcional)</span></th>
@@ -194,11 +194,11 @@ function montarModalFormularioProposta() {
           </thead>
           <tbody></tbody>
         </table>
-        <button type="button" class="btn-add-item" id="btnAddMaterial">+ Adicionar material</button>
+        <button type="button" class="btn-add-item" id="btnAddMaterial">+ Adicionar produto</button>
         <div class="linha-total-secao" style="flex-direction:column;align-items:flex-end;gap:6px;">
-          <div>Subtotal Materiais: <span id="subtotalMateriaisTexto">R$ 0,00</span></div>
+          <div>Subtotal Produtos: <span id="subtotalMateriaisTexto">R$ 0,00</span></div>
           <div class="linha-desconto">
-            <label for="descontoMateriais">Desconto Materiais <span class="valor-desconto" id="descontoTextoMateriais"></span></label>
+            <label for="descontoMateriais">Desconto Produtos <span class="valor-desconto" id="descontoTextoMateriais"></span></label>
             <input type="text" inputmode="decimal" id="descontoMateriais" placeholder="0" />
             <select id="descontoTipoMateriais" title="Desconto em reais ou em porcentagem">
               <option value="rs">R$</option>
@@ -207,31 +207,31 @@ function montarModalFormularioProposta() {
           </div>
           <input type="hidden" id="ajusteMateriais" />
           <div class="aviso-acrescimo-antigo" id="avisoAjusteMateriais" style="display:none;"></div>
-          <div style="font-size:16px;font-weight:700;">Total Materiais: <span id="totalMateriaisTexto">R$ 0,00</span></div>
+          <div style="font-size:16px;font-weight:700;">Total Produtos: <span id="totalMateriaisTexto">R$ 0,00</span></div>
         </div>
       </div>
 
       <div class="form-secao secao-links-materiais">
-        <h3>Links dos materiais <span class="tag-interno">só empresa</span></h3>
+        <h3>Links dos produtos <span class="tag-interno">só empresa</span></h3>
         <p class="texto-ajuda">
-          Onde comprar cada material (loja, site, fornecedor). <strong>Não aparece no PDF do cliente</strong> —
+          Onde comprar cada produto (loja, site, fornecedor). <strong>Não aparece no PDF do cliente</strong> —
           só na tela e no PDF Interno, com o link clicável.
         </p>
         <div id="listaLinksMateriais"></div>
         <div class="botoes-links-materiais">
           <button type="button" class="btn-add-item" id="btnAddLinkMaterial">+ Adicionar link</button>
-          <button type="button" class="btn-link-impostos" id="btnPuxarMateriaisLinks">Puxar os materiais desta proposta</button>
+          <button type="button" class="btn-link-impostos" id="btnPuxarMateriaisLinks">Puxar os produtos desta proposta</button>
         </div>
       </div>
 
       <div class="form-secao secao-impostos">
         <h3>Impostos <span class="tag-interno">só empresa</span></h3>
         <p class="texto-ajuda">
-          Não aparece no PDF do cliente. INSS e ISS são calculados só sobre a <strong>Mão de Obra</strong>;
-          o imposto de material, só sobre os <strong>Materiais</strong>. Em Curitiba o ISS não entra.
+          Não aparece no PDF do cliente. INSS e ISS são calculados só sobre a <strong>Serviços</strong>;
+          o imposto de produto, só sobre os <strong>Produtos</strong>. Em Curitiba o ISS não entra.
         </p>
         <div class="form-grid">
-          <label>Local da obra
+          <label>Local do projeto
             <select id="campoLocalObra">
               <option value="curitiba">Curitiba</option>
               <option value="fora">Fora de Curitiba</option>
@@ -249,7 +249,7 @@ function montarModalFormularioProposta() {
             <input type="number" id="campoIssOrc" min="0" max="100" step="0.01" placeholder="0" />
             <small class="aviso-iss-curitiba" id="avisoIssCuritiba">Não entra em Curitiba</small>
           </label>
-          <label>Material %
+          <label>Produto %
             <input type="number" id="campoMatOrc" min="0" max="100" step="0.01" placeholder="0" />
           </label>
         </div>
@@ -296,7 +296,7 @@ function montarModalFormularioProposta() {
 
       <div class="modal-rodape">
         <button type="button" class="btn-secundario" id="btnCancelarProposta">Cancelar</button>
-        <button type="button" class="btn-laranja" id="btnSalvarProposta">Salvar Orçamento</button>
+        <button type="button" class="btn-laranja" id="btnSalvarProposta">Salvar Estimativa</button>
       </div>
     </div>
   `;
@@ -317,7 +317,7 @@ function montarModalFormularioProposta() {
   document.getElementById("btnPuxarMateriaisLinks").addEventListener("click", puxarMateriaisParaLinks);
   document.getElementById("btnSalvarProposta").addEventListener("click", salvarFormularioProposta);
   document.getElementById("btnConfigNumeracaoOrcamento").addEventListener("click", () => {
-    abrirModalConfigNumeracao("orcamento", "Orçamento");
+    abrirModalConfigNumeracao("orcamento", "Estimativa");
   });
   document.getElementById("campoTelefone").addEventListener("input", aplicarMascaraTelefoneProposta);
   document.getElementById("campoDocumentoCliente").addEventListener("blur", formatarDocumentoClienteOrcamento);
@@ -502,7 +502,7 @@ async function abrirFormularioProposta(id, onSalvar, dadosPreenchidos, rascunhoI
   const statusEl = document.getElementById("statusRascunhoProposta");
   if (statusEl) statusEl.textContent = rascunhoAtualId ? "Continuando um rascunho pendente." : "";
 
-  document.getElementById("tituloModalProposta").textContent = id ? "Editar Orçamento" : "Novo Orçamento";
+  document.getElementById("tituloModalProposta").textContent = id ? "Editar Estimativa" : "Nova Estimativa";
   document.getElementById("campoNumeroOrcamento").value = propostaEmEdicao.numeroOrcamento || "";
   document.getElementById("campoCliente").value = propostaEmEdicao.cliente;
   // Responsável: orçamento novo já vem com quem está logado (dá pra trocar)
@@ -553,7 +553,7 @@ async function abrirFormularioProposta(id, onSalvar, dadosPreenchidos, rascunhoI
   // O "Ajuste" saiu da tela (agora é só Desconto). Orçamento antigo com
   // ajuste negativo vira desconto em R$; ajuste positivo (acréscimo)
   // continua valendo e aparece só como aviso, pra não mudar o total.
-  [["MaoDeObra", ajusteMOEl], ["Materiais", ajusteMatEl]].forEach(([suf, el]) => {
+  [["MaoDeObra", ajusteMOEl], ["Produtos", ajusteMatEl]].forEach(([suf, el]) => {
     let aj = parseFloat(propostaEmEdicao["ajuste" + suf]) || 0;
     if (aj < 0 && !(Number(propostaEmEdicao["desconto" + suf]) > 0)) {
       propostaEmEdicao["desconto" + suf] = Math.abs(aj);
@@ -566,7 +566,7 @@ async function abrirFormularioProposta(id, onSalvar, dadosPreenchidos, rascunhoI
     const aviso = document.getElementById("avisoAjuste" + suf);
     if (aviso) {
       aviso.style.display = aj ? "" : "none";
-      aviso.textContent = aj ? `Acréscimo de orçamento antigo: ${aj > 0 ? "+" : "-"} R$ ${formatarMoeda(Math.abs(aj))}` : "";
+      aviso.textContent = aj ? `Acréscimo de estimativa antiga: ${aj > 0 ? "+" : "-"} R$ ${formatarMoeda(Math.abs(aj))}` : "";
     }
   });
 
@@ -888,7 +888,7 @@ function renderChecklistMateriaisEstoque() {
   const estoque = lerMateriaisEstoque();
 
   if (estoque.length === 0) {
-    container.innerHTML = '<p class="texto-ajuda">Nenhum material cadastrado ainda no estoque.</p>';
+    container.innerHTML = '<p class="texto-ajuda">Nenhum produto cadastrado ainda no estoque.</p>';
     return;
   }
 
@@ -943,7 +943,7 @@ function renderTabelaMateriais() {
     tr.innerHTML = `
       <td class="col-descricao">
         ${rotuloVinculo}
-        <input type="text" value="${escaparHtml(item.nome || "")}" placeholder="Nome do material"
+        <input type="text" value="${escaparHtml(item.nome || "")}" placeholder="Nome do produto"
           data-mat-campo="nome" data-mat-index="${index}" />
       </td>
       <td>
@@ -1150,7 +1150,7 @@ async function salvarFormularioProposta() {
         try {
           item.materialId = await garantirMaterialNoCatalogo(item.nome, item.valorUnit);
         } catch (e) {
-          console.warn("[propostas-form] Falha ao cadastrar material no catálogo:", item.nome, e);
+          console.warn("[propostas-form] Falha ao cadastrar produto no catálogo:", item.nome, e);
         }
       }
     }
@@ -1275,8 +1275,8 @@ function atualizarResumoImpostos() {
 
   tbody.innerHTML =
     linha("INSS", `${pct(imp.inssPerc)} de R$ ${formatarMoeda(imp.baseMO)} (M.O.)`, `- R$ ${formatarMoeda(imp.valorInss)}`) +
-    linha("ISS", imp.emCuritiba ? "Não entra (obra em Curitiba)" : `${pct(imp.issPerc)} de R$ ${formatarMoeda(imp.baseMO)} (M.O.)`, `- R$ ${formatarMoeda(imp.valorIss)}`) +
-    linha("Material", `${pct(imp.matPerc)} de R$ ${formatarMoeda(imp.baseMat)} (Materiais)`, `- R$ ${formatarMoeda(imp.valorMat)}`) +
+    linha("ISS", imp.emCuritiba ? "Não entra (projeto em Curitiba)" : `${pct(imp.issPerc)} de R$ ${formatarMoeda(imp.baseMO)} (M.O.)`, `- R$ ${formatarMoeda(imp.valorIss)}`) +
+    linha("Produto", `${pct(imp.matPerc)} de R$ ${formatarMoeda(imp.baseMat)} (Materiais)`, `- R$ ${formatarMoeda(imp.valorMat)}`) +
     linha("Total de impostos", "", `- R$ ${formatarMoeda(imp.total)}`, "linha-total-impostos") +
     linha("Valor líquido", "Total geral − impostos", `R$ ${formatarMoeda(imp.liquido)}`, "linha-liquido");
 }
@@ -1297,8 +1297,8 @@ function montarModalImpostosMes() {
         <button type="button" class="modal-fechar" id="fecharModalImpostosMes">&times;</button>
       </div>
       <p class="texto-ajuda">
-        % padrão de cada mês. Todo orçamento novo copia as % do mês dele — e dá para ajustar
-        dentro do orçamento. É a mesma tabela usada na tela de Comissão.
+        % padrão de cada mês. Toda estimativa nova copia as % do mês dele — e dá para ajustar
+        dentro da estimativa. É a mesma tabela usada na tela de Comissão.
       </p>
       <div class="form-secao">
         <div class="form-grid">
@@ -1311,7 +1311,7 @@ function montarModalImpostosMes() {
           <label>ISS %
             <input type="number" id="campoIssTabela" min="0" max="100" step="0.01" placeholder="0" />
           </label>
-          <label class="campo-largura-total">Imposto de material %
+          <label class="campo-largura-total">Imposto de produto %
             <input type="number" id="campoMatTabela" min="0" max="100" step="0.01" placeholder="0" />
           </label>
         </div>
@@ -1467,7 +1467,7 @@ function puxarMateriaisParaLinks() {
     }
   });
   renderLinksMateriais();
-  mostrarToast(novos ? `${novos} material(is) adicionado(s) — falta colar os links.` : "Todos os materiais da proposta já estão na lista.");
+  mostrarToast(novos ? `${novos} produto(s) adicionado(s) — falta colar os links.` : "Todos os produtos da proposta já estão na lista.");
 }
 
 // ====================================================
@@ -1483,7 +1483,7 @@ async function marcarVisitaComoOrcada(visitaId, propostaId) {
       await apiSalvarVisita({ ...visita, convertidaEmPropostaId: propostaId || "sim" });
     }
   } catch (e) {
-    console.warn("[propostas-form] Não foi possível marcar a visita como orçada:", e);
+    console.warn("[propostas-form] Não foi possível marcar o levantamento como estimado:", e);
   }
 }
 
@@ -1491,7 +1491,7 @@ function montarPainelFotosVisita() {
   if (document.getElementById("painelFotosVisita")) return;
   const estilo = document.createElement("style");
   estilo.textContent = `
-    /* Fica no canto INFERIOR ESQUERDO — no direito cobria o botão "Salvar Orçamento" */
+    /* Fica no canto INFERIOR ESQUERDO — no direito cobria o botão "Salvar Estimativa" */
     #painelFotosVisita { position: fixed; left: 16px; bottom: 16px; z-index: 1500; width: 300px; max-height: 70vh;
       background: #fff; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,.28); display: none; flex-direction: column;
       font-family: 'Montserrat', sans-serif; overflow: hidden; }
@@ -1528,7 +1528,7 @@ function montarPainelFotosVisita() {
   painel.id = "painelFotosVisita";
   painel.innerHTML = `
     <div class="topo-pfv" id="topoPainelFotos" title="Minimizar / abrir">
-      <b id="tituloPainelFotos">📷 Fotos da visita</b>
+      <b id="tituloPainelFotos">📷 Fotos do levantamento</b>
       <span><button type="button" id="btnMinPainelFotos" aria-label="Minimizar">▾</button><button type="button" id="btnFecharPainelFotos" aria-label="Fechar">✕</button></span>
     </div>
     <div class="corpo-pfv" id="corpoPainelFotos"></div>`;
@@ -1538,7 +1538,7 @@ function montarPainelFotosVisita() {
   const reabrir = document.createElement("button");
   reabrir.type = "button";
   reabrir.id = "btnReabrirFotosVisita";
-  reabrir.innerHTML = "📷 Fotos da visita";
+  reabrir.innerHTML = "📷 Fotos do levantamento";
   reabrir.addEventListener("click", () => {
     reabrir.classList.remove("visivel");
     painel.classList.add("aberto");
@@ -1606,17 +1606,17 @@ async function mostrarPainelFotosVisita(visitaId) {
 
   const [resp] = await Promise.all([apiListarVisitas(), garantirTokenDownload()]);
   const visita = resp.ok ? (resp.visitas || []).find((v) => v.id === visitaId) : null;
-  if (!visita) { corpo.innerHTML = '<div class="vazio-pfv">A visita não foi encontrada (pode ter sido excluída).</div>'; return; }
+  if (!visita) { corpo.innerHTML = '<div class="vazio-pfv">O levantamento não foi encontrado (pode ter sido excluído).</div>'; return; }
 
   fotosPainelVisita = visita.fotos || [];
-  document.getElementById("tituloPainelFotos").textContent = `📷 Fotos da visita (${fotosPainelVisita.length})`;
+  document.getElementById("tituloPainelFotos").textContent = `📷 Fotos do levantamento (${fotosPainelVisita.length})`;
   const quando = visita.dataVisita ? visita.dataVisita.split("-").reverse().join("/") : "";
   corpo.innerHTML = `
     ${fotosPainelVisita.length
       ? `<div class="grade-pfv">${fotosPainelVisita.map((c, i) => `<img src="${urlFotoPainelVisita(c)}" data-i="${i}" alt="Foto ${i + 1}" />`).join("")}</div>`
-      : '<div class="vazio-pfv">Essa visita não tem fotos.</div>'}
-    <div class="texto-pfv"><b>${escaparHtml(visita.clienteNome)}</b>${quando ? " · visita em " + quando : ""}${visita.descricao ? "\n" + escaparHtml(visita.descricao) : ""}</div>
-    ${visita.anotacoes ? `<div class="texto-pfv anot-pfv"><b>📝 Anotações da visita</b> <span style="color:#999">(só interno)</span>\n${escaparHtml(visita.anotacoes)}</div>` : ""}`;
+      : '<div class="vazio-pfv">Esse levantamento não tem fotos.</div>'}
+    <div class="texto-pfv"><b>${escaparHtml(visita.clienteNome)}</b>${quando ? " · levantamento em " + quando : ""}${visita.descricao ? "\n" + escaparHtml(visita.descricao) : ""}</div>
+    ${visita.anotacoes ? `<div class="texto-pfv anot-pfv"><b>📝 Anotações do levantamento</b> <span style="color:#999">(só interno)</span>\n${escaparHtml(visita.anotacoes)}</div>` : ""}`;
   corpo.querySelectorAll("img[data-i]").forEach((img) => img.addEventListener("click", () => abrirZoomFoto(Number(img.dataset.i))));
 }
 

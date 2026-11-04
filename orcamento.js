@@ -99,7 +99,7 @@ function renderLista() {
         <button class="btn-pdf-interno" data-pdf-interno-id="${p.id}" title="Com impostos e observações internas — não enviar ao cliente">PDF Interno</button>
         <button class="btn-pdf-descritivo" data-pdf-desc-id="${p.id}" title="Só os itens e condições, sem nenhum valor — pro cliente entender o que está incluso">PDF Descritivo</button>
         <button class="btn-editar" data-edit-id="${p.id}">Editar</button>
-        <button class="btn-aprovar" data-enviar-id="${p.id}">Enviar para Análise</button>
+        <button class="btn-aprovar" data-enviar-id="${p.id}">Enviar para aprovação</button>
         <button class="btn-excluir-item" data-delete-id="${p.id}">Excluir</button>
       </div>
     `;
@@ -120,7 +120,7 @@ function renderLista() {
   });
   listaPropostasEl.querySelectorAll("[data-enviar-id]").forEach((btn) => {
     btn.addEventListener("click", async () => {
-      const confirmado = await confirmarAcao("Enviar para análise?", "O orçamento vai para a aba Análise, onde pode ser aprovado ou negado.");
+      const confirmado = await confirmarAcao("Enviar para aprovação?", "A estimativa vai para a aba Em Aprovação, onde pode ser aprovada ou negada.");
       if (!confirmado) return;
       await mudarStatusProposta(btn.dataset.enviarId, "analise");
       renderLista();
@@ -128,7 +128,7 @@ function renderLista() {
   });
   listaPropostasEl.querySelectorAll("[data-delete-id]").forEach((btn) => {
     btn.addEventListener("click", async () => {
-      const confirmado = await confirmarAcao("Excluir orçamento?", "Essa ação não pode ser desfeita.");
+      const confirmado = await confirmarAcao("Excluir estimativa?", "Essa ação não pode ser desfeita.");
       if (!confirmado) return;
       await excluirProposta(btn.dataset.deleteId);
       renderLista();
@@ -160,7 +160,7 @@ renderLista();
     const dados = JSON.parse(decodeURIComponent(escape(atob(dadosCodificados))));
     abrirFormularioProposta(null, aposSalvarOrcamento, dados);
   } catch (e) {
-    console.warn("[orcamento] Não foi possível ler os dados da visita na URL:", e);
+    console.warn("[orcamento] Não foi possível ler os dados do levantamento na URL:", e);
   }
 })();
 carregarObrasCache();
@@ -195,15 +195,15 @@ async function renderVisitasAguardando() {
     el.innerHTML = `
       <div class="info-fila">
         <div class="nome-fila">${escaparHtml(v.clienteNome)}</div>
-        <div class="meta-fila">Visita em ${quando}${endereco ? " · " + escaparHtml(endereco) : ""} · ${(v.fotos || []).length} foto(s)${v.criadoPorNome ? " · por " + escaparHtml(v.criadoPorNome) : ""}</div>
+        <div class="meta-fila">Levantamento em ${quando}${endereco ? " · " + escaparHtml(endereco) : ""} · ${(v.fotos || []).length} foto(s)${v.criadoPorNome ? " · por " + escaparHtml(v.criadoPorNome) : ""}</div>
       </div>
       <div class="acoes-fila">
-        <button type="button" class="btn-laranja btn-criar-da-visita">Criar orçamento</button>
-        <button type="button" class="btn-dispensar-visita" title="Tirar da lista sem criar orçamento">Não vai virar orçamento</button>
+        <button type="button" class="btn-laranja btn-criar-da-visita">Criar estimativa</button>
+        <button type="button" class="btn-dispensar-visita" title="Tirar da lista sem criar estimativa">Não vai virar estimativa</button>
       </div>`;
     el.querySelector(".btn-criar-da-visita").addEventListener("click", () => abrirFormularioProposta(null, aposSalvarOrcamento, dadosPropostaDaVisita(v)));
     el.querySelector(".btn-dispensar-visita").addEventListener("click", async () => {
-      const ok = await confirmarAcao(`Tirar "${v.clienteNome}" da lista?`, "A visita continua salva em Visita Técnica — só não aparece mais aqui.");
+      const ok = await confirmarAcao(`Tirar "${v.clienteNome}" da lista?`, "O levantamento continua salvo em Levantamento de Requisitos — só não aparece mais aqui.");
       if (!ok) return;
       const r = await apiSalvarVisita({ ...v, convertidaEmPropostaId: "dispensada" });
       if (!r.ok) { mostrarToast(r.erro || "Não foi possível.", "erro"); return; }
@@ -246,7 +246,7 @@ async function renderRascunhosOrcamento() {
       abrirFormularioProposta(null, aposSalvarOrcamento, dados, r.id);
     });
     el.querySelector(".btn-excluir-rasc").addEventListener("click", async () => {
-      const ok = await confirmarAcao("Excluir este orçamento não finalizado?", "Essa ação não pode ser desfeita.");
+      const ok = await confirmarAcao("Excluir esta estimativa não finalizada?", "Essa ação não pode ser desfeita.");
       if (!ok) return;
       await apiExcluirRascunhoProposta(r.id);
       renderRascunhosOrcamento();

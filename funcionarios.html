@@ -6,7 +6,7 @@
 <script src="auth-guard.js"></script>
 <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Financeiro de Funcionários</title>
+  <title>Folha da Equipe — FNX TECH</title>
   <link rel="stylesheet" href="funcionarios.css" />
   <script src="confirm-modal.js"></script>
   <script src="validacao.js"></script>
@@ -16,19 +16,19 @@
 <body>
   <main class="container">
     <div class="topo-pagina">
-      <h1>Financeiro de Funcionários</h1>
+      <h1>Folha da Equipe</h1>
       <a href="home.html" class="btn-voltar">Voltar</a>
     </div>
 
     <!-- Barra de ações -->
     <div class="barra-acoes">
       <div class="abas">
-        <button type="button" class="aba active" id="btnVisaoObra">Por Obra</button>
+        <button type="button" class="aba active" id="btnVisaoObra">Por Projeto</button>
         <button type="button" class="aba" id="btnVisaoFuncionario">Por Funcionário</button>
       </div>
 
       <div class="botoes-cadastro">
-        <button type="button" class="btn-secundario" id="btnAbrirObra">+ Obra</button>
+        <button type="button" class="btn-secundario" id="btnAbrirObra">+ Projeto</button>
         <button type="button" class="btn-laranja" id="btnAbrirPagamento">+ Pagamento</button>
       </div>
     </div>
@@ -46,7 +46,7 @@
         </div>
 
         <div class="select-simples">
-          <label class="filtro-label" for="filtroObra">Obra</label>
+          <label class="filtro-label" for="filtroObra">Projeto</label>
           <select id="filtroObra">
             <option value="todas">Todas</option>
           </select>
@@ -76,11 +76,11 @@
   <div class="modal-overlay" id="modalObra">
     <div class="modal-caixa">
       <div class="modal-cabecalho">
-        <h2>Obras</h2>
+        <h2>Projetos</h2>
         <button type="button" class="modal-fechar" id="fecharModalObra">&times;</button>
       </div>
       <form id="form-obra" class="linha-form">
-        <input type="text" id="novaObraInput" placeholder="Nome da obra" required />
+        <input type="text" id="novaObraInput" placeholder="Nome do projeto" required />
         <button type="submit" class="btn-laranja">Adicionar</button>
       </form>
       <div id="listaObras" class="chips-lista"></div>
@@ -101,9 +101,9 @@
         </label>
 
         <label>
-          Obra
+          Projeto
           <select id="obra" required>
-            <option value="" disabled selected>Selecione a obra</option>
+            <option value="" disabled selected>Selecione o projeto</option>
           </select>
         </label>
 

@@ -5,7 +5,7 @@
 // COMO FUNCIONA AGORA (sem piscar a tela):
 // A pessoa conecta o Gmail UMA vez, na tela do Calendário. O Google
 // devolve uma autorização permanente, que fica guardada no Worker
-// (servidor), ligada ao login da pessoa no EnJob. Depois disso, cada
+// (servidor), ligada ao login da pessoa no FNX TECH. Depois disso, cada
 // página só pede ao Worker uma "chave de acesso" nova — sem abrir
 // janela do Google, sem piscar, inclusive no celular.
 //
@@ -178,7 +178,7 @@ setInterval(() => {
 
 
 // ============================================================
-// Tipo do evento da agenda (criado pelo EnJob): "visita", "pagamento"
+// Tipo do evento da agenda (criado pelo FNX TECH): "visita", "pagamento"
 // ou "outro". Fica guardado no próprio evento do Google
 // (extendedProperties.private.enjobTipo). Eventos antigos, de antes
 // disso (ou criados direto no Google), são adivinhados pelo texto.

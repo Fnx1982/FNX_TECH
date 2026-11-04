@@ -225,7 +225,7 @@ function renderResumoPeriodo() {
         <div class="card-obra-comissao">
           <div class="card-obra-comissao-info">
             <strong>${escaparHtml(o.cliente) || "(sem cliente)"} — ${escaparHtml(o.servico) || ""}</strong>
-            <span>Finalizada em ${dataFmt} · Mão de obra: ${formatarMoedaComissao(o.valorMaoDeObraOrcamento)}</span>
+            <span>Finalizada em ${dataFmt} · Serviços: ${formatarMoedaComissao(o.valorMaoDeObraOrcamento)}</span>
             <div class="card-obra-comissao-impostos">
               <label>INSS % <input type="number" min="0" max="100" step="0.1" data-inss-obra="${o.id}" value="${inssPerc}" placeholder="mês" /></label>
               <label>ISS % <input type="number" min="0" max="100" step="0.1" data-iss-obra="${o.id}" value="${issPerc}" placeholder="mês" /></label>
@@ -287,7 +287,7 @@ function renderObrasSemData() {
       const obra = buscarObra(id);
       obra.dataFinalizacao = new Date(campoData.value + "T12:00:00").toISOString();
       await salvarObra(obra);
-      mostrarToast("Data definida — a obra já entra nos relatórios agora.");
+      mostrarToast("Data definida — o projeto já entra nos relatórios agora.");
       renderResumoPeriodo();
     });
   });
@@ -329,8 +329,8 @@ document.getElementById("btnGerarPdfComissao").addEventListener("click", () => {
 
   doc.autoTable({
     startY: y,
-    head: [["Obra", "Finalizada em", "Lucro Bruto", "INSS+ISS", "Lucro Líquido", "Comissão"]],
-    body: linhas.length ? linhas : [["Nenhuma obra finalizada nesse período.", "-", "-", "-", "-", "-"]],
+    head: [["Projeto", "Finalizada em", "Lucro Bruto", "INSS+ISS", "Lucro Líquido", "Comissão"]],
+    body: linhas.length ? linhas : [["Nenhum projeto finalizado nesse período.", "-", "-", "-", "-", "-"]],
     headStyles: { fillColor: [255, 106, 0] },
     styles: { fontSize: 8.5 },
     margin: { left: ML, right: MR },

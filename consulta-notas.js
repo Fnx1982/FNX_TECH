@@ -24,8 +24,8 @@ function uploadBlobParaArmazenamento(chave, blob, contentType) {
     xhr.setRequestHeader("Content-Type", contentType);
     const token = localStorage.getItem("sessionToken") || "";
     if (token) xhr.setRequestHeader("Authorization", "Bearer " + token);
-    xhr.onload = () => { if (xhr.status < 300) resolve(); else reject(new Error("Falha ao salvar no Armazenamento (" + xhr.status + ")")); };
-    xhr.onerror = () => reject(new Error("Falha de conexão ao salvar no Armazenamento"));
+    xhr.onload = () => { if (xhr.status < 300) resolve(); else reject(new Error("Falha ao salvar no Drive (" + xhr.status + ")")); };
+    xhr.onerror = () => reject(new Error("Falha de conexão ao salvar no Drive"));
     xhr.send(blob);
   });
 }
@@ -100,7 +100,7 @@ function gerarPdfNotaFiscal(nota) {
 
   doc.setFontSize(14);
   doc.setFont("helvetica", "bold");
-  doc.text(nota.tipo === "NF-e" ? "NOTA FISCAL DE MATERIAL (rascunho/conferência)" : "NOTA FISCAL DE SERVIÇO (rascunho/conferência)", margem, y + 14);
+  doc.text(nota.tipo === "NF-e" ? "NOTA FISCAL DE PRODUTOS (rascunho/conferência)" : "NOTA FISCAL DE SERVIÇO (rascunho/conferência)", margem, y + 14);
   y += 30;
 
   // ── Dados do Tomador/Destinatário ──────────────────────────
@@ -203,12 +203,12 @@ async function baixarEArquivarNotaFiscal(nota) {
     const blob = doc.output("blob");
     const chave = `Notas Fiscais/${nota.tipo}/${nomeArquivo}`;
     await uploadBlobParaArmazenamento(chave, blob, "application/pdf");
-    mostrarToast("PDF baixado e arquivado no Armazenamento.");
+    mostrarToast("PDF baixado e arquivado no Drive.");
   } catch (e) {
     // O download já aconteceu — o arquivamento é um "extra", se falhar
     // não deve parecer que a ação toda deu errado.
-    console.warn("[consulta-notas] Não foi possível arquivar no Armazenamento:", e);
-    mostrarToast("PDF baixado (mas não foi possível arquivar automaticamente no Armazenamento).", "erro");
+    console.warn("[consulta-notas] Não foi possível arquivar no Drive:", e);
+    mostrarToast("PDF baixado (mas não foi possível arquivar automaticamente no Drive).", "erro");
   }
 }
 

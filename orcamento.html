@@ -6,7 +6,7 @@
 <script src="auth-guard.js"></script>
 <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Orçamento</title>
+  <title>Estimativa de Projeto — FNX TECH</title>
   <link rel="stylesheet" href="propostas.css?v=9" />
   <script src="confirm-modal.js?v=3"></script>
   <script src="validacao.js?v=3"></script>
@@ -23,34 +23,34 @@
   <main class="container">
     <div class="topo-pagina">
       <div>
-        <h1>Orçamento</h1>
-        <p>Monte o orçamento e envie para análise quando estiver pronto.</p>
+        <h1>Estimativa de Projeto</h1>
+        <p>Monte a estimativa e envie para aprovação quando estiver pronta.</p>
       </div>
       <a href="home.html" class="btn-voltar">Voltar</a>
     </div>
     <div class="atalhos-fluxo">
-      <a href="visita-tecnica.html" class="atalho-fluxo">🔍 Visita</a>
-      <a href="orcamento.html" class="atalho-fluxo atalho-atual">📝 Orçamento</a>
-      <a href="propostas.html" class="atalho-fluxo">📋 Análise</a>
-      <a href="andamento.html" class="atalho-fluxo">⚙ Em Andamento</a>
-      <a href="obras.html" class="atalho-fluxo">🏗 Obras</a>
+      <a href="visita-tecnica.html" class="atalho-fluxo">🔍 Levantamento</a>
+      <a href="orcamento.html" class="atalho-fluxo atalho-atual">📝 Estimativa</a>
+      <a href="propostas.html" class="atalho-fluxo">📋 Em Aprovação</a>
+      <a href="andamento.html" class="atalho-fluxo">⚙ Em Desenvolvimento</a>
+      <a href="obras.html" class="atalho-fluxo">🏗 Projetos</a>
     </div>
 
     <div class="barra-acoes">
       <button type="button" class="btn-secundario" id="btnImpostosMes">% Impostos do mês</button>
-      <button type="button" class="btn-laranja" id="btnNovoOrcamento">+ Novo Orçamento</button>
+      <button type="button" class="btn-laranja" id="btnNovoOrcamento">+ Nova Estimativa</button>
     </div>
 
     <!-- Visitas técnicas que ainda não viraram orçamento (todo mundo vê) -->
     <div class="card-filtros bloco-fila" id="blocoVisitasAguardando" style="display:none;">
-      <h2>🔍 Visitas aguardando orçamento <span class="contador-fila" id="contVisitasAguardando"></span></h2>
-      <p class="texto-fila">Toda visita registrada aparece aqui. <b>Criar orçamento</b> abre um orçamento novo já com os dados do cliente, e as fotos da visita ficam num quadro no canto pra consultar.</p>
+      <h2>🔍 Levantamentos aguardando estimativa <span class="contador-fila" id="contVisitasAguardando"></span></h2>
+      <p class="texto-fila">Todo levantamento registrado aparece aqui. <b>Criar estimativa</b> abre uma estimativa nova já com os dados do cliente, e as fotos do levantamento ficam num quadro no canto pra consultar.</p>
       <div id="listaVisitasAguardando" class="lista-fila"></div>
     </div>
 
     <!-- Rascunhos automáticos do usuário (orçamentos fechados sem salvar) -->
     <div class="card-filtros bloco-fila" id="blocoRascunhosOrcamento" style="display:none;">
-      <h2>📝 Seus orçamentos não finalizados <span class="contador-fila" id="contRascunhosOrcamento"></span></h2>
+      <h2>📝 Suas estimativas não finalizadas <span class="contador-fila" id="contRascunhosOrcamento"></span></h2>
       <p class="texto-fila">Salvos sozinhos enquanto você preenchia. Continue de onde parou ou exclua.</p>
       <div id="listaRascunhosOrcamento" class="lista-fila"></div>
     </div>
@@ -76,7 +76,7 @@
 
     <div class="lista-propostas" id="listaPropostas"></div>
     <div class="sem-resultados" id="semResultados" style="display:none;">
-      Nenhum orçamento criado ainda. Clique em "+ Novo Orçamento" para começar.
+      Nenhuma estimativa criada ainda. Clique em "+ Nova Estimativa" para começar.
     </div>
   </main>
 

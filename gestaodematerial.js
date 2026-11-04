@@ -106,7 +106,7 @@ btnAbrirMaterial.addEventListener("click", () => {
     document.getElementById("origemMaterial").value = "0";
     document.getElementById("unidadeMaterial").value = "UND";
     if (typeof preencherFiscalMaterial === "function") preencherFiscalMaterial({});
-    tituloModalMaterial.textContent = "Novo Material";
+    tituloModalMaterial.textContent = "Novo Produto";
     btnSubmitMaterial.textContent = "Adicionar";
     rascunhoAtualIdMaterial = null;
     idMaterialOriginalRascunho = null;
@@ -126,7 +126,7 @@ document.getElementById("btnCadastrarDaBusca").addEventListener("click", () => {
   document.getElementById("unidadeMaterial").value = "UND";
   if (typeof preencherFiscalMaterial === "function") preencherFiscalMaterial({});
   document.getElementById("nomeMaterial").value = termo;
-  tituloModalMaterial.textContent = "Novo Material";
+  tituloModalMaterial.textContent = "Novo Produto";
   btnSubmitMaterial.textContent = "Adicionar";
   rascunhoAtualIdMaterial = null;
   idMaterialOriginalRascunho = null;
@@ -149,7 +149,7 @@ document.addEventListener("keydown", (e) => {
 // ====================================================
 function salvarSetores() {
   localStorage.setItem(CHAVE_SETORES, JSON.stringify(setores)); // mantém uma cópia local de segurança
-  apiDataSet("materiaisSetores", setores).catch((e) => console.warn("Falha ao salvar setores de material na nuvem:", e));
+  apiDataSet("materiaisSetores", setores).catch((e) => console.warn("Falha ao salvar setores de produto na nuvem:", e));
 }
 
 function renderSetores() {
@@ -198,7 +198,7 @@ async function excluirSetor(index) {
   if (usado) {
     const confirmado = await confirmarAcao(
       `Excluir o setor "${nome}"?`,
-      "Os materiais já cadastrados não serão apagados, mas esse setor não vai mais aparecer na lista para novos materiais."
+      "Os produtos já cadastrados não serão apagados, mas esse setor não vai mais aparecer na lista para novos produtos."
     );
     if (!confirmado) return;
   }
@@ -393,7 +393,7 @@ form.addEventListener("submit", async (e) => {
 
   let temErro = false;
   if (!nome) {
-    marcarCampoComErro(campoNome, "Informe o nome do material.");
+    marcarCampoComErro(campoNome, "Informe o nome do produto.");
     temErro = true;
   }
   if (!setor) {
@@ -401,7 +401,7 @@ form.addEventListener("submit", async (e) => {
     temErro = true;
   }
   if (!codigo) {
-    marcarCampoComErro(campoCodigo, "Informe o código do material.");
+    marcarCampoComErro(campoCodigo, "Informe o código do produto.");
     temErro = true;
   }
   if (isNaN(valor) || valor < 0) {
@@ -439,13 +439,13 @@ form.addEventListener("submit", async (e) => {
 
   try {
     const resposta = await apiSalvarMaterial(registro);
-    if (!resposta.ok) { mostrarToast(resposta.erro || "Erro ao salvar material.", "erro"); return; }
+    if (!resposta.ok) { mostrarToast(resposta.erro || "Erro ao salvar produto.", "erro"); return; }
 
     const registroSalvo = { ...registro, id: resposta.id };
     if (indiceEditando !== null) {
       materiais[indiceEditando] = registroSalvo;
       indiceEditando = null;
-      tituloModalMaterial.textContent = "Novo Material";
+      tituloModalMaterial.textContent = "Novo Produto";
     } else {
       materiais.push(registroSalvo);
     }
@@ -487,14 +487,14 @@ function editar(index) {
   document.getElementById("listaCamposExtrasMaterial").innerHTML = "";
   (m.camposAdicionais || []).forEach((c) => adicionarLinhaExtraMaterial(c));
   indiceEditando = index;
-  tituloModalMaterial.textContent = "Editar Material";
+  tituloModalMaterial.textContent = "Editar Produto";
   btnSubmitMaterial.textContent = "Salvar Alterações";
   abrirModal(modalMaterial);
 }
 
 async function excluir(index) {
   const confirmado = await confirmarAcao(
-    "Excluir material?",
+    "Excluir produto?",
     "Essa ação não pode ser desfeita."
   );
   if (!confirmado) return;
@@ -508,7 +508,7 @@ async function excluir(index) {
     indiceEditando = null;
     form.reset();
     btnSubmitMaterial.textContent = "Adicionar";
-    tituloModalMaterial.textContent = "Novo Material";
+    tituloModalMaterial.textContent = "Novo Produto";
   }
   renderTudo();
 }
@@ -657,11 +657,11 @@ function renderGrupos() {
     const btnCadastrar = document.getElementById("btnCadastrarDaBusca");
     const textoSemResultados = document.getElementById("semResultadosTexto");
     if (termo) {
-      textoSemResultados.textContent = `Nenhum material encontrado pra "${termo}".`;
-      btnCadastrar.textContent = `+ Cadastrar "${termo}" como material novo`;
+      textoSemResultados.textContent = `Nenhum produto encontrado pra "${termo}".`;
+      btnCadastrar.textContent = `+ Cadastrar "${termo}" como produto novo`;
       btnCadastrar.style.display = "inline-block";
     } else {
-      textoSemResultados.textContent = "Nenhum material encontrado com esses filtros.";
+      textoSemResultados.textContent = "Nenhum produto encontrado com esses filtros.";
       btnCadastrar.style.display = "none";
     }
     atualizarTotalFixo([]);
@@ -703,7 +703,7 @@ function renderGrupos() {
     corpo.className = "grupo-corpo";
 
     const table = document.createElement("table");
-    const colunaExtra = visaoAtual === "setor" ? "Material" : "Setor";
+    const colunaExtra = visaoAtual === "setor" ? "Produto" : "Setor";
     table.innerHTML = `
       <thead>
         <tr>
@@ -820,7 +820,7 @@ async function migrarSetoresSeNecessario() {
   const local = JSON.parse(localStorage.getItem(CHAVE_SETORES)) || [];
   if (local.length > 0) {
     await apiDataSet("materiaisSetores", local);
-    console.info(`[gestaodematerial] Migrados ${local.length} setor(es) de material do localStorage para a nuvem.`);
+    console.info(`[gestaodematerial] Migrados ${local.length} setor(es) de produto do localStorage para a nuvem.`);
     return local;
   }
   return [];
@@ -847,7 +847,7 @@ async function migrarMateriaisSeNecessario() {
     const r = await apiSalvarMaterial(registro);
     if (r.ok) migrados.push(registro);
   }
-  console.info(`[gestaodematerial] Migrados ${migrados.length} material(is) do localStorage para a nuvem.`);
+  console.info(`[gestaodematerial] Migrados ${migrados.length} produto(s) do localStorage para a nuvem.`);
   return migrados;
 }
 
@@ -861,7 +861,7 @@ async function iniciarGestaoDeMaterial() {
     materiais = materiaisCarregados;
   } catch (e) {
     console.error("[gestaodematerial] Erro ao carregar dados da nuvem:", e);
-    mostrarToast("Não foi possível carregar os materiais. Verifique sua conexão e recarregue a página.", "erro");
+    mostrarToast("Não foi possível carregar os produtos. Verifique sua conexão e recarregue a página.", "erro");
   }
   renderTudo();
   renderPendentesMateriais();

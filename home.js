@@ -225,7 +225,7 @@ async function fetchTodayEvents() {
   if (!eventsList) return;
 
   if (!isGoogleAuthenticated()) {
-    eventsList.innerHTML = '<li>Conecte seu Gmail na tela do <a href="calendario.html" style="color:#FF6A00;font-weight:600;">Calendário</a> para ver os eventos de hoje.</li>';
+    eventsList.innerHTML = '<li>Conecte seu Gmail na tela da <a href="calendario.html" style="color:#FF6A00;font-weight:600;">Agenda</a> para ver os eventos de hoje.</li>';
     return;
   }
 

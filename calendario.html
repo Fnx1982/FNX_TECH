@@ -6,7 +6,7 @@
 <script src="auth-guard.js"></script>
 <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Google Calendar</title>
+  <title>Agenda — FNX TECH</title>
   <link rel="stylesheet" href="calendario.css?v=3">
 
   <!-- FullCalendar -->
@@ -57,7 +57,7 @@
       <h3>Novo Evento</h3>
 
       <div class="tipos-evento" role="radiogroup" aria-label="Tipo do evento">
-        <label class="tipo-evento"><input type="radio" name="tipoEvento" value="visita" checked /><span>📍 Visita técnica</span></label>
+        <label class="tipo-evento"><input type="radio" name="tipoEvento" value="visita" checked /><span>📍 Levantamento de requisitos</span></label>
         <label class="tipo-evento"><input type="radio" name="tipoEvento" value="pagamento" /><span>💳 Pagamento / boleto</span></label>
         <label class="tipo-evento"><input type="radio" name="tipoEvento" value="outro" /><span>📅 Outro</span></label>
       </div>
@@ -65,14 +65,14 @@
 
       <div class="so-tipo" data-tipos="outro">
         <label for="eventTitle">Título do evento</label>
-        <input type="text" id="eventTitle" placeholder="Ex: Reunião, entrega de material..." />
+        <input type="text" id="eventTitle" placeholder="Ex: Reunião, entrega de produto..." />
       </div>
 
       <div class="so-tipo" data-tipos="visita">
         <label for="eventLocalNome">Nome do local</label>
         <input type="text" id="eventLocalNome" placeholder="Ex: Ed. L'Espace Alameda, Condomínio Sol Nascente" />
         <label for="eventClienteVisita">Cliente / responsável</label>
-        <input type="text" id="eventClienteVisita" placeholder="Ex: síndico João, administradora..." />
+        <input type="text" id="eventClienteVisita" placeholder="Ex: João (CTO), equipe de produto..." />
         <label for="eventTelefone">Telefone</label>
         <input type="text" id="eventTelefone" placeholder="(41) 9 9999-9999" inputmode="tel" />
       </div>

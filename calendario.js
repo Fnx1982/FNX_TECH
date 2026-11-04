@@ -172,9 +172,9 @@ document.getElementById("eventEndereco").addEventListener("input", atualizarMapa
 
 // ===== Tipo do evento =====
 const DICAS_TIPO_EVENTO = {
-  visita: "Aparece em Visita Técnica → \"Agendadas no calendário\", com o local, cliente e endereço já prontos.",
-  pagamento: "Só a empresa e a data. Não aparece na Visita Técnica.",
-  outro: "Compromisso comum. Não aparece na Visita Técnica.",
+  visita: "Aparece em Levantamento de Requisitos → \"Agendadas no calendário\", com o local, cliente e endereço já prontos.",
+  pagamento: "Só a empresa e a data. Não aparece No Levantamento de Requisitos.",
+  outro: "Compromisso comum. Não aparece No Levantamento de Requisitos.",
 };
 function tipoSelecionadoEvento() {
   const r = document.querySelector('input[name="tipoEvento"]:checked');
@@ -188,7 +188,7 @@ function aplicarTipoEvento(tipo) {
   });
   document.getElementById("dicaTipoEvento").textContent = DICAS_TIPO_EVENTO[tipo] || "";
   const rot = document.getElementById("rotuloDescricaoEvento");
-  rot.textContent = tipo === "visita" ? "O que precisa ser visto na visita" : tipo === "pagamento" ? "Observação (opcional)" : "Descritivo / Observação";
+  rot.textContent = tipo === "visita" ? "O que precisa ser visto no levantamento" : tipo === "pagamento" ? "Observação (opcional)" : "Descritivo / Observação";
 }
 document.querySelectorAll('input[name="tipoEvento"]').forEach((r) => r.addEventListener("change", () => aplicarTipoEvento(tipoSelecionadoEvento())));
 
@@ -201,8 +201,8 @@ function montarEventoDoFormulario() {
   const localNome = v("eventLocalNome"), clienteVisita = v("eventClienteVisita"), telefone = v("eventTelefone");
   const empresa = v("eventClientePagamento");
   if (tipo === "visita") {
-    if (!localNome && !clienteVisita) return { erro: "Informe o nome do local ou o cliente da visita." };
-    titulo = `Visita — ${localNome || clienteVisita}`;
+    if (!localNome && !clienteVisita) return { erro: "Informe o nome do local ou o cliente do levantamento." };
+    titulo = `Levantamento — ${localNome || clienteVisita}`;
   } else if (tipo === "pagamento") {
     if (!empresa) return { erro: "Informe a empresa do pagamento." };
     titulo = `Pagamento — ${empresa}`;
