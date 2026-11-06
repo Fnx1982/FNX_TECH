@@ -20,7 +20,7 @@
   .linha-check-temp { display: flex !important; flex-direction: row !important; align-items: center; gap: 8px; font-weight: 600; }
   .linha-check-temp input { width: 16px; height: 16px; }
 </style>
-  <link rel="stylesheet" href="fnx-tema.css?v=4" />
+  <link rel="stylesheet" href="fnx-tema.css?v=5" />
 </head>
 <body class="pagina-interna pagina-editar">
     <main class="container">
@@ -133,6 +133,21 @@
 
         let usuario = null;
 
+    // ── Proteção da Diretoria (o servidor também bloqueia) ──
+    function normSetor(s) { return String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toUpperCase(); }
+    function souDiretoria() {
+        return String(localStorage.getItem("userType") || "").toLowerCase() === "ceo" || normSetor(localStorage.getItem("userSetor")) === "DIRETORIA";
+    }
+    function travarOpcaoDiretoria(select, permitirSeSelecionada) {
+        if (souDiretoria()) return;
+        [...select.options].forEach((o) => {
+            if (normSetor(o.value) !== "DIRETORIA") return;
+            if (permitirSeSelecionada && o.selected) return;
+            o.disabled = true;
+            if (!o.textContent.includes("🔒")) o.textContent += " 🔒 só a Diretoria";
+        });
+    }
+
         async function carregarUsuario() {
             const resposta = await apiListarUsuarios();
             if (!resposta.ok) {
@@ -177,6 +192,21 @@
             document.getElementById("acessoTemporario").checked = !!usuario.acessoAte;
             document.getElementById("acessoAte").value = usuario.acessoAte || "";
             document.getElementById("rotuloAcessoAte").style.display = usuario.acessoAte ? "" : "none";
+
+            const alvoDiretoria = normSetor(usuario.setor) === "DIRETORIA" || String(usuario.tipo || "").toLowerCase() === "ceo";
+            travarOpcaoDiretoria(selectSetorEditar, alvoDiretoria);
+            if (alvoDiretoria && !souDiretoria()) {
+                ["setor", "senha", "email", "registro"].forEach((id) => {
+                    const c = document.getElementById(id);
+                    c.disabled = true;
+                    c.title = "Só quem é da Diretoria pode alterar isso";
+                });
+                document.getElementById("btnExcluir").style.display = "none";
+                const aviso = document.createElement("p");
+                aviso.className = "aviso-diretoria";
+                aviso.innerHTML = "🔒 <b>Usuário da Diretoria.</b> Setor, senha, e-mail e registro só podem ser alterados por alguém da Diretoria.";
+                document.getElementById("formEditarUsuario").before(aviso);
+            }
         }
         document.getElementById("acessoTemporario").addEventListener("change", (e) => {
             document.getElementById("rotuloAcessoAte").style.display = e.target.checked ? "" : "none";

@@ -410,3 +410,40 @@ body.pagina-quadros .tela-quadros { padding-top: 24px; }
 /* Nenhum campo vaza para fora do cartão (celular) */
 body.pagina-interna input, body.pagina-interna select, body.pagina-interna textarea { max-width: 100%; box-sizing: border-box; }
 body.pagina-interna .linha-percentual label { max-width: 100%; min-width: 0; }
+
+/* Aviso de usuário protegido (Diretoria) */
+.aviso-diretoria { background: #FFF4D6; color: #6b4a00; border: 1px solid #f1d58a; border-radius: 10px; padding: 10px 14px; font-size: 13px; margin: 0 0 14px; line-height: 1.45; }
+button:disabled.btn-permissoes-setor, button:disabled.btn-excluir-setor { opacity: .45; cursor: not-allowed; }
+select option:disabled { color: #999; }
+
+/* ===== Tela inicial: 3 cartões pequenos e quadrados, alinhados embaixo ===== */
+body.pagina-home .inicio-linha { grid-template-columns: 230px 230px 300px; justify-content: start; gap: 16px; align-items: stretch; }
+body.pagina-home .card-mini h2 { white-space: nowrap; }
+body.pagina-home .card-mini { height: 230px; min-height: 0 !important; display: flex !important; flex-direction: column; padding: 18px !important; border-radius: 16px !important; overflow: hidden; }
+body.pagina-home .card-mini h2 { font-size: 15px !important; font-weight: 700; margin: 0 0 12px !important; display: flex; align-items: center; gap: 7px; color: #fff !important; }
+body.pagina-home .card-mini h2 i { color: #ff9a55; font-size: 19px; }
+body.pagina-home .card-mini input,
+body.pagina-home .card-mini textarea { width: 100%; margin: 0 0 10px !important; padding: 10px 12px !important; font-size: 14px; resize: none; }
+body.pagina-home .card-mini textarea { flex: 1; min-height: 0; }
+body.pagina-home .card-mini button { margin: auto 0 0 !important; width: 100%; padding: 10px !important; font-size: 13.5px; }
+body.pagina-home .calendar-box.card-mini .cabecalho-eventos { margin-bottom: 10px; padding-bottom: 10px; align-items: center; }
+body.pagina-home .calendar-box.card-mini h2 { margin: 0 !important; }
+body.pagina-home .calendar-box.card-mini .link-agenda { font-size: 12.5px; }
+body.pagina-home .calendar-box.card-mini #events-list { flex: 1; min-height: 0; overflow-y: auto; gap: 8px; padding-right: 2px !important; }
+body.pagina-home .calendar-box.card-mini #events-list li { font-size: 13px; padding: 9px 11px; line-height: 1.4; }
+@media (min-width: 769px) and (hover: hover) {
+  body.pagina-home .calendar-box.card-mini { min-height: 0 !important; }
+}
+@media (min-width: 769px) and (max-width: 1100px) {
+  body.pagina-home .inicio-linha { grid-template-columns: 1fr 1fr 1.3fr; }
+}
+@media (max-width: 768px), (hover: none) and (max-width: 1100px) {
+  body.pagina-home .inicio-linha { grid-template-columns: 1fr 1fr; }
+  body.pagina-home .calendar-box.card-mini { grid-column: 1 / -1; order: -1; height: 210px; }
+  body.pagina-home .card-mini { height: 200px; }
+}
+@media (max-width: 380px) {
+  body.pagina-home .inicio-linha { grid-template-columns: 1fr; }
+  body.pagina-home .card-mini { height: auto; }
+  body.pagina-home .card-mini textarea { min-height: 54px; }
+}

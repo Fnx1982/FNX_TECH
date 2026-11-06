@@ -28,7 +28,7 @@
   .tag-temporario { display: inline-block; margin-top: 3px; font-size: 11px; font-weight: 700; color: #1D5FB4; background: #E3EEFB; border-radius: 10px; padding: 1px 8px; }
   .tag-temporario.vencido { color: #b03a2e; background: #fbe8e6; }
 </style>
-  <link rel="stylesheet" href="fnx-tema.css?v=4" />
+  <link rel="stylesheet" href="fnx-tema.css?v=5" />
 </head>
 <body class="pagina-interna">
 <div id="avisoAcessoAdmin" style="display:none; max-width:1100px; margin:16px auto 0; background:#FBE8EC; border-left:4px solid #c0392b; border-radius:8px; padding:12px 16px; font-size:13.5px; line-height:1.5; color:#7a1f1f; font-family:inherit;"></div>
@@ -216,6 +216,21 @@
     // Funções de Setores
     let setorEmEdicaoPermissao = null;
 
+    // ── Proteção da Diretoria (o servidor também bloqueia) ──
+    function normSetor(s) { return String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toUpperCase(); }
+    function souDiretoria() {
+        return String(localStorage.getItem("userType") || "").toLowerCase() === "ceo" || normSetor(localStorage.getItem("userSetor")) === "DIRETORIA";
+    }
+    function travarOpcaoDiretoria(select, permitirSeSelecionada) {
+        if (souDiretoria()) return;
+        [...select.options].forEach((o) => {
+            if (normSetor(o.value) !== "DIRETORIA") return;
+            if (permitirSeSelecionada && o.selected) return;
+            o.disabled = true;
+            if (!o.textContent.includes("🔒")) o.textContent += " 🔒 só a Diretoria";
+        });
+    }
+
     function rotuloResumoPermissoes(nomeSetor) {
         if (ehSetorAdministradorFixo(nomeSetor)) return "Acesso total (fixo)";
         if (ehSetorAdministradorLocal(nomeSetor)) return "⭐ Acesso total (administrador)";
@@ -235,6 +250,7 @@
             option.textContent = ehSetorAdministradorLocal(setor) ? `${setor} (acesso total)` : setor;
             selectSetor.appendChild(option);
         });
+        travarOpcaoDiretoria(selectSetor, false);
 
         popularSelectSetoresSala();
 
@@ -252,6 +268,8 @@
             btnPermissoes.className = "btn-permissoes-setor";
             btnPermissoes.title = "Clique para configurar o que este setor pode ver";
             btnPermissoes.addEventListener("click", () => abrirModalPermissao(setor));
+            const travado = normSetor(setor) === "DIRETORIA" && !souDiretoria();
+            if (travado) { btnPermissoes.disabled = true; btnPermissoes.title = "Só a Diretoria pode mudar as permissões da Diretoria"; }
             tdPermissoes.appendChild(btnPermissoes);
             tr.appendChild(tdPermissoes);
 
@@ -260,6 +278,7 @@
             btnExcluir.textContent = "Excluir";
             btnExcluir.className = "btn-excluir-setor";
             btnExcluir.addEventListener("click", () => excluirSetor(index));
+            if (travado) { btnExcluir.disabled = true; btnExcluir.title = "Só a Diretoria pode excluir o setor Diretoria"; }
             tdAcoes.appendChild(btnExcluir);
             tr.appendChild(tdAcoes);
 
@@ -448,6 +467,10 @@
             const btnEditar = document.createElement("button");
             btnEditar.textContent = "Editar";
             btnEditar.className = "btn-editar";
+            if ((normSetor(user.setor) === "DIRETORIA" || String(user.tipo || "").toLowerCase() === "ceo") && !souDiretoria()) {
+                btnEditar.textContent = "Editar 🔒";
+                btnEditar.title = "Usuário da Diretoria: setor, senha, e-mail e registro só a Diretoria altera";
+            }
             btnEditar.addEventListener("click", () => {
                 window.location.href = `editar.html?registro=${encodeURIComponent(user.registro)}`;
             });
@@ -743,7 +766,7 @@
             aviso.style.display = "block";
         } else if (!r.acessoTotal) {
             aviso.innerHTML = `<b>⚠ Sua conta (${escaparHtml(r.nome)} — setor ${escaparHtml(setor)}) não tem acesso de administrador.</b>
-                Você vê esta tela, mas o servidor não deixa criar, editar ou excluir contas nem salvar permissões.<br>
+                Você pode cadastrar e editar contas e mudar o setor das pessoas (menos Diretoria e setores com acesso total), mas não pode criar setores nem mudar permissões.<br>
                 <b>Para liberar:</b> entre com uma conta do <b>CEO</b> ou da <b>Diretoria</b> → em "Setores Cadastrados" clique nas permissões do setor <b>${escaparHtml(setor)}</b> →
                 marque <b>⭐ Acesso total ao site</b> → Salvar. Depois saia e entre de novo nesta conta.
                 <br><small>Marcar todos os itens do menu não basta — eles só mostram o menu.</small>`;

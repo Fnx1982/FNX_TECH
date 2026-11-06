@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="home.css?v=8">
   <title>FNX TECH — Início</title>
   <link rel="stylesheet" href="mobile.css?v=3" />
-  <link rel="stylesheet" href="fnx-tema.css?v=4" />
+  <link rel="stylesheet" href="fnx-tema.css?v=5" />
 </head>
 <body class="pagina-home">
   <nav class="menu" id="menuPrincipal">
@@ -280,19 +280,21 @@
     </section>
     <div class="inicio-linha">
     <!-- Card Montante -->
-    <div class="card-montante">
-      <h2>Montante Atual</h2>
+    <div class="card-montante card-mini">
+      <h2><i class="bx bx-wallet"></i> Montante Atual</h2>
       <input type="text" id="montante" placeholder="Digite o valor" />
-      <button onclick="salvarMontante()">Salvar Montante</button>
-
-      <h3>Mês</h3>
-      <textarea id="observacao" rows="4" placeholder="Digite o mês"></textarea>
-      <button onclick="salvarObservacao()">Salvar Mês</button>
+      <button onclick="salvarMontante()">Salvar</button>
     </div>
-  <div class="calendar-box">
+    <!-- Card Mês -->
+    <div class="card-montante card-mini">
+      <h2><i class="bx bx-calendar"></i> Mês</h2>
+      <textarea id="observacao" rows="2" placeholder="Digite o mês"></textarea>
+      <button onclick="salvarObservacao()">Salvar</button>
+    </div>
+  <div class="calendar-box card-mini">
           <div class="cabecalho-eventos">
-            <h2>Eventos de Hoje</h2>
-            <a href="calendario.html" class="link-agenda">Abrir Agenda →</a>
+            <h2><i class="bx bx-time-five"></i> Eventos de Hoje</h2>
+            <a href="calendario.html" class="link-agenda">Agenda →</a>
           </div>
           <ul id="events-list">
               <!-- Eventos aparecerão aqui -->
