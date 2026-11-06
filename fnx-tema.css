@@ -470,3 +470,7 @@ body.pagina-home .calendar-box.card-mini { width: 330px !important; height: 300p
 }
 /* Tela inicial ocupa a largura toda: Agenda encosta no canto direito em qualquer monitor */
 body.pagina-home .dashboard { max-width: none !important; }
+
+/* Menu lateral: rolagem continua funcionando (roda do mouse, toque, teclado), mas sem a barra aparecendo */
+.menu, .menu * { scrollbar-width: none; -ms-overflow-style: none; }
+.menu::-webkit-scrollbar, .menu *::-webkit-scrollbar { width: 0; height: 0; display: none; }
