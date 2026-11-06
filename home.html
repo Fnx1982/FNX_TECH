@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="home.css?v=8">
   <title>FNX TECH — Início</title>
   <link rel="stylesheet" href="mobile.css?v=3" />
-  <link rel="stylesheet" href="fnx-tema.css?v=5" />
+  <link rel="stylesheet" href="fnx-tema.css?v=6" />
 </head>
 <body class="pagina-home">
   <nav class="menu" id="menuPrincipal">
@@ -280,16 +280,20 @@
     </section>
     <div class="inicio-linha">
     <!-- Card Montante -->
-    <div class="card-montante card-mini">
+    <div class="coluna-resumo">
+    <div class="card-montante card-mini card-baixo">
       <h2><i class="bx bx-wallet"></i> Montante Atual</h2>
+      <div class="linha-mini">
       <input type="text" id="montante" placeholder="Digite o valor" />
       <button onclick="salvarMontante()">Salvar</button>
+      </div>
     </div>
     <!-- Card Mês -->
     <div class="card-montante card-mini">
       <h2><i class="bx bx-calendar"></i> Mês</h2>
       <textarea id="observacao" rows="2" placeholder="Digite o mês"></textarea>
       <button onclick="salvarObservacao()">Salvar</button>
+    </div>
     </div>
   <div class="calendar-box card-mini">
           <div class="cabecalho-eventos">

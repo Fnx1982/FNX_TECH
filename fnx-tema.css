@@ -447,3 +447,24 @@ body.pagina-home .calendar-box.card-mini #events-list li { font-size: 13px; padd
   body.pagina-home .card-mini { height: auto; }
   body.pagina-home .card-mini textarea { min-height: 54px; }
 }
+
+/* ===== Tela inicial v2: Montante (baixinho) em cima do Mês à esquerda; Agenda à direita ===== */
+body.pagina-home .inicio-linha { display: flex !important; justify-content: space-between; align-items: flex-end; gap: 20px; }
+body.pagina-home .coluna-resumo { display: flex; flex-direction: column; gap: 14px; width: 280px; flex-shrink: 0; }
+body.pagina-home .card-mini.card-baixo { height: auto; padding: 14px 16px !important; }
+body.pagina-home .card-mini.card-baixo h2 { margin-bottom: 10px !important; }
+body.pagina-home .linha-mini { display: flex; gap: 8px; align-items: stretch; }
+body.pagina-home .linha-mini input { flex: 1; min-width: 0; margin: 0 !important; }
+body.pagina-home .linha-mini button { width: auto !important; flex-shrink: 0; margin: 0 !important; padding: 0 16px !important; }
+body.pagina-home .coluna-resumo .card-mini:not(.card-baixo) { height: 190px; }
+body.pagina-home .calendar-box.card-mini { width: 330px !important; height: 300px; flex-shrink: 0; margin-left: auto !important; }
+@media (min-width: 769px) and (max-width: 1100px) {
+  body.pagina-home .coluna-resumo { width: 250px; }
+  body.pagina-home .calendar-box.card-mini { width: 300px !important; }
+}
+@media (max-width: 768px), (hover: none) and (max-width: 1100px) {
+  body.pagina-home .inicio-linha { flex-direction: column; align-items: stretch; }
+  body.pagina-home .coluna-resumo { width: 100%; order: 2; }
+  body.pagina-home .calendar-box.card-mini { width: 100% !important; height: 230px; order: 1; margin-left: 0 !important; }
+  body.pagina-home .coluna-resumo .card-mini:not(.card-baixo) { height: 170px; }
+}
