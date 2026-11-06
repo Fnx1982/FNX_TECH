@@ -468,3 +468,5 @@ body.pagina-home .calendar-box.card-mini { width: 330px !important; height: 300p
   body.pagina-home .calendar-box.card-mini { width: 100% !important; height: 230px; order: 1; margin-left: 0 !important; }
   body.pagina-home .coluna-resumo .card-mini:not(.card-baixo) { height: 170px; }
 }
+/* Tela inicial ocupa a largura toda: Agenda encosta no canto direito em qualquer monitor */
+body.pagina-home .dashboard { max-width: none !important; }
