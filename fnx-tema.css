@@ -474,3 +474,11 @@ body.pagina-home .dashboard { max-width: none !important; }
 /* Menu lateral: rolagem continua funcionando (roda do mouse, toque, teclado), mas sem a barra aparecendo */
 .menu, .menu * { scrollbar-width: none; -ms-overflow-style: none; }
 .menu::-webkit-scrollbar, .menu *::-webkit-scrollbar { width: 0; height: 0; display: none; }
+
+/* ===================== LOGIN — acabamento ===================== */
+.input-box .wrapper-olho-senha { position: relative; width: 100%; height: 100%; }
+.input-box .wrapper-olho-senha input { height: 100% !important; box-sizing: border-box; }
+body:has(> main.container > form > .input-box) .remember-forgot { margin-top: 14px; font-size: 14px; }
+body:has(> main.container > form > .input-box) .container .subtitulo-login { color: #9d9da6; font-size: 13px; text-align: center; margin: 22px 0 26px; letter-spacing: .02em; }
+button.login:disabled { background: #2a2a2e !important; color: #c9c9d0 !important; cursor: not-allowed; box-shadow: none !important; transform: none !important; filter: none !important; }
+#mensagemErroLogin { color: #ff8a8a !important; background: rgba(229, 20, 27, .12); border: 1px solid rgba(229, 20, 27, .35); border-radius: 10px; padding: 9px 12px; font-weight: 600; line-height: 1.4; }

@@ -1,0 +1,11 @@
+# Arquivos que ficam no GitHub mas NÃO vão para o site público
+worker/
+tools/
+node_modules/
+LEIA-ME.md
+README.md
+teste-core.js
+*.mjs
+.git/
+.github/
+.vscode/

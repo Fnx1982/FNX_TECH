@@ -72,6 +72,10 @@
       localStorage.setItem("userId", data.registro || "");
       localStorage.setItem("userNome", data.nome || "");
       localStorage.setItem("userSetor", data.setor || "");
+      // senha temporária: obriga a trocar antes de usar o sistema
+      if (data.deveTrocarSenha && !/trocar-senha(\.html)?$/.test(location.pathname)) {
+        window.location.href = "trocar-senha.html";
+      }
     });
   }
 

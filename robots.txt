@@ -1,0 +1,3 @@
+# Sistema interno da FNX TECH: não aparece no Google
+User-agent: *
+Disallow: /

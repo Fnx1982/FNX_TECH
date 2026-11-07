@@ -16,7 +16,10 @@ async function chamarWorker(action, { method = "GET", body = null, autenticado =
     const token = pegarToken();
     if (token) headers["Authorization"] = "Bearer " + token;
   }
-  const res = await fetch(`${AUTH_WORKER_URL}?action=${action}`, {
+  // Login e recuperação também vão no caminho (/auth-login): assim a regra de
+  // limite da Cloudflare (que no plano grátis só enxerga o caminho) consegue pegar.
+  const caminho = ["auth-login", "reset-request"].includes(action) ? "/" + action : "";
+  const res = await fetch(`${AUTH_WORKER_URL}${caminho}?action=${action}`, {
     method,
     headers,
     body: body ? JSON.stringify(body) : undefined,

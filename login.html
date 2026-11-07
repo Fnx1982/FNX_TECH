@@ -3,20 +3,24 @@
 <head>
   <script src="config.js"></script>
     <meta charset="UTF-8" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <meta name="theme-color" content="#0B0B0C" />
+  <meta name="robots" content="noindex, nofollow" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet' />
     <link rel="stylesheet" href="login.css" />
-    <script src="auth-worker.js?v=6" defer></script>
-    <script src="login.js" defer></script>
+    <script src="auth-worker.js?v=7" defer></script>
+    <script src="login.js?v=2" defer></script>
     <script src="senha-visivel.js" defer></script>
-    <title>FNX TECH - login</title>
+    <title>Entrar — FNX TECH</title>
   <link rel="stylesheet" href="mobile.css?v=3" />
-  <link rel="stylesheet" href="fnx-tema.css?v=8" />
+  <link rel="stylesheet" href="fnx-tema.css?v=9" />
 </head>
 <body>
     <main class="container">
         <form onsubmit="event.preventDefault(); logar();">
             <h1>FNX TECH</h1>
+            <p class="subtitulo-login">Acesso restrito à equipe</p>
             <div class="input-box">
                 <input id="registro" placeholder="Seu registro" type="text" required />
                 <i class="bx bxs-user"></i>
@@ -33,7 +37,7 @@
                 <a href="#" id="linkRecuperarSenha">Recuperar senha</a>
             </div>
 
-            <button type="submit" class="login">Login</button>
+            <button type="submit" class="login">Entrar</button>
             <p id="mensagemErroLogin" style="color: crimson; text-align: center; margin-top: 10px; font-size: 13px; display: none;"></p>
         </form>
     </main>

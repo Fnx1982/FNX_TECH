@@ -31,6 +31,7 @@ async function logar() {
                 mensagemErro.textContent = resposta.erro || "Registro ou senha incorretos. Tente novamente.";
                 mensagemErro.style.display = "block";
             }
+            if (resposta.bloqueado && botao) contagemBloqueio(botao, textoOriginal, resposta.minutos || 15);
             return;
         }
 
@@ -55,6 +56,24 @@ async function logar() {
     } finally {
         if (botao) { botao.disabled = false; botao.textContent = textoOriginal; }
     }
+}
+
+// Bloqueio por excesso de tentativas: trava o botão e mostra o tempo que falta
+let timerBloqueio = null;
+function contagemBloqueio(botao, textoOriginal, minutos) {
+    const fim = Date.now() + minutos * 60000;
+    clearInterval(timerBloqueio);
+    const tick = () => {
+        const resta = Math.max(0, fim - Date.now());
+        if (!resta) { clearInterval(timerBloqueio); botao.disabled = false; botao.textContent = textoOriginal; return; }
+        const m = Math.floor(resta / 60000), s = Math.floor((resta % 60000) / 1000);
+        botao.disabled = true;
+        botao.textContent = `Bloqueado · ${m}:${String(s).padStart(2, "0")}`;
+    };
+    tick();
+    // depois do finally (que reativa o botão), reaplica o bloqueio
+    setTimeout(tick, 0);
+    timerBloqueio = setInterval(tick, 1000);
 }
 
 // ── Recuperar senha ──────────────────────────────────────────
