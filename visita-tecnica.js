@@ -7,7 +7,8 @@ let visitasCache = [];
 let fotosSelecionadas = []; // arquivos escolhidos, ainda não enviados
 let fotosJaSalvas = []; // chaves R2 de fotos já salvas (ao editar uma visita existente)
 let rascunhoAtualId = null; // id do rascunho de auto-save em andamento (null = ainda não criado)
-let medidasVisita = []; // [{ descricao, m1, m2, qtd, unidade }]
+let medidasVisita = []; // [{ descricao, m1, m2, qtd, unidade }] — só levantamentos antigos
+let requisitosVisita = []; // [{ descricao, prioridade: "essencial"|"importante"|"desejavel", horas }]
 let eventoVinculado = null; // { id, titulo } quando a visita veio do Google Agenda
 let eventosAgendaCache = [];
 
@@ -96,6 +97,8 @@ function limparFormulario() {
   document.getElementById("campoDataVisita").value = hojeISOVisita();
   medidasVisita = [];
   renderMedidas();
+  requisitosVisita = [];
+  renderRequisitos();
   definirEventoVinculado(null);
   fotosSelecionadas = [];
   fotosJaSalvas = [];
@@ -120,6 +123,8 @@ function preencherFormulario(visita) {
   document.getElementById("campoDataVisita").value = visita.dataVisita || "";
   medidasVisita = Array.isArray(visita.medidas) ? visita.medidas.map((m) => ({ ...m })) : [];
   renderMedidas();
+  requisitosVisita = Array.isArray(visita.requisitos) ? visita.requisitos.map((r) => ({ ...r })) : [];
+  renderRequisitos();
   definirEventoVinculado(visita.eventoCalendarioId ? { id: visita.eventoCalendarioId, titulo: visita.eventoCalendarioTitulo || "" } : null);
   fotosSelecionadas = [];
   fotosJaSalvas = [...(visita.fotos || [])];
@@ -153,7 +158,7 @@ function coletarDadosRascunhoVisita() {
 }
 
 function formularioVisitaTemConteudo(d) {
-  return !!(d.clienteNome || d.telefone || d.local || d.endereco || d.bairro || d.cidade || d.descricao || d.anotacoes || d.fotos.length || (d.medidas && d.medidas.length));
+  return !!(d.clienteNome || d.telefone || d.local || d.endereco || d.bairro || d.cidade || d.descricao || d.anotacoes || d.fotos.length || (d.medidas && d.medidas.length) || (d.requisitos && d.requisitos.length));
 }
 
 async function salvarRascunhoAtual() {
@@ -199,6 +204,8 @@ function preencherFormularioComRascunho(dados, idRascunho) {
   document.getElementById("campoDataVisita").value = dados.dataVisita || hojeISOVisita();
   medidasVisita = Array.isArray(dados.medidas) ? dados.medidas.map((m) => ({ ...m })) : [];
   renderMedidas();
+  requisitosVisita = Array.isArray(dados.requisitos) ? dados.requisitos.map((r) => ({ ...r })) : [];
+  renderRequisitos();
   definirEventoVinculado(dados.eventoCalendarioId ? { id: dados.eventoCalendarioId, titulo: dados.eventoCalendarioTitulo || "" } : null);
   fotosSelecionadas = [];
   fotosJaSalvas = [...(dados.fotos || [])];
@@ -340,7 +347,7 @@ function renderizarLista() {
         <div>
           <div class="nome">${escaparHtml(v.clienteNome)} ${v.eventoCalendarioId ? '<span class="badge-tipo" style="background:#FFF1E6;color:#8A3300;">📅 Do calendário</span>' : ""} ${v.convertidaEmPropostaId === "dispensada" ? '<span class="badge-tipo" style="background:#EEF0F3;color:#666;">Sem estimativa</span>' : v.convertidaEmPropostaId ? '<span class="badge-tipo" style="background:#E7F6EC;color:#1C8A4B;">Já virou estimativa</span>' : '<span class="badge-tipo" style="background:#FFF1E6;color:#8A3300;">Aguardando estimativa</span>'}</div>
           ${v.endereco || v.cidade ? `<div class="endereco-com-mapa">${htmlLinksMapa(juntarEndereco(v.endereco, v.bairro, v.cidade))}</div>` : ""}
-          <div class="meta">${enderecoPartes || "Sem endereço"} · ${v.dataVisita ? dataBRVisita(v.dataVisita) : new Date(v.criadoEm).toLocaleDateString("pt-BR")} · ${(v.fotos || []).length} foto(s)${(v.medidas || []).length ? " · " + escaparHtml(resumoTotaisMedidas(v.medidas)) : ""}</div>
+          <div class="meta">${enderecoPartes || "Sem endereço"} · ${v.dataVisita ? dataBRVisita(v.dataVisita) : new Date(v.criadoEm).toLocaleDateString("pt-BR")} · ${(v.fotos || []).length} arquivo(s)${(v.requisitos || []).length ? " · " + escaparHtml(resumoRequisitos(v.requisitos)) : (v.medidas || []).length ? " · " + escaparHtml(resumoTotaisMedidas(v.medidas)) : ""}</div>
         </div>
       </div>
       <div class="acoes">
@@ -417,6 +424,7 @@ function camposExtrasVisita() {
     dataVisita: document.getElementById("campoDataVisita").value || "",
     anotacoes: document.getElementById("campoAnotacoes").value.trim(),
     medidas: medidasVisita.filter((m) => (m.descricao || "").trim() || m.m1 || m.m2),
+    requisitos: requisitosVisita.filter((r) => (r.descricao || "").trim()),
     eventoCalendarioId: eventoVinculado ? eventoVinculado.id : null,
     eventoCalendarioTitulo: eventoVinculado ? eventoVinculado.titulo : "",
     origem: eventoVinculado ? "calendario" : "avulsa",
@@ -475,6 +483,9 @@ function textoMedidasParaOrcamento(medidas) {
 function renderMedidas() {
   const lista = document.getElementById("listaMedidas");
   if (!lista) return;
+  // O bloco de medidas só aparece em levantamentos antigos que já tinham medidas
+  const blocoAntigo = document.getElementById("blocoMedidasAntigas");
+  if (blocoAntigo) blocoAntigo.hidden = !medidasVisita.length;
   if (!medidasVisita.length) {
     lista.innerHTML = "";
   } else {
@@ -523,6 +534,59 @@ function renderMedidas() {
   });
   document.getElementById("totalMedidas").textContent = resumoTotaisMedidas(medidasVisita) ? "Total: " + resumoTotaisMedidas(medidasVisita) : "";
 }
+
+// ====================================================
+// REQUISITOS — uma linha por funcionalidade: descrição, prioridade
+// e horas estimadas. Vão para a estimativa como itens de serviço.
+// ====================================================
+const PRIORIDADES_REQ = [["essencial", "Essencial"], ["importante", "Importante"], ["desejavel", "Desejável"]];
+function resumoRequisitos(reqs) {
+  const validos = (reqs || []).filter((r) => (r.descricao || "").trim());
+  const horas = validos.reduce((s, r) => s + numeroBR(r.horas), 0);
+  if (!validos.length) return "";
+  return `${validos.length} requisito${validos.length > 1 ? "s" : ""}${horas ? " · " + formatarNumeroBR(horas) + " h estimadas" : ""}`;
+}
+function renderRequisitos() {
+  const lista = document.getElementById("listaRequisitos");
+  if (!lista) return;
+  lista.innerHTML = !requisitosVisita.length ? "" : `
+    <div class="linha-requisito cab-medidas"><span>Funcionalidade / requisito</span><span>Prioridade</span><span>Horas</span><span></span></div>
+    ${requisitosVisita.map((r, i) => `
+      <div class="linha-requisito" data-req="${i}">
+        <input class="req-desc" type="text" placeholder="Ex.: Login com Google, painel de relatórios..." value="${escaparHtml(r.descricao || "")}" data-campo="descricao" />
+        <select class="req-prio prio-${escaparHtml(r.prioridade || "essencial")}" data-campo="prioridade">
+          ${PRIORIDADES_REQ.map(([v, t]) => `<option value="${v}" ${(r.prioridade || "essencial") === v ? "selected" : ""}>${t}</option>`).join("")}
+        </select>
+        <input class="req-horas" type="text" inputmode="decimal" placeholder="h" value="${escaparHtml(r.horas || "")}" data-campo="horas" />
+        <button type="button" class="btn-remover-medida" title="Remover">&times;</button>
+      </div>`).join("")}`;
+  lista.querySelectorAll(".linha-requisito[data-req]").forEach((linha) => {
+    const i = Number(linha.dataset.req);
+    linha.querySelectorAll("[data-campo]").forEach((campo) => {
+      campo.addEventListener("input", () => {
+        requisitosVisita[i][campo.dataset.campo] = campo.value;
+        if (campo.dataset.campo === "prioridade") campo.className = `req-prio prio-${campo.value}`;
+        document.getElementById("totalRequisitos").textContent = resumoRequisitos(requisitosVisita);
+      });
+      campo.addEventListener("blur", salvarRascunhoAtual);
+    });
+    linha.querySelector(".req-desc").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") { e.preventDefault(); document.getElementById("btnAddRequisito").click(); }
+    });
+    linha.querySelector(".btn-remover-medida").addEventListener("click", () => {
+      requisitosVisita.splice(i, 1);
+      renderRequisitos();
+      salvarRascunhoAtual();
+    });
+  });
+  document.getElementById("totalRequisitos").textContent = resumoRequisitos(requisitosVisita);
+}
+document.getElementById("btnAddRequisito").addEventListener("click", () => {
+  requisitosVisita.push({ descricao: "", prioridade: "essencial", horas: "" });
+  renderRequisitos();
+  const campos = document.querySelectorAll("#listaRequisitos .req-desc");
+  if (campos.length) campos[campos.length - 1].focus();
+});
 
 document.getElementById("btnAddMedida").addEventListener("click", () => {
   medidasVisita.push({ descricao: "", m1: "", m2: "", qtd: "", unidade: "m2" });

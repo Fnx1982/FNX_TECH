@@ -13,7 +13,7 @@
   <title>Levantamento de Requisitos — FNX DEV</title>
   <link rel="stylesheet" href="contatos.css" />
   <link rel="stylesheet" href="extrato.css" />
-  <link rel="stylesheet" href="visita-tecnica.css?v=3" />
+  <link rel="stylesheet" href="visita-tecnica.css?v=4" />
   <link rel="stylesheet" href="mobile.css?v=3" />
 
   <!-- Google Agenda: pra puxar os agendamentos de visita -->
@@ -53,7 +53,7 @@
           <input type="text" id="buscaAgenda" placeholder="Buscar no calendário..." />
         </div>
       </div>
-      <p class="texto-ajuda-agenda">Aqui aparecem só os eventos marcados como <b>📍 Levantamento de requisitos</b> na Agenda. Toque em <b>Registrar levantamento</b> para trazer para o formulário — nome do local, cliente, telefone, endereço e o descritivo já vêm preenchidos.</p>
+      <p class="texto-ajuda-agenda">Aqui aparecem só os eventos marcados como <b>📍 Levantamento de requisitos</b> na Agenda. Toque em <b>Registrar levantamento</b> para trazer para o formulário — empresa, contato, telefone e o objetivo já vêm preenchidos.</p>
       <div class="filtro-tipo-agenda">
         <label><input type="checkbox" id="mostrarTodosEventosAgenda" /> Mostrar também os outros eventos (pagamentos, reuniões...)</label>
         <span id="contagemOutrosAgenda"></span>
@@ -71,10 +71,10 @@
       <div class="grid-campos">
         <div class="campo">
           <label for="campoClienteNome">Cliente</label>
-          <input type="text" id="campoClienteNome" placeholder="Nome ou razão social" />
+          <input type="text" id="campoClienteNome" placeholder="Empresa ou pessoa" />
         </div>
         <div class="campo">
-          <label for="campoDataVisita">Data do levantamento</label>
+          <label for="campoDataVisita">Data da reunião</label>
           <input type="date" id="campoDataVisita" />
         </div>
         <div class="campo">
@@ -82,11 +82,11 @@
           <input type="text" id="campoTelefone" placeholder="(41) 99999-9999" />
         </div>
         <div class="campo">
-          <label for="campoLocal">Nome do local</label>
-          <input type="text" id="campoLocal" placeholder="Ex.: Ed. L'Espace Alameda, Condomínio Sol — bloco B" />
+          <label for="campoLocal">Projeto / produto</label>
+          <input type="text" id="campoLocal" placeholder="Ex.: App de agendamento, Portal do cliente, Site institucional" />
         </div>
         <div class="campo">
-          <label for="campoEndereco">Endereço</label>
+          <label for="campoEndereco">Endereço <span class="dica-anotacoes">(se a reunião for presencial)</span></label>
           <input type="text" id="campoEndereco" placeholder="Rua, número" />
         </div>
         <div class="campo">
@@ -95,23 +95,34 @@
         </div>
         <div class="campo">
           <label for="campoCidade">Cidade</label>
-          <input type="text" id="campoCidade" placeholder="Curitiba" />
+          <input type="text" id="campoCidade" placeholder="Ex.: Curitiba" />
         </div>
         <div class="campo full">
-          <label for="campoDescricao">Descritivo do levantamento</label>
-          <textarea id="campoDescricao" placeholder="O que foi observado, o que precisa ser feito..." rows="3"></textarea>
+          <label for="campoDescricao">Objetivo do projeto <span class="dica-anotacoes">(vai para a estimativa do cliente)</span></label>
+          <textarea id="campoDescricao" placeholder="O problema que o cliente quer resolver, quem vai usar e o resultado esperado..." rows="3"></textarea>
         </div>
         <div class="campo full">
           <label for="campoAnotacoes">📝 Anotações do levantamento <span class="dica-anotacoes">(só para a empresa — não vai para o cliente)</span></label>
-          <textarea id="campoAnotacoes" placeholder="Anote aqui durante o levantamento: o que o cliente precisa, regras de negócio, integrações, acessos, prazos, contato do responsável..." rows="6"></textarea>
+          <textarea id="campoAnotacoes" placeholder="Regras de negócio, integrações (pagamento, WhatsApp, ERP...), sistemas atuais, acessos, prazos desejados, orçamento do cliente, contato técnico..." rows="6"></textarea>
         </div>
       </div>
 
       <!-- Botões do mapa pro endereço digitado acima -->
       <div class="endereco-com-mapa" id="mapaFormVisita"></div>
 
-      <!-- Medidas tiradas no local -->
-      <div class="bloco-medidas">
+      <!-- Requisitos / funcionalidades levantados -->
+      <div class="bloco-requisitos">
+        <div class="topo-medidas">
+          <label>Requisitos e funcionalidades</label>
+          <span class="total-medidas" id="totalRequisitos"></span>
+        </div>
+        <p class="texto-ajuda-agenda">Uma linha por funcionalidade. Ex.: "Login com Google" · Essencial · 8 h. Ao gerar a estimativa, cada linha vira um item de serviço com as horas.</p>
+        <div id="listaRequisitos"></div>
+        <button type="button" class="btn-add-medida" id="btnAddRequisito">+ Adicionar requisito</button>
+      </div>
+
+      <!-- Medidas (só levantamentos antigos que já tinham) -->
+      <div class="bloco-medidas" id="blocoMedidasAntigas" hidden>
         <div class="topo-medidas">
           <label>Medidas</label>
           <span class="total-medidas" id="totalMedidas"></span>
@@ -123,7 +134,7 @@
 
       <div style="margin-top:14px;">
         <label style="display:block; font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:.03em; color:var(--texto-3); margin-bottom:8px;">
-          Fotos <span style="text-transform:none;font-weight:400;">(pode escolher várias de uma vez)</span>
+          Arquivos de referência <span style="text-transform:none;font-weight:400;">(prints, telas, rascunhos — pode escolher várias de uma vez)</span>
         </label>
         <input type="file" id="campoFotos" accept="image/*" multiple />
         <div id="previaFotos" style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;"></div>
@@ -136,7 +147,7 @@
     </div>
 
     <div class="barra-busca">
-      <input type="text" id="buscaVisitas" placeholder="Buscar por cliente ou local..." />
+      <input type="text" id="buscaVisitas" placeholder="Buscar por cliente ou projeto..." />
     </div>
 
     <div class="card-secao" id="blocoPendentes" style="display:none;">
@@ -150,8 +161,8 @@
   </main>
 
   <script src="mapas.js?v=1"></script>
-  <script src="visita-para-orcamento.js?v=2"></script>
-  <script src="visita-tecnica.js?v=7b"></script>
+  <script src="visita-para-orcamento.js?v=3"></script>
+  <script src="visita-tecnica.js?v=8"></script>
   <script>onGoogleAuthChange(carregarAgendaVisitas);</script>
   <script src="camera.js?v=1"></script>
   <script src="modal-expandir.js?v=1"></script>

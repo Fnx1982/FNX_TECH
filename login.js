@@ -100,7 +100,7 @@ document.getElementById("btnEnviarRecuperar").addEventListener("click", async ()
         const resposta = await apiSolicitarReset(registro);
         mensagem.style.color = resposta.ok ? "#1C8A4B" : "crimson";
         mensagem.textContent = resposta.ok
-            ? "Se o registro existir e tiver e-mail cadastrado, a senha temporária já foi enviada. Confira sua caixa de entrada."
+            ? "Pronto! Se o registro tiver e-mail cadastrado, enviamos uma senha temporária (vale 30 minutos). Confira a caixa de entrada e o spam. Sem e-mail cadastrado, o administrador vai definir uma senha nova para você."
             : (resposta.erro || "Erro ao solicitar recuperação.");
     } catch (e) {
         mensagem.style.color = "crimson";

@@ -195,7 +195,7 @@ async function renderVisitasAguardando() {
     el.innerHTML = `
       <div class="info-fila">
         <div class="nome-fila">${escaparHtml(v.clienteNome)}</div>
-        <div class="meta-fila">Levantamento em ${quando}${endereco ? " · " + escaparHtml(endereco) : ""} · ${(v.fotos || []).length} foto(s)${v.criadoPorNome ? " · por " + escaparHtml(v.criadoPorNome) : ""}</div>
+        <div class="meta-fila">Levantamento em ${quando}${endereco ? " · " + escaparHtml(endereco) : ""} · ${(v.requisitos || []).filter((r) => (r.descricao || "").trim()).length} requisito(s) · ${(v.fotos || []).length} arquivo(s)${v.criadoPorNome ? " · por " + escaparHtml(v.criadoPorNome) : ""}</div>
       </div>
       <div class="acoes-fila">
         <button type="button" class="btn-laranja btn-criar-da-visita">Criar estimativa</button>

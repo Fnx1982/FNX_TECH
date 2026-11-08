@@ -35,11 +35,35 @@ function textoMedidasDaVisita(medidas) {
   const total = Object.entries(totais).map(([u, v]) => `${vpoFmt(v)} ${u}`).join(" · ");
   return `MEDIDAS DO LEVANTAMENTO:\n${linhas.join("\n")}\nTotal: ${total}`;
 }
+// Requisitos levantados: texto para o campo interno da estimativa
+const ROTULO_PRIORIDADE = { essencial: "Essencial", importante: "Importante", desejavel: "Desejável" };
+function textoRequisitosDaVisita(reqs) {
+  const validos = (reqs || []).filter((r) => (r.descricao || "").trim());
+  if (!validos.length) return "";
+  const horas = validos.reduce((s, r) => s + vpoNumero(r.horas), 0);
+  const linhas = validos.map((r) => `- [${ROTULO_PRIORIDADE[r.prioridade] || "Essencial"}] ${r.descricao.trim()}${vpoNumero(r.horas) ? ` (${vpoFmt(vpoNumero(r.horas))} h)` : ""}`);
+  return `REQUISITOS LEVANTADOS:\n${linhas.join("\n")}${horas ? `\nTotal estimado: ${vpoFmt(horas)} h` : ""}`;
+}
+// Cada requisito vira um item de serviço da estimativa (qtd = horas)
+function itensDosRequisitos(reqs) {
+  const ordem = { essencial: 0, importante: 1, desejavel: 2 };
+  return (reqs || []).filter((r) => (r.descricao || "").trim())
+    .sort((a, b) => (ordem[a.prioridade] ?? 0) - (ordem[b.prioridade] ?? 0))
+    .map((r) => ({
+      qtd: vpoNumero(r.horas) || null,
+      unid: "H",
+      descricao: r.descricao.trim() + (r.prioridade === "desejavel" ? " (opcional)" : ""),
+      valorUnit: null, valorFinal: null, servicoId: null, obsCliente: "", obsInterna: "",
+    }));
+}
+
 function montarOrcamentoDaVisita(v) {
-  // Só as medidas: o descritivo já vai no "Serviço", e as anotações
-  // ficam no quadro de fotos da visita (canto da tela).
-  const interno = textoMedidasDaVisita(v.medidas);
+  // Requisitos (e medidas de levantamentos antigos) vão no campo
+  // interno; o objetivo vai na "Visão geral"; cada requisito vira item.
+  const interno = [textoRequisitosDaVisita(v.requisitos), textoMedidasDaVisita(v.medidas)].filter(Boolean).join("\n\n");
+  const itens = itensDosRequisitos(v.requisitos);
   return {
+    ...(itens.length ? { itensMaoDeObra: itens } : {}),
     cliente: v.clienteNome || "",
     telefone: v.telefone || "",
     local: [v.endereco, v.bairro, v.cidade].filter(Boolean).join(" - "),

@@ -172,7 +172,11 @@
 <!-- PAINEL: Solicitações de redefinição de senha pendentes -->
 <div class="container">
 <h2>Solicitações de redefinição de senha</h2>
-<p style="font-size:13px;color:#666;">Quando alguém pede "Recuperar senha" na tela de login, a solicitação aparece aqui. Defina uma nova senha e repasse ao usuário.</p>
+<p style="font-size:13px;color:#666;">Com o e-mail configurado (Resend), quem tem e-mail cadastrado recebe uma senha temporária sozinho. Aparece aqui quem não tem e-mail ou quando o envio falha: defina uma nova senha — se a pessoa tiver e-mail, ela também vai por e-mail.</p>
+<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:6px 0 14px;">
+    <button type="button" id="btnEmailTeste" class="btn-permissoes-setor">✉️ Enviar e-mail de teste</button>
+    <span id="statusEmailTeste" style="font-size:12.5px;color:#666;"></span>
+</div>
 <table id="tabelaResets">
     <thead>
         <tr>
@@ -613,6 +617,14 @@
     });
 
     // ── Solicitações de redefinição de senha pendentes ──────────
+    document.getElementById("btnEmailTeste").addEventListener("click", async () => {
+        const st = document.getElementById("statusEmailTeste");
+        st.style.color = "#666"; st.textContent = "Enviando…";
+        const r = await chamarWorker("email-teste", { method: "POST", body: {} });
+        st.style.color = r.ok ? "#1C8A4B" : "#C0392B";
+        st.textContent = r.ok ? `Enviado para ${r.para}. Confira a caixa de entrada (e o spam).` : (r.erro || "Não foi possível enviar.");
+    });
+
     async function carregarResetsPendentes() {
         const resposta = await apiListarResetsPendentes();
         const tbody = document.querySelector("#tabelaResets tbody");
@@ -645,7 +657,7 @@
                 if (novaSenha.length < 6) { mostrarToast("A senha precisa ter pelo menos 6 caracteres.", "erro"); return; }
                 const r = await apiAprovarReset(item.token, novaSenha);
                 if (r.ok) {
-                    mostrarToast("Senha redefinida. Repasse a nova senha ao usuário.");
+                    mostrarToast(r.emailEnviado ? "Senha redefinida e enviada por e-mail para o usuário." : "Senha redefinida. Repasse a nova senha ao usuário.");
                     carregarResetsPendentes();
                 } else {
                     mostrarToast(r.erro || "Erro ao redefinir senha.", "erro");
@@ -741,7 +753,9 @@
 
             this.reset();
             carregarUsuarios();
-            mostrarToast("Usuário cadastrado com sucesso!");
+            mostrarToast(resposta.emailEnviado
+                ? `Usuário cadastrado! O acesso foi enviado para ${email}.`
+                : "Usuário cadastrado! Repasse o registro e a senha para a pessoa.");
         } catch (err) {
             console.error("Erro ao salvar usuário:", err);
             mostrarToast("Não foi possível conectar ao servidor. Verifique sua internet e tente novamente.", "erro");

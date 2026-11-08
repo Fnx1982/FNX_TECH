@@ -92,3 +92,19 @@
 .tag-tipo-agenda { display: inline-block; font-size: 10.5px; font-weight: 700; border-radius: 10px; padding: 1px 8px; margin-left: 6px; vertical-align: middle; }
 .tag-tipo-agenda.pagamento { color: #b03a2e; background: #fbe8e6; }
 .tag-tipo-agenda.outro { color: #1D5FB4; background: #E3EEFB; }
+
+/* ===== Requisitos (funcionalidades) ===== */
+.bloco-requisitos { margin-top: 6px; border-top: 1px dashed var(--borda); padding-top: 12px; }
+.linha-requisito { display: grid; grid-template-columns: 1fr 140px 80px 32px; gap: 8px; align-items: center; margin-bottom: 8px; }
+.linha-requisito.cab-medidas { margin-bottom: 4px; }
+.linha-requisito input, .linha-requisito select { width: 100%; min-width: 0; padding: 9px 10px; border: 1px solid var(--borda, #ddd); border-radius: 9px; font-size: 13.5px; background: #fff; }
+.linha-requisito .req-horas { text-align: center; }
+.linha-requisito .req-prio { font-weight: 700; }
+.linha-requisito .req-prio.prio-essencial { color: #C2410C; border-color: #FDBA74; background: #FFF7ED; }
+.linha-requisito .req-prio.prio-importante { color: #1D4ED8; border-color: #93C5FD; background: #EFF6FF; }
+.linha-requisito .req-prio.prio-desejavel { color: #4B5563; border-color: #D1D5DB; background: #F9FAFB; }
+@media (max-width: 640px) {
+  .linha-requisito { grid-template-columns: 1fr 70px 32px; }
+  .linha-requisito .req-desc { grid-column: 1 / -1; }
+  .linha-requisito.cab-medidas { display: none; }
+}
