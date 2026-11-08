@@ -9,7 +9,7 @@
 // 1) Endereço do Worker da FNX TECH (Cloudflare → Workers → o seu
 //    Worker → copie a URL que termina em .workers.dev). Sem barra
 //    no final.
-const FNX_API = /(^|\.)sistemafnx\.com$/.test(location.hostname) ? "https://api.sistemafnx.com" : "https://fnx-tech-backend.holdingfnx.workers.dev";
+const FNX_API = /(^|\.)fnxholding\.com$/.test(location.hostname) ? "https://api.fnxholding.com" : "https://fnx-tech-backend.holdingfnx.workers.dev";
 
 // 2) Dados da empresa — usados nos PDFs (propostas, notas,
 //    apresentações, extrato de ponto). Deixe "" o que ainda não tiver.
