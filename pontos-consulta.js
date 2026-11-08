@@ -1137,7 +1137,7 @@ function gerarPdfMensalPontos(registroFuncionario, nomeFuncionario, secoes) {
     doc.setFontSize(7);
     doc.setTextColor(160);
     doc.text(
-      "FNX TECH — Extrato de Ponto — " + nomeFuncionario + " — " + nomeMes + "/" + ano + " — Pág. " + n,
+      "FNX DEV — Extrato de Ponto — " + nomeFuncionario + " — " + nomeMes + "/" + ano + " — Pág. " + n,
       PW / 2, PH - 18, { align: "center" }
     );
     doc.setTextColor(0);
@@ -1154,7 +1154,7 @@ function gerarPdfMensalPontos(registroFuncionario, nomeFuncionario, secoes) {
   doc.text("EXTRATO DE PONTO MENSAL", ML, 30);
   doc.setFontSize(9);
   doc.setFont("helvetica", "normal");
-  doc.text("FNX TECH", ML, 46);
+  doc.text("FNX DEV", ML, 46);
   doc.setTextColor(0);
   y = 75;
 
@@ -1495,11 +1495,11 @@ function gerarPdfMensalPontos(registroFuncionario, nomeFuncionario, secoes) {
     const xResp = ML+largAssin+40;
     doc.line(xResp, y+40, xResp+largAssin, y+40);
     doc.text("Responsável / Gestor", xResp+largAssin/2, y+52, {align:"center"});
-    doc.text("FNX TECH", xResp+largAssin/2, y+63, {align:"center"});
+    doc.text("FNX DEV", xResp+largAssin/2, y+63, {align:"center"});
     y += 80;
     doc.setFontSize(7); doc.setTextColor(160);
     doc.text(
-      "Documento gerado em " + new Date().toLocaleString("pt-BR") + " — Sistema FNX TECH — Dados extraídos do registro eletrônico de ponto",
+      "Documento gerado em " + new Date().toLocaleString("pt-BR") + " — Sistema FNX DEV — Dados extraídos do registro eletrônico de ponto",
       PW/2, y, {align:"center"}
     );
   }
@@ -1579,7 +1579,7 @@ function gerarExtratoPontoPDF(registroFuncionario, nomeFuncionario, mes, ano) {
   doc.setFontSize(7);
   doc.setTextColor(160);
   doc.text(
-    "⚠ Relatório gerado pelo sistema FNX TECH — \"Falta e Atraso\" reflete apenas lançamentos manuais desse tipo (sem detecção automática de atraso por horário). Confira contra o Control iD antes de usar para fins de pagamento.",
+    "⚠ Relatório gerado pelo sistema FNX DEV — \"Falta e Atraso\" reflete apenas lançamentos manuais desse tipo (sem detecção automática de atraso por horário). Confira contra o Control iD antes de usar para fins de pagamento.",
     ML, doc.lastAutoTable.finalY + 20, { maxWidth: PW - ML - MR }
   );
 

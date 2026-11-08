@@ -1,5 +1,5 @@
 // ============================================================
-// quadros.js — Quadros estilo Trello (FNX TECH)
+// quadros.js — Quadros estilo Trello (FNX DEV)
 //
 // Quadros → listas → cartões. Cada cartão tem etiquetas, prazo,
 // responsáveis, checklist, comentários e cor de capa. Os cartões
@@ -205,7 +205,7 @@
     $("telaQuadro").hidden = false;
     $("telaQuadro").style.setProperty("--cor-quadro", quadro.cor || CORES[0]);
     $("nomeQuadro").textContent = quadro.nome;
-    document.title = `${quadro.nome} — Boards — FNX TECH`;
+    document.title = `${quadro.nome} — Boards — FNX DEV`;
     atualizarAvisoArquivado();
     preencherFiltros();
     renderListas();
@@ -239,7 +239,7 @@
     clearTimeout(timerAtualizar);
     $("telaQuadro").hidden = true;
     $("telaQuadros").hidden = false;
-    document.title = "Boards — FNX TECH";
+    document.title = "Boards — FNX DEV";
     carregarQuadros();
   }
 

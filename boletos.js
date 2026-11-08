@@ -626,7 +626,7 @@ btnLimparFiltros.addEventListener("click", () => {
   renderTudo();
 })();
 
-// ── FNX TECH: as opções de "Conta" vêm do Gerenciamento de Contas ──
+// ── FNX DEV: as opções de "Conta" vêm do Gerenciamento de Contas ──
 (async function preencherContasBoletos() {
   try {
     const r = await apiDataGet("contasBancarias");

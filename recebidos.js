@@ -1,6 +1,6 @@
 // ============================================================
 // recebidos.js — registro de notas que fornecedores emitem
-// para o CNPJ da FNX TECH (não é emissão, é organização/arquivo).
+// para o CNPJ da FNX DEV (não é emissão, é organização/arquivo).
 // ============================================================
 
 const WORKER_URL_RECEBIDOS = FNX_API;

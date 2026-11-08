@@ -10,7 +10,7 @@
 
 const CHAVE_RELATORIOS = "relatorios_salvos";
 
-// Contas do Gerenciamento de Contas (FNX TECH). Preenchido no início
+// Contas do Gerenciamento de Contas (FNX DEV). Preenchido no início
 // (carregarContasRelatorio), com os lançamentos que estão no servidor.
 const BANCOS = {}; // { idConta: { nome } }
 let _lancamentosExtratoRelatorio = [];
@@ -1134,7 +1134,7 @@ async function gerarApresentacaoDemandaPptx(mesesArr, ano, selecionados) {
     const s = pres.addSlide();
     s.addShape(pres.ShapeType.rect, {x:0,y:0,w:5,h:5.625,fill:{color:D.laranja}});
     s.addShape(pres.ShapeType.rect, {x:5,y:0,w:5,h:5.625,fill:{color:D.bg}});
-    s.addText("FNX TECH", {x:0.4,y:1.8,w:4.2,h:0.7,fontSize:40,bold:true,color:"FFFFFF",fontFace:"Montserrat",margin:0});
+    s.addText("FNX DEV", {x:0.4,y:1.8,w:4.2,h:0.7,fontSize:40,bold:true,color:"FFFFFF",fontFace:"Montserrat",margin:0});
     s.addText("Sistema de Gestão", {x:0.4,y:2.5,w:4.2,h:0.4,fontSize:14,color:"FFFFFF",fontFace:"Montserrat",margin:0});
     s.addText("Acompanhamento de", {x:5.3,y:1.5,w:4.4,h:0.4,fontSize:14,color:D.texto2,fontFace:"Montserrat",margin:0});
     s.addText("Tarefa", {x:5.3,y:1.95,w:4.4,h:0.85,fontSize:44,bold:true,color:D.escuro,fontFace:"Montserrat",margin:0});
@@ -1220,7 +1220,7 @@ async function gerarApresentacaoDemandaPptx(mesesArr, ano, selecionados) {
     const s = pres.addSlide();
     s.addShape(pres.ShapeType.rect,{x:0,y:0,w:5,h:5.625,fill:{color:D.laranja}});
     s.addShape(pres.ShapeType.rect,{x:5,y:0,w:5,h:5.625,fill:{color:D.bg}});
-    s.addText("FNX TECH", {x:0.4,y:2.2,w:4.2,h:0.7,fontSize:36,bold:true,color:"FFFFFF",fontFace:"Montserrat",margin:0});
+    s.addText("FNX DEV", {x:0.4,y:2.2,w:4.2,h:0.7,fontSize:36,bold:true,color:"FFFFFF",fontFace:"Montserrat",margin:0});
     s.addText("Sistema de Gestão", {x:0.4,y:3.0,w:4.2,h:0.4,fontSize:13,color:"FFFFFF",fontFace:"Montserrat",margin:0});
     s.addText("Obrigado", {x:5.3,y:2.0,w:4.4,h:0.8,fontSize:40,bold:true,color:D.escuro,fontFace:"Montserrat",margin:0});
     s.addText(new Date().toLocaleDateString("pt-BR"), {x:5.3,y:2.9,w:4.4,h:0.4,fontSize:13,color:D.texto2,fontFace:"Montserrat",margin:0});
@@ -1269,7 +1269,7 @@ async function gerarApresentacaoFinanceiroPptx(mesesArr, ano, selecionados) {
     s.background = {color:F.bg};
     s.addShape(pres.ShapeType.ellipse,{x:6.5,y:-1.5,w:5,h:5,fill:{color:F.laranja},line:{color:F.laranja,width:0},transparency:85});
     s.addShape(pres.ShapeType.ellipse,{x:7.5,y:3.0,w:3,h:3,fill:{color:F.laranja},line:{color:F.laranja,width:0},transparency:90});
-    s.addText("FNX TECH",{x:0.5,y:1.3,w:9,h:1,fontSize:52,bold:true,color:F.laranja,fontFace:"Montserrat",margin:0});
+    s.addText("FNX DEV",{x:0.5,y:1.3,w:9,h:1,fontSize:52,bold:true,color:F.laranja,fontFace:"Montserrat",margin:0});
     s.addText("Sistema de Gestão",{x:0.5,y:2.35,w:6,h:0.45,fontSize:15,color:F.texto2,fontFace:"Montserrat",margin:0});
     s.addText("Relatório Financeiro",{x:0.5,y:3.0,w:6,h:0.65,fontSize:28,bold:true,color:F.texto,fontFace:"Montserrat",margin:0});
     s.addText(nomeMes + " / " + ano,{x:0.5,y:3.7,w:6,h:0.4,fontSize:13,color:F.texto2,fontFace:"Montserrat",margin:0});
@@ -1486,7 +1486,7 @@ async function gerarApresentacaoFinanceiroPptx(mesesArr, ano, selecionados) {
     s.background = {color:F.bg};
     s.addShape(pres.ShapeType.ellipse,{x:-0.5,y:3.5,w:4,h:4,fill:{color:F.laranja},line:{color:F.laranja,width:0},transparency:88});
     s.addText("Obrigado",{x:1,y:1.6,w:8,h:1.2,fontSize:54,bold:true,color:F.texto,fontFace:"Montserrat",align:"center",margin:0});
-    s.addText("FNX TECH",{x:1,y:2.9,w:8,h:0.5,fontSize:16,color:F.texto2,fontFace:"Montserrat",align:"center",margin:0});
+    s.addText("FNX DEV",{x:1,y:2.9,w:8,h:0.5,fontSize:16,color:F.texto2,fontFace:"Montserrat",align:"center",margin:0});
     s.addText(new Date().toLocaleDateString("pt-BR"),{x:1,y:3.5,w:8,h:0.4,fontSize:12,color:F.texto2,fontFace:"Montserrat",align:"center",margin:0});
   }
 

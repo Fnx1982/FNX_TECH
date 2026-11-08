@@ -1,6 +1,6 @@
-# FNX TECH — como colocar no ar
+# FNX DEV — como colocar no ar
 
-O site é o mesmo sistema da Eng Job, adaptado para a FNX TECH, com um backend **separado** (Worker novo, KV novo, R2 novo). Nenhum dado da Eng Job é lido nem gravado.
+O site é o mesmo sistema da Eng Job, adaptado para a FNX DEV, com um backend **separado** (Worker novo, KV novo, R2 novo). Nenhum dado da Eng Job é lido nem gravado.
 
 ## 1. Criar o backend no Cloudflare (pelo navegador)
 

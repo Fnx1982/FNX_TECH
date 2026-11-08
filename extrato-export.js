@@ -187,7 +187,7 @@ function gerarCnab240Extrato(lancamentos, nomeBanco, dadosConta) {
     codigoBanco + "0000" + "0" + preencherCampo("", 9) +
     "2" + preencherCampo("", 14) + campoNumerico("", 15) +
     preencherCampo(nomeBanco.toUpperCase(), 30) +
-    preencherCampo("FNX TECH", 30) +
+    preencherCampo("FNX DEV", 30) +
     preencherCampo("", 10) + "1" + dataGeracao + preencherCampo("", 6) +
     campoNumerico("1", 6) + preencherCampo("", 10) + preencherCampo("", 69) + campoNumerico("1", 5)
   );
@@ -196,7 +196,7 @@ function gerarCnab240Extrato(lancamentos, nomeBanco, dadosConta) {
   linhas.push(
     codigoBanco + "0001" + "1" + "C" + "98" + "01" + preencherCampo("", 2) +
     "2" + campoNumerico("", 15) + preencherCampo("", 15) +
-    preencherCampo("FNX TECH", 30) + preencherCampo("", 40) + preencherCampo("", 40) + preencherCampo("", 8) + preencherCampo("", 148)
+    preencherCampo("FNX DEV", 30) + preencherCampo("", 40) + preencherCampo("", 40) + preencherCampo("", 8) + preencherCampo("", 148)
   );
 
   // Segmento — um "detalhe" por lançamento (representando o extrato,

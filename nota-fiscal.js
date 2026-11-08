@@ -23,7 +23,7 @@ const DADOS_EMPRESA_PADRAO = {
   inscMunicipal: "",
   inscEstadual: "",
   inscEstadualSubstTrib: "",
-  razaoSocial: FNX_EMPRESA.razaoSocial || "FNX TECH",
+  razaoSocial: FNX_EMPRESA.razaoSocial || "FNX DEV",
   endereco: FNX_EMPRESA.endereco || "",
   municipio: FNX_EMPRESA.cidade || "",
   uf: FNX_EMPRESA.uf || "",
@@ -474,7 +474,7 @@ function limparCamposEstruturadosNFSe() {
   selects.forEach((id) => { const el = document.getElementById(id); if (el) el.selectedIndex = 0; });
 
   // Local de Prestação e Município de Incidência: quase sempre
-  // Curitiba, na prática da FNX TECH — evita começar em branco toda
+  // Curitiba, na prática da FNX DEV — evita começar em branco toda
   // vez numa nota nova.
   const campoLocal = document.getElementById("campoLocalPrestacao");
   const campoIncidencia = document.getElementById("campoMunicipioIncidencia");
@@ -768,7 +768,7 @@ if (TIPO_NOTA_PAGINA === "NFS-e") {
   carregarDadosEmpresa();
 
   // Município de Incidência copia o Local de Prestação automaticamente
-  // — na prática da FNX TECH, só muda quando o serviço é fora de
+  // — na prática da FNX DEV, só muda quando o serviço é fora de
   // Curitiba, então copiar poupa digitar duas vezes o mesmo lugar.
   const campoLocal = document.getElementById("campoLocalPrestacao");
   const campoIncidencia = document.getElementById("campoMunicipioIncidencia");

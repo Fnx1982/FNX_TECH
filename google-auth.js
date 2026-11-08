@@ -5,7 +5,7 @@
 // COMO FUNCIONA AGORA (sem piscar a tela):
 // A pessoa conecta o Gmail UMA vez, na tela do Calendário. O Google
 // devolve uma autorização permanente, que fica guardada no Worker
-// (servidor), ligada ao login da pessoa no FNX TECH. Depois disso, cada
+// (servidor), ligada ao login da pessoa no FNX DEV. Depois disso, cada
 // página só pede ao Worker uma "chave de acesso" nova — sem abrir
 // janela do Google, sem piscar, inclusive no celular.
 //
@@ -102,7 +102,7 @@ function initGoogleAPI() {
   if (googleApiIniciando || googleApiReady) return;
   // Integração com o Google ainda não configurada (config.js) — o
   // site segue funcionando, só sem o Google Agenda.
-  if (!GOOGLE_CLIENT_ID || !GOOGLE_API_KEY || !window.gapi) {
+  if (!GOOGLE_CLIENT_ID || !window.gapi) {
     googleApiErroInicializacao = new Error("Google Agenda não configurado");
     notifyGoogleAuthReady();
     return;
@@ -111,7 +111,10 @@ function initGoogleAPI() {
 
   gapi.load("client", () => {
     gapi.client
-      .init({ apiKey: GOOGLE_API_KEY, discoveryDocs: GOOGLE_DISCOVERY_DOCS })
+      // Sem a chave de API de propósito: a agenda é lida com o acesso da
+      // própria pessoa (OAuth), então a chave não é necessária — e assim a
+      // restrição de sites da chave no Google Cloud não bloqueia o domínio.
+      .init({ discoveryDocs: GOOGLE_DISCOVERY_DOCS })
       .then(async () => {
         await buscarTokenGoogleNoServidor();
         notifyGoogleAuthReady();
@@ -178,7 +181,7 @@ setInterval(() => {
 
 
 // ============================================================
-// Tipo do evento da agenda (criado pelo FNX TECH): "visita", "pagamento"
+// Tipo do evento da agenda (criado pelo FNX DEV): "visita", "pagamento"
 // ou "outro". Fica guardado no próprio evento do Google
 // (extendedProperties.private.enjobTipo). Eventos antigos, de antes
 // disso (ou criados direto no Google), são adivinhados pelo texto.

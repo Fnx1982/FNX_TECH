@@ -17,7 +17,7 @@ const CORES = {
   azul:         "2B6CB0",
 };
 
-const EMPRESA = "FNX TECH";
+const EMPRESA = "FNX DEV";
 
 // ====================================================
 // COLETA DE DADOS
@@ -516,7 +516,7 @@ function slideEncerramento(pres) {
 async function gerarApresentacao(mes, ano, slidesSelecionados) {
   const pres = new PptxGenJS();
   pres.layout = "LAYOUT_16x9";
-  pres.author = "FNX TECH";
+  pres.author = "FNX DEV";
   pres.title  = `Relatório ${nomeMes(mes)} ${ano}`;
 
   const dados = coletarDados(mes, ano);
@@ -550,6 +550,6 @@ async function gerarApresentacao(mes, ano, slidesSelecionados) {
 
   slideEncerramento(pres);
 
-  const nomeArq = `apresentacao_fnxtech_${nomeMes(mes).toLowerCase()}_${ano}.pptx`;
+  const nomeArq = `apresentacao_fnxdev_${nomeMes(mes).toLowerCase()}_${ano}.pptx`;
   await pres.writeFile({ fileName: nomeArq });
 }

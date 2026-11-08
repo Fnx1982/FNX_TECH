@@ -1,5 +1,5 @@
 // ============================================================
-// contas-bancarias.js — Gerenciamento de Contas (FNX TECH)
+// contas-bancarias.js — Gerenciamento de Contas (FNX DEV)
 // Substitui as páginas fixas de banco: a empresa cadastra as
 // contas que quiser (nome, banco, agência, conta, cor) e cada uma
 // tem o seu extrato (o motor de extrato.js, que filtra os
@@ -180,7 +180,7 @@
 
   if (!atual) return; // sem contas: só mostra o "+ Nova conta"
   tagContaAtual.textContent = atual.nome;
-  document.title = `FNX TECH — ${atual.nome}`;
+  document.title = `FNX DEV — ${atual.nome}`;
   areaExtrato.hidden = false;
 
   // Atualiza os saldos dos cartões sempre que o extrato mudar

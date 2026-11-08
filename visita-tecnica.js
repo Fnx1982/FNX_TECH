@@ -555,7 +555,7 @@ function separarEnderecoGoogle(texto) {
     resultado.bairro = bairro || "";
     resultado.cidade = /\d{5}-?\d{3}/.test(cidade) ? "" : cidade;
   } else if (partes.length === 2 && partes[1].split(" - ").length >= 3) {
-    // Formato do próprio FNX TECH: "Rua X, 100 - Bairro - Cidade"
+    // Formato do próprio FNX DEV: "Rua X, 100 - Bairro - Cidade"
     const [numero, bairro, cidade] = partes[1].split(" - ").map((s) => s.trim());
     resultado.endereco = `${partes[0]}, ${numero}`;
     resultado.bairro = bairro || "";

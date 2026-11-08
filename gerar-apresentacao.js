@@ -2,7 +2,7 @@
 // gerar-apresentacao.js — Proposta Comercial no padrão de empresa dev
 //
 // Formulário em 5 etapas → PDF com:
-//   Capa · Sobre a FNX TECH · Entendimento do desafio · Escopo e
+//   Capa · Sobre a FNX DEV · Entendimento do desafio · Escopo e
 //   tecnologias · Cronograma (linha do tempo) · Investimento (das
 //   estimativas cadastradas + suporte mensal) · Condições ·
 //   Próximos passos e aceite.
@@ -43,7 +43,7 @@ const PADRAO = {
     "Domínios, hospedagem, licenças e serviços de terceiros são de responsabilidade do cliente, salvo quando listados no investimento",
     "O código-fonte e a documentação são entregues ao cliente após a quitação",
     "Tratamento de dados pessoais de acordo com a LGPD",
-    "A FNX TECH pode citar o projeto em seu portfólio, salvo informação confidencial",
+    "A FNX DEV pode citar o projeto em seu portfólio, salvo informação confidencial",
   ].join("\n"),
   proximosPassos: [
     "Aprovação da proposta",
@@ -350,7 +350,7 @@ async function gerarPdfApresentacao(dados) {
     const doc = new jsPDF({ unit: "pt", format: "a4" });
     const PW = doc.internal.pageSize.getWidth(), PH = doc.internal.pageSize.getHeight();
     const M = 48, LU = PW - M * 2;
-    const EMP = typeof FNX_EMPRESA !== "undefined" ? FNX_EMPRESA : { nome: "FNX TECH" };
+    const EMP = typeof FNX_EMPRESA !== "undefined" ? FNX_EMPRESA : { nome: "FNX DEV" };
     const dataFmt = dados.data ? new Date(dados.data + "T12:00:00").toLocaleDateString("pt-BR") : "";
     let y = 0;
     let secao = 0;
@@ -370,7 +370,7 @@ async function gerarPdfApresentacao(dados) {
     function cabecalho() {
       gradiente(0, 0, PW, 4, COR.laranja, COR.vermelho);
       fonte("bold", 9); cor(COR.preto);
-      doc.text(EMP.nome || "FNX TECH", M, 30);
+      doc.text(EMP.nome || "FNX DEV", M, 30);
       fonte("normal", 8.5); cor(COR.cinza);
       doc.text(`Proposta ${dados.numeroDocumento ? "nº " + dados.numeroDocumento + " · " : ""}${dados.nomeProjeto}`, PW - M, 30, { align: "right", maxWidth: LU - 120 });
       doc.setDrawColor(...COR.linha); doc.setLineWidth(0.6); doc.line(M, 40, PW - M, 40);
@@ -451,7 +451,7 @@ async function gerarPdfApresentacao(dados) {
     if (typeof LOGO_EMPRESA_BASE64 !== "undefined" && LOGO_EMPRESA_BASE64) {
       try { doc.addImage(LOGO_EMPRESA_BASE64, "JPEG", M, 60, 150, 150 / (LOGO_EMPRESA_PROPORCAO || 3.35)); } catch (e) { /* sem logo */ }
     } else {
-      fonte("bold", 26); cor(COR.branco); doc.text(EMP.nome || "FNX TECH", M, 92);
+      fonte("bold", 26); cor(COR.branco); doc.text(EMP.nome || "FNX DEV", M, 92);
       gradiente(M, 102, 46, 4, COR.laranja, COR.vermelho);
     }
     fonte("bold", 10); cor(COR.laranja);
@@ -484,9 +484,9 @@ async function gerarPdfApresentacao(dados) {
 
     // ── 01 SOBRE ────────────────────────────────────────────
     novaPagina();
-    tituloSecao(`Sobre a ${EMP.nome || "FNX TECH"}`, "Tecnologia sob medida para o seu negócio");
+    tituloSecao(`Sobre a ${EMP.nome || "FNX DEV"}`, "Tecnologia sob medida para o seu negócio");
     const anos = parseInt(dados.anosExperiencia, 10) || 0;
-    paragrafo(`${anos ? `Há ${anos} ano${anos > 1 ? "s" : ""}, a` : "A"} ${EMP.nome || "FNX TECH"} desenvolve software que resolve problemas reais: sistemas web, aplicativos, integrações e automações pensados para o dia a dia de cada cliente.`);
+    paragrafo(`${anos ? `Há ${anos} ano${anos > 1 ? "s" : ""}, a` : "A"} ${EMP.nome || "FNX DEV"} desenvolve software que resolve problemas reais: sistemas web, aplicativos, integrações e automações pensados para o dia a dia de cada cliente.`);
     paragrafo("Trabalhamos em ciclos curtos, com entregas frequentes e o cliente acompanhando cada etapa — do levantamento de requisitos até a publicação e o suporte.", { apos: 22 });
     const servicos = [
       ["Sistemas web", "Plataformas, painéis e portais sob medida"],
@@ -671,7 +671,7 @@ async function gerarPdfApresentacao(dados) {
       fonte("normal", 9); cor(COR.cinza); doc.text(s, x + 16, y + 37);
     });
     y += 72;
-    if (linhas(dados.fornecemos).length) { subtitulo(`O que a ${EMP.nome || "FNX TECH"} entrega`); listaMarcada(linhas(dados.fornecemos), "check"); }
+    if (linhas(dados.fornecemos).length) { subtitulo(`O que a ${EMP.nome || "FNX DEV"} entrega`); listaMarcada(linhas(dados.fornecemos), "check"); }
     if (linhas(dados.precisamos).length) { subtitulo("O que precisamos do cliente"); listaMarcada(linhas(dados.precisamos)); }
     if (linhas(dados.condicoes).length) { subtitulo("Condições gerais"); listaMarcada(linhas(dados.condicoes)); }
 
@@ -698,7 +698,7 @@ async function gerarPdfApresentacao(dados) {
     y += 24;
     paragrafo(`Ao assinar, ${dados.nomeCliente} aprova o escopo, o cronograma e o investimento descritos nesta proposta${dados.numeroDocumento ? ` (nº ${dados.numeroDocumento})` : ""}.`, { tam: 9.5, c: COR.cinza, apos: 50 });
     const wAss = LU / 2 - 20;
-    [[dados.nomeCliente, dados.contatoCliente || "Cliente"], [EMP.razaoSocial || EMP.nome || "FNX TECH", "Contratada"]].forEach(([nome, papel], i) => {
+    [[dados.nomeCliente, dados.contatoCliente || "Cliente"], [EMP.razaoSocial || EMP.nome || "FNX DEV", "Contratada"]].forEach(([nome, papel], i) => {
       const x = M + i * (wAss + 40);
       doc.setDrawColor(...COR.texto); doc.setLineWidth(0.8); doc.line(x, y, x + wAss, y);
       fonte("bold", 10); cor(COR.preto); doc.text(doc.splitTextToSize(nome, wAss)[0], x, y + 16);
@@ -714,7 +714,7 @@ async function gerarPdfApresentacao(dados) {
       doc.setPage(i);
       doc.setDrawColor(...COR.linha); doc.setLineWidth(0.6); doc.line(M, PH - 42, PW - M, PH - 42);
       fonte("normal", 8); cor(COR.cinza);
-      doc.text(contato || (EMP.nome || "FNX TECH"), M, PH - 26);
+      doc.text(contato || (EMP.nome || "FNX DEV"), M, PH - 26);
       doc.text(`${i} / ${totalPag}`, PW - M, PH - 26, { align: "right" });
     }
 
