@@ -67,9 +67,12 @@ async function carregarNotificacoes() {
   if (!resposta.ok) return; // silencioso — não quero um toast de erro toda vez que o poll falha
 
   const naoLidas = resposta.notificacoes.filter((n) => !n.lida);
+  // + prazos da agenda que vencem nas próximas 48h (avisos-agenda.js)
+  const qtdAgenda = Number(window.fnxQtdAvisosAgenda || 0);
+  const totalBadge = naoLidas.length + qtdAgenda;
   const badge = document.getElementById("badgeNotificacao");
-  if (naoLidas.length > 0) {
-    badge.textContent = naoLidas.length > 9 ? "9+" : naoLidas.length;
+  if (totalBadge > 0) {
+    badge.textContent = totalBadge > 9 ? "9+" : totalBadge;
     badge.style.display = "flex";
   } else {
     badge.style.display = "none";
@@ -78,8 +81,9 @@ async function carregarNotificacoes() {
   const lista = document.getElementById("listaNotificacoesPainel");
   const vazio = document.getElementById("semNotificacoes");
   lista.innerHTML = "";
+  const temAgenda = typeof window.fnxRenderAvisosAgenda === "function" && window.fnxRenderAvisosAgenda(lista);
 
-  if (resposta.notificacoes.length === 0) { vazio.style.display = "block"; return; }
+  if (resposta.notificacoes.length === 0) { vazio.style.display = temAgenda ? "none" : "block"; return; }
   vazio.style.display = "none";
 
   resposta.notificacoes.slice(0, 30).forEach((n) => {

@@ -239,3 +239,16 @@ body {
 .so-tipo { display: contents; }
 .so-tipo.escondido { display: none; }
 @media (max-width: 480px) { .tipos-evento { grid-template-columns: 1fr; } }
+
+/* ===== Avisos (lembretes) do evento ===== */
+.lembretes-evento { border: 1px solid #ececf0; border-radius: 12px; padding: 10px 12px 12px; margin: 12px 0 4px; }
+.lembretes-evento legend { font-size: 13px; font-weight: 700; color: #222; padding: 0 6px; }
+.chips-lembrete { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips-lembrete label { position: relative; cursor: pointer; margin: 0; }
+.chips-lembrete input { position: absolute; opacity: 0; pointer-events: none; }
+.chips-lembrete span { display: inline-block; padding: 6px 11px; border-radius: 20px; border: 1px solid #d8d8de; font-size: 12.5px; font-weight: 600; color: #555; background: #fff; transition: .15s; user-select: none; }
+.chips-lembrete input:checked + span { background: #FF6A00; border-color: #FF6A00; color: #fff; }
+.chips-lembrete input:focus-visible + span { outline: 2px solid #FF6A00; outline-offset: 2px; }
+.lembrete-email { display: flex !important; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; color: #444; margin-top: 10px; cursor: pointer; }
+.lembrete-email input { width: auto !important; margin: 0 !important; accent-color: #FF6A00; }
+.dica-lembrete { font-size: 11.5px; color: #888; margin: 8px 0 0; line-height: 1.4; }

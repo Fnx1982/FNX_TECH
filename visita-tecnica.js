@@ -641,7 +641,7 @@ function renderAgenda() {
     el.innerHTML = `
       <div style="min-width:0;">
         <div class="data-agenda">${escaparHtml(dataTexto)}</div>
-        <div class="titulo-agenda">${escaparHtml(cliente ? cliente + " — " : "")}${escaparHtml(ev.summary || "(sem título)")}${tipoEv !== "visita" ? `<span class="tag-tipo-agenda ${tipoEv}">${tipoEv === "pagamento" ? "pagamento" : "outro"}</span>` : ""}</div>
+        <div class="titulo-agenda">${escaparHtml(cliente ? cliente + " — " : "")}${escaparHtml(ev.summary || "(sem título)")}${tipoEv !== "visita" ? `<span class="tag-tipo-agenda ${tipoEv}">${tipoEv === "pagamento" ? "pagamento" : tipoEv === "entrega" ? "entrega" : "outro"}</span>` : ""}</div>
         ${pv.clienteVisita || pv.telefone ? `<div class="info-agenda">👤 ${escaparHtml([pv.clienteVisita, pv.telefone].filter(Boolean).join(" · "))}</div>` : ""}
         ${ev.location ? `<div class="info-agenda">📍 ${escaparHtml(ev.location)}</div><div class="endereco-com-mapa">${htmlLinksMapa(ev.location)}</div>` : ""}
         ${descricao ? `<div class="desc-agenda">${escaparHtml(descricao)}</div>` : ""}

@@ -67,7 +67,9 @@ async function garantirClienteEmContatos(nome, telefone, documento) {
   if (resposta.ok) contatosCacheOrcamento.push({ id: resposta.id, nome, telefone: telefone || "", documento: documento || "" });
 }
 
-const UNIDADES_PADRAO = ["UND", "CM", "CM²", "M", "M²", "ML"];
+// Unidades de empresa de software: horas, dias, sprints, mensalidades,
+// licenças... (unidades antigas de itens já salvos continuam aparecendo)
+const UNIDADES_PADRAO = ["UND", "H", "DIA", "SPRINT", "MÊS", "ANO", "LICENÇA", "USUÁRIO", "PROJETO"];
 
 // Gera as <option> do select de unidade, com o valor atual já
 // selecionado — inclusive se for um valor antigo que não está na
@@ -119,20 +121,20 @@ function montarModalFormularioProposta() {
             <input type="text" id="campoResponsavel" placeholder="Quem está fazendo a estimativa" list="listaResponsaveisDatalist" autocomplete="off" />
             <datalist id="listaResponsaveisDatalist"></datalist>
           </label>
-          <label>Nome do local
-            <input type="text" id="campoLocalDescricao" placeholder="Ex.: Ed. L'Espace Alameda, Condomínio Sol" />
+          <label>Nome do projeto
+            <input type="text" id="campoLocalDescricao" placeholder="Ex.: App de agendamento, Portal do cliente" />
           </label>
-          <label class="campo-largura-total">Endereço
+          <label class="campo-largura-total"><span class="rotulo-com-opcional">Endereço do cliente <span class="texto-opcional-inline">opcional</span></span>
             <input type="text" id="campoLocal" placeholder="Rua, número, bairro, cidade" />
           </label>
-          <label class="campo-largura-total">Serviço
-            <textarea id="campoServico" rows="3" placeholder="Descrição do serviço (vem do descritivo do levantamento)"></textarea>
+          <label class="campo-largura-total">Visão geral do projeto
+            <textarea id="campoServico" rows="3" placeholder="O que será desenvolvido, o objetivo e as principais funcionalidades"></textarea>
           </label>
           <label class="campo-largura-total"><span class="rotulo-com-opcional">Observação para o cliente <span class="texto-opcional-inline">opcional — sai no PDF do cliente</span></span>
             <textarea id="campoObservacao" rows="2" placeholder="Só o que o cliente deve ler..."></textarea>
           </label>
-          <label class="campo-largura-total campo-interno-visita"><span class="rotulo-com-opcional">Dados do levantamento <span class="tag-interno">só empresa</span> <span class="texto-opcional-inline">medidas tiradas no local — só no PDF interno</span></span>
-            <textarea id="campoDadosVisitaInterno" rows="4" placeholder="Medidas tiradas no local..."></textarea>
+          <label class="campo-largura-total campo-interno-visita"><span class="rotulo-com-opcional">Levantamento de requisitos <span class="tag-interno">só empresa</span> <span class="texto-opcional-inline">anotações técnicas — só no PDF interno</span></span>
+            <textarea id="campoDadosVisitaInterno" rows="4" placeholder="Requisitos levantados, integrações, riscos, decisões técnicas..."></textarea>
           </label>
         </div>
       </div>
@@ -874,7 +876,7 @@ function renderTabelaMaoDeObra() {
 }
 
 function adicionarLinhaMaoDeObra() {
-  propostaEmEdicao.itensMaoDeObra.push({ qtd: null, unid: "UND", descricao: "", valorUnit: null, valorFinal: null, servicoId: null, obsCliente: "", obsInterna: "" });
+  propostaEmEdicao.itensMaoDeObra.push({ qtd: null, unid: "H", descricao: "", valorUnit: null, valorFinal: null, servicoId: null, obsCliente: "", obsInterna: "" });
   renderTabelaMaoDeObra();
   atualizarTotaisFormulario();
 }

@@ -131,8 +131,8 @@ function listarEventos() {
     .then((response) => {
       const eventos = response.result.items || [];
 
-      const CORES_TIPO = { visita: "#FF6A00", pagamento: "#D64545", outro: "#4A7BD0" };
-      const ICONE_TIPO = { visita: "📍", pagamento: "💳", outro: "" };
+      const CORES_TIPO = { visita: "#FF6A00", pagamento: "#D64545", entrega: "#1C8A4B", outro: "#4A7BD0" };
+      const ICONE_TIPO = { visita: "📍", pagamento: "💳", entrega: "📦", outro: "" };
       const eventosFormatados = eventos.map((ev) => {
         const priv = ev.extendedProperties?.private || {};
         const clientePagamento = priv.clientePagamento || "";
@@ -154,12 +154,14 @@ function listarEventos() {
             clientePagamento,
             tipo,
             privado: priv,
+            reminders: ev.reminders || null,
           },
         };
       });
 
       calendar.removeAllEvents();
       calendar.addEventSource(eventosFormatados);
+      if (typeof window.fnxAtualizarAvisosAgenda === "function") window.fnxAtualizarAvisosAgenda();
     })
     .catch((err) => {
       console.error("Erro ao buscar eventos:", err);
@@ -183,10 +185,42 @@ document.getElementById("eventEndereco").addEventListener("input", atualizarMapa
 
 // ===== Tipo do evento =====
 const DICAS_TIPO_EVENTO = {
-  visita: "Aparece em Levantamento de Requisitos → \"Agendadas no calendário\", com o local, cliente e endereço já prontos.",
-  pagamento: "Só a empresa e a data. Não aparece No Levantamento de Requisitos.",
-  outro: "Compromisso comum. Não aparece No Levantamento de Requisitos.",
+  visita: "Aparece em Levantamento de Requisitos → \"Agendadas no calendário\", com a empresa, o contato e o endereço já prontos.",
+  pagamento: "Conta, boleto ou mensalidade a pagar. Só a empresa e a data.",
+  entrega: "Entrega, prazo ou go-live de um projeto.",
+  outro: "Compromisso comum.",
 };
+// Avisos sugeridos por tipo (minutos antes). Dá para mudar no formulário.
+const LEMBRETES_PADRAO = {
+  visita: [1440, 60],
+  pagamento: [4320, 1440, 0],
+  entrega: [10080, 2880, 1440],
+  outro: [30],
+};
+function marcarLembretes(minutos, email) {
+  document.querySelectorAll("#chipsLembrete input").forEach((c) => { c.checked = minutos.includes(Number(c.value)); });
+  document.getElementById("lembreteEmail").checked = !!email;
+}
+function lerLembretes() {
+  const minutos = [...document.querySelectorAll("#chipsLembrete input:checked")].map((c) => Number(c.value)).sort((a, b) => b - a);
+  return { minutos, email: document.getElementById("lembreteEmail").checked };
+}
+document.getElementById("chipsLembrete").addEventListener("change", (e) => {
+  const marcados = document.querySelectorAll("#chipsLembrete input:checked");
+  if (marcados.length > 4 && document.getElementById("lembreteEmail").checked) {
+    e.target.checked = false;
+    alert("O Google aceita até 5 avisos por evento (o e-mail conta como 1).");
+  } else if (marcados.length > 5) {
+    e.target.checked = false;
+    alert("O Google aceita até 5 avisos por evento.");
+  }
+});
+document.getElementById("lembreteEmail").addEventListener("change", (e) => {
+  if (e.target.checked && document.querySelectorAll("#chipsLembrete input:checked").length > 4) {
+    e.target.checked = false;
+    alert("Desmarque um aviso para incluir o e-mail (máximo de 5 por evento).");
+  }
+});
 function tipoSelecionadoEvento() {
   const r = document.querySelector('input[name="tipoEvento"]:checked');
   return r ? r.value : "visita";
@@ -199,9 +233,16 @@ function aplicarTipoEvento(tipo) {
   });
   document.getElementById("dicaTipoEvento").textContent = DICAS_TIPO_EVENTO[tipo] || "";
   const rot = document.getElementById("rotuloDescricaoEvento");
-  rot.textContent = tipo === "visita" ? "O que precisa ser visto no levantamento" : tipo === "pagamento" ? "Observação (opcional)" : "Descritivo / Observação";
+  rot.textContent = tipo === "visita" ? "O que precisa ser visto no levantamento" : tipo === "pagamento" ? "Observação (opcional)" : tipo === "entrega" ? "O que será entregue" : "Descritivo / Observação";
+  document.getElementById("rotuloTituloEvento").textContent = tipo === "entrega" ? "Entrega" : "Título do evento";
+  document.getElementById("eventTitle").placeholder = tipo === "entrega" ? "Ex: Versão 1.0, publicação na loja, go-live..." : "Ex: Reunião, apresentação...";
 }
-document.querySelectorAll('input[name="tipoEvento"]').forEach((r) => r.addEventListener("change", () => aplicarTipoEvento(tipoSelecionadoEvento())));
+document.querySelectorAll('input[name="tipoEvento"]').forEach((r) => r.addEventListener("change", () => {
+  const tipo = tipoSelecionadoEvento();
+  aplicarTipoEvento(tipo);
+  // evento novo: troca os avisos para o padrão do tipo
+  if (!eventoSelecionado) marcarLembretes(LEMBRETES_PADRAO[tipo] || [], tipo === "pagamento");
+}));
 
 // Lê o formulário e monta o evento do Google
 function montarEventoDoFormulario() {
@@ -211,7 +252,11 @@ function montarEventoDoFormulario() {
   let titulo = v("eventTitle");
   const localNome = v("eventLocalNome"), clienteVisita = v("eventClienteVisita"), telefone = v("eventTelefone");
   const empresa = v("eventClientePagamento");
-  if (tipo === "visita") {
+  const clienteEntrega = v("eventClienteEntrega");
+  if (tipo === "entrega") {
+    if (!titulo) return { erro: "Informe o que será entregue." };
+    titulo = `Entrega — ${titulo}${clienteEntrega ? " (" + clienteEntrega + ")" : ""}`;
+  } else if (tipo === "visita") {
     if (!localNome && !clienteVisita) return { erro: "Informe o nome do local ou o cliente do levantamento." };
     titulo = `Levantamento — ${localNome || clienteVisita}`;
   } else if (tipo === "pagamento") {
@@ -225,6 +270,10 @@ function montarEventoDoFormulario() {
   const privado = { enjobTipo: tipo };
   if (tipo === "visita") { privado.localNome = localNome; privado.clienteVisita = clienteVisita; privado.telefone = telefone; privado.clientePagamento = clienteVisita || localNome; }
   if (tipo === "pagamento") privado.clientePagamento = empresa;
+  if (tipo === "entrega") { privado.clienteEntrega = clienteEntrega; privado.tituloEntrega = v("eventTitle"); }
+  const lemb = lerLembretes();
+  const overrides = lemb.minutos.slice(0, lemb.email ? 4 : 5).map((m) => ({ method: "popup", minutes: m }));
+  if (lemb.email) overrides.push({ method: "email", minutes: lemb.minutos.length ? lemb.minutos[0] : 1440 });
   return {
     evento: {
       summary: titulo,
@@ -233,14 +282,15 @@ function montarEventoDoFormulario() {
       start: { dateTime: new Date(start).toISOString() },
       end: { dateTime: new Date(end).toISOString() },
       // cor no Google Agenda: visita amarela, pagamento vermelha
-      colorId: tipo === "visita" ? "5" : tipo === "pagamento" ? "11" : undefined,
+      colorId: tipo === "visita" ? "6" : tipo === "pagamento" ? "11" : tipo === "entrega" ? "10" : undefined,
       extendedProperties: { private: privado },
+      reminders: overrides.length ? { useDefault: false, overrides } : { useDefault: false, overrides: [] },
     },
   };
 }
 
 function limparCamposEvento() {
-  ["eventTitle", "eventClientePagamento", "eventEndereco", "eventDescricao", "eventLocalNome", "eventClienteVisita", "eventTelefone"]
+  ["eventTitle", "eventClientePagamento", "eventEndereco", "eventDescricao", "eventLocalNome", "eventClienteVisita", "eventTelefone", "eventClienteEntrega"]
     .forEach((id) => { document.getElementById(id).value = ""; });
 }
 
@@ -248,6 +298,7 @@ function abrirModalNovo(data) {
   eventoSelecionado = null;
   limparCamposEvento();
   aplicarTipoEvento("visita");
+  marcarLembretes(LEMBRETES_PADRAO.visita, false);
   atualizarMapaEvento();
   document.getElementById("eventStart").value = data + "T09:00";
   document.getElementById("eventEnd").value = data + "T10:00";
@@ -273,6 +324,17 @@ function abrirModalEditar(event) {
     document.getElementById("eventTelefone").value = priv.telefone || "";
   }
   if (tipo === "pagamento") document.getElementById("eventClientePagamento").value = ep.clientePagamento || ep.tituloOriginal || "";
+  if (tipo === "entrega") {
+    document.getElementById("eventTitle").value = priv.tituloEntrega || (ep.tituloOriginal || "").replace(/^Entrega — /, "");
+    document.getElementById("eventClienteEntrega").value = priv.clienteEntrega || "";
+  }
+  // avisos que o evento já tem no Google
+  const rem = ep.reminders;
+  if (rem && rem.useDefault === false && Array.isArray(rem.overrides)) {
+    marcarLembretes(rem.overrides.filter((o) => o.method === "popup").map((o) => o.minutes), rem.overrides.some((o) => o.method === "email"));
+  } else {
+    marcarLembretes(rem && rem.useDefault ? [30] : [], false);
+  }
   document.getElementById("eventEndereco").value = ep.location || "";
   atualizarMapaEvento();
   document.getElementById("eventDescricao").value = ep.description || "";

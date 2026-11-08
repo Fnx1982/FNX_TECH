@@ -188,10 +188,11 @@ setInterval(() => {
 // ============================================================
 function tipoEventoEnjob(ev) {
   const priv = (ev && (ev.extendedProperties?.private || ev.extendedProps?.privado)) || {};
-  if (["visita", "pagamento", "outro"].includes(priv.enjobTipo)) return priv.enjobTipo;
+  if (["visita", "pagamento", "entrega", "outro"].includes(priv.enjobTipo)) return priv.enjobTipo;
   const texto = String([ev.summary || ev.title || "", ev.description || "", priv.clientePagamento || ""].join(" "))
     .normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-  if (/\b(boleto|pagamento|pagar|vencimento|fatura|parcela)\b/.test(texto)) return "pagamento";
+  if (/\b(boleto|pagamento|pagar|vencimento|fatura|parcela|conta|mensalidade)\b/.test(texto)) return "pagamento";
+  if (/\b(entrega|entregar|prazo|deadline|go-live|deploy|release|lancamento)\b/.test(texto)) return "entrega";
   if (/\b(visita|vistoria|orcamento|medicao|levantamento)\b/.test(texto)) return "visita";
   return "outro";
 }

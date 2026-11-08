@@ -10,14 +10,14 @@
   <meta name="robots" content="noindex, nofollow" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agenda — FNX DEV</title>
-  <link rel="stylesheet" href="calendario.css?v=3">
+  <link rel="stylesheet" href="calendario.css?v=4">
 
   <!-- FullCalendar -->
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 
   <!-- Autenticação Google compartilhada com home.html (carrega primeiro) -->
-  <script src="google-auth.js?v=4"></script>
+  <script src="google-auth.js?v=5"></script>
 
   <!-- Google API -->
   <script async defer src="https://apis.google.com/js/api.js"
@@ -27,7 +27,7 @@
   <!-- Nova biblioteca de identidade -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <link rel="stylesheet" href="mobile.css?v=3" />
-  <link rel="stylesheet" href="fnx-tema.css?v=9" />
+  <link rel="stylesheet" href="fnx-tema.css?v=10" />
 </head>
 <body class="pagina-interna">
   <div class="dashboard">
@@ -60,20 +60,26 @@
       <h3>Novo Evento</h3>
 
       <div class="tipos-evento" role="radiogroup" aria-label="Tipo do evento">
-        <label class="tipo-evento"><input type="radio" name="tipoEvento" value="visita" checked /><span>📍 Levantamento de requisitos</span></label>
-        <label class="tipo-evento"><input type="radio" name="tipoEvento" value="pagamento" /><span>💳 Pagamento / boleto</span></label>
+        <label class="tipo-evento"><input type="radio" name="tipoEvento" value="visita" checked /><span>📍 Levantamento / visita</span></label>
+        <label class="tipo-evento"><input type="radio" name="tipoEvento" value="pagamento" /><span>💳 Pagamento / conta</span></label>
+        <label class="tipo-evento"><input type="radio" name="tipoEvento" value="entrega" /><span>📦 Entrega / prazo</span></label>
         <label class="tipo-evento"><input type="radio" name="tipoEvento" value="outro" /><span>📅 Outro</span></label>
       </div>
       <p class="dica-tipo-evento" id="dicaTipoEvento"></p>
 
-      <div class="so-tipo" data-tipos="outro">
-        <label for="eventTitle">Título do evento</label>
-        <input type="text" id="eventTitle" placeholder="Ex: Reunião, entrega de produto..." />
+      <div class="so-tipo" data-tipos="outro entrega">
+        <label for="eventTitle" id="rotuloTituloEvento">Título do evento</label>
+        <input type="text" id="eventTitle" placeholder="Ex: Reunião, apresentação..." />
+      </div>
+
+      <div class="so-tipo" data-tipos="entrega">
+        <label for="eventClienteEntrega">Cliente / projeto</label>
+        <input type="text" id="eventClienteEntrega" placeholder="Ex: Clínica Vida — App de agendamento" />
       </div>
 
       <div class="so-tipo" data-tipos="visita">
-        <label for="eventLocalNome">Nome do local</label>
-        <input type="text" id="eventLocalNome" placeholder="Ex: Ed. L'Espace Alameda, Condomínio Sol Nascente" />
+        <label for="eventLocalNome">Empresa / projeto</label>
+        <input type="text" id="eventLocalNome" placeholder="Ex: Clínica Vida, Portal do cliente" />
         <label for="eventClienteVisita">Cliente / responsável</label>
         <input type="text" id="eventClienteVisita" placeholder="Ex: João (CTO), equipe de produto..." />
         <label for="eventTelefone">Telefone</label>
@@ -82,7 +88,7 @@
 
       <div class="so-tipo" data-tipos="pagamento">
         <label for="eventClientePagamento">Empresa</label>
-        <input type="text" id="eventClientePagamento" placeholder="Ex: Sicredi, Leroy Merlin, fornecedor..." />
+        <input type="text" id="eventClientePagamento" placeholder="Ex: Cloudflare, Google Workspace, aluguel, fornecedor..." />
       </div>
 
       <div class="so-tipo" data-tipos="visita outro">
@@ -97,6 +103,21 @@
       <label for="eventEnd">Fim</label>
       <input type="datetime-local" id="eventEnd">
 
+      <fieldset class="lembretes-evento">
+        <legend>🔔 Avisar antes</legend>
+        <div class="chips-lembrete" id="chipsLembrete">
+          <label><input type="checkbox" value="0" /><span>Na hora</span></label>
+          <label><input type="checkbox" value="30" /><span>30 min</span></label>
+          <label><input type="checkbox" value="60" /><span>1 hora</span></label>
+          <label><input type="checkbox" value="1440" /><span>1 dia</span></label>
+          <label><input type="checkbox" value="2880" /><span>2 dias</span></label>
+          <label><input type="checkbox" value="4320" /><span>3 dias</span></label>
+          <label><input type="checkbox" value="10080" /><span>1 semana</span></label>
+        </div>
+        <label class="lembrete-email"><input type="checkbox" id="lembreteEmail" /> Também avisar por e-mail</label>
+        <p class="dica-lembrete">O Google Agenda avisa no celular (app Google Agenda) e no computador, mesmo com o sistema fechado. Até 5 avisos por evento.</p>
+      </fieldset>
+
       <label for="eventDescricao" id="rotuloDescricaoEvento">Descritivo / Observação</label>
       <textarea id="eventDescricao" rows="3" placeholder="Detalhes sobre o evento..."></textarea>
 
@@ -110,7 +131,7 @@
 
 
   <script src="mapas.js?v=1"></script>
-  <script src="calendario.js?v=5"></script>
+  <script src="calendario.js?v=6"></script>
   <script>
     // O calendario.js está no final do <body>, então os elementos
     // (#btnLogin, #calendar, etc.) já existem nesse ponto — não
@@ -120,5 +141,7 @@
   </script>
   <script src="modal-expandir.js?v=1"></script>
   <footer class="fnx-rodape">Created by Yan Victor · <a href="https://www.instagram.com/yanszaida/" target="_blank" rel="noopener">@yanszaida</a></footer>
+  <script src="notificacoes.js?v=4"></script>
+  <script src="avisos-agenda.js?v=1"></script>
 </body>
 </html>
