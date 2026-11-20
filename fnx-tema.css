@@ -502,3 +502,15 @@ body.pagina-interna > div.container label { color: #444; }
 @media (max-width: 768px) {
   body.pagina-interna > div.container { border-radius: 16px !important; width: calc(100% - 16px) !important; }
 }
+
+/* ── Logo FNX (menu lateral e login) ────────────────────────────────── */
+.menu img.logo-fnx {
+  background: #161616;
+  object-fit: contain !important;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, .12);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .35);
+}
+.container h1.login-logo { line-height: 0; margin: 0 auto; }
+.container h1.login-logo img { display: block; width: 220px; max-width: 80%; height: auto; margin: 0 auto; }
+body:has(> main.container > form > .input-box) .container h1.login-logo::after { display: none; }

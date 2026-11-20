@@ -449,7 +449,10 @@ async function gerarPdfApresentacao(dados) {
     gradiente(0, PH - 10, PW, 10, COR.laranja, COR.vermelho);
 
     if (typeof LOGO_EMPRESA_BASE64 !== "undefined" && LOGO_EMPRESA_BASE64) {
-      try { doc.addImage(LOGO_EMPRESA_BASE64, "JPEG", M, 60, 150, 150 / (LOGO_EMPRESA_PROPORCAO || 3.35)); } catch (e) { /* sem logo */ }
+      try {
+        if (typeof LOGO_EMPRESA_NEGATIVA_BASE64 !== "undefined" && LOGO_EMPRESA_NEGATIVA_BASE64) doc.addImage(LOGO_EMPRESA_NEGATIVA_BASE64, "PNG", M, 60, 150, 150 / (LOGO_EMPRESA_PROPORCAO || 3.35));
+        else doc.addImage(LOGO_EMPRESA_BASE64, "JPEG", M, 60, 150, 150 / (LOGO_EMPRESA_PROPORCAO || 3.35));
+      } catch (e) { /* sem logo */ }
     } else {
       fonte("bold", 26); cor(COR.branco); doc.text(EMP.nome || "FNX DEV", M, 92);
       gradiente(M, 102, 46, 4, COR.laranja, COR.vermelho);
